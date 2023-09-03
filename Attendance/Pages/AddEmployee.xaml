@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.AddEmployee"
+             Title="AddEmployee">
+    <ScrollView Orientation="Vertical">
+    <VerticalStackLayout x:Name="vs">
+        <Label 
+            Text="Enter Employee Details"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+            <Entry x:Name="fname" HorizontalOptions="FillAndExpand" Placeholder="Enter First Name"></Entry>
+            <Entry x:Name="lstname" HorizontalOptions="FillAndExpand" Placeholder="Enter Last Name"></Entry>
+            <Entry x:Name="eid" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee ID"></Entry>
+            <Entry x:Name="username" HorizontalOptions="FillAndExpand" Placeholder="Create Login UserName for your employee"></Entry>
+            <Entry x:Name="passcode" HorizontalOptions="FillAndExpand" Placeholder="Create Login Password  for your employee"></Entry>
+        
+        <Entry x:Name="store_name" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Store Name"></Entry>
+            <Entry x:Name="area" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Current Working area"></Entry>
+            <Entry x:Name="city" HorizontalOptions="FillAndExpand" Placeholder="Enter  Employee's Current Working City"></Entry>
+            <Entry x:Name="state" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Current Working State"></Entry>
+            <Entry x:Name="ebnk_acc" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Bank account no"></Entry>
+            <Entry x:Name="ifsc" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's IFSC code"></Entry>
+            <Entry x:Name="bnk_name" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's name as per Bank Account"></Entry>
+            <Entry x:Name="etarget" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's monthly target"></Entry>
+            <Entry x:Name="econtact" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Phone No "></Entry>
+            <HorizontalStackLayout x:Name="dobhs">
+                <Label Text="Select Employee DOB : "></Label>
+                <DatePicker  x:Name="DOBpicker"  ></DatePicker>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout x:Name="ejdatehs">
+                <Label Text="Select Employee's Joining Date"></Label>
+                <DatePicker x:Name="JoinDate" ></DatePicker>
+            </HorizontalStackLayout >
+            <Picker Title="Select Employee Weekoffday" x:Name="eweekofdaypicker">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Monday</x:String>
+                        <x:String>Tuesday</x:String>
+                        <x:String>Wednesday</x:String>
+                        <x:String>Thursday</x:String>
+                        <x:String>Friday</x:String>
+                        <x:String>Saturday</x:String>
+                        <x:String>Sunday</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Button  Clicked="sumbitBtn" Text="Submit"  HorizontalOptions="Center"></Button>
+        <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+   
+    </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

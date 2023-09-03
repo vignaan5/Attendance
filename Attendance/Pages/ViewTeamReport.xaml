@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.ViewTeamReport"
+             Title="View State Report">
+    <ScrollView>
+    <VerticalStackLayout x:Name="vs">
+        <Label 
+            Text="View Your Team Reports !"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+            <HorizontalStackLayout>
+                
+                <Picker x:Name="stpicker" Title="select_a_state">  </Picker>
+                
+            </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Label Text="Select From date "></Label>
+            <DatePicker x:Name="dtstart" ></DatePicker>
+            <Label Text="Select To date "></Label>
+            <DatePicker x:Name="dtend"></DatePicker>
+        </HorizontalStackLayout>
+            <Button Text="Get Report" Clicked="get_state_report"></Button>
+            <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+            <Label Text="Caluculating sales of employee " IsVisible="False" x:Name="statusempid"></Label>
+    </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.AdminPage"
+             Title="AdminPage">
+    <VerticalStackLayout x:Name="vs" Spacing="10">
+        <Button  Clicked="Addempbtn" Text="Add an Employee" HorizontalOptions="Center"></Button>
+        <Button Clicked="View_Employees" Text="View Employees" HorizontalOptions="Center"></Button>
+        <Button Clicked="DailyReports" Text="View  Reports" HorizontalOptions="Center"></Button>
+        <Button Clicked="Statereports" Text="View State Reports" HorizontalOptions="Center"></Button>
+
+        <Button Clicked="UpdateStoreTarget" Text="Update Store Target" HorizontalOptions="Center"></Button>
+       
+    </VerticalStackLayout>
+</ContentPage>

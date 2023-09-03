@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.UpdateSales"
+             Title="UpdateSales">
+    <ScrollView Orientation="Vertical" >
+    <VerticalStackLayout x:Name="vs">
+        <ActivityIndicator x:Name="actind" IsVisible="True" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+        <Label
+           
+            Text="You can update your sales here update your sales !"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+            <Button Text="Check And Tally Items" Clicked="Button_Clicked_1" HorizontalOptions="Start" VerticalOptions="Start" IsVisible="False" IsEnabled="False" x:Name="uitmbtn"></Button>
+            <Button x:Name="additm" Text="Add Item" HorizontalOptions="Center" Clicked="Button_Clicked" IsVisible="False" IsEnabled="False"></Button>
+    
+    </VerticalStackLayout>
+
+      
+
+    </ScrollView>
+</ContentPage>

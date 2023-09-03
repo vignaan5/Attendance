@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.DailyReport"
+             Title="DailyReport">
+    <ScrollView Orientation="Vertical">
+    <VerticalStackLayout x:Name="vs" Spacing="10">
+        <DatePicker x:Name="dpicker" ></DatePicker>
+        <Button Text="Get Report" Clicked="Button_Clicked"></Button>
+            <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.MainPage" >
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <Image
+                Source="dotnet_bot.png"
+                SemanticProperties.Description="Have a nice day!"
+                HeightRequest="200"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="Hello, World!"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center"
+                x:Name="target_remaning"
+                />
+
+            <Label
+                Text="Welcome to .Attendance App"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
+                FontSize="18"
+                HorizontalOptions="Center" />
+
+            <Button
+                x:Name="CounterBtn"
+                Text="Update Sales"
+                SemanticProperties.Hint="Updates the Sold Goods"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Center" />
+            <Button
+                x:Name="UpdateRecentSales"
+                Text="View Your Recent Sales"
+                SemanticProperties.Hint="Updates or Deletes Recent Sales"
+                Clicked="UpdateRecentSales_Clicked"
+                HorizontalOptions="Center" />
+            <Button
+                x:Name="Clkin"
+                Text="Clock-In"
+                SemanticProperties.Hint="Updates the attendance"
+                Clicked="Clkin_Clicked"     
+                HorizontalOptions="Center" />
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
