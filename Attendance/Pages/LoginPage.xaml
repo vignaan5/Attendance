@@ -3,8 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.LoginPage"
              Title="LoginPage">
-    <VerticalStackLayout >
-        <Frame VerticalOptions="FillAndExpand">
+    <ScrollView x:Name="sc" >
+    <VerticalStackLayout x:Name="vs" >
+            <Frame VerticalOptions="FillAndExpand" >
+        <Image Source="vignaan.png" HorizontalOptions="Center" VerticalOptions="Center" x:Name="img" ></Image>
+            </Frame>
+            <Frame VerticalOptions="FillAndExpand">
             <Entry x:Name="usrname"  Placeholder="Enter Username" VerticalOptions="Center" HorizontalOptions="Center" >
                 
                 
@@ -17,4 +21,5 @@
         <Button Clicked="Login_to_app"  x:Name="login_btn"   HorizontalOptions="Center" VerticalOptions="End" Text="Login" BackgroundColor="Orange"></Button>
         <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True" BackgroundColor="White"></ActivityIndicator>
     </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

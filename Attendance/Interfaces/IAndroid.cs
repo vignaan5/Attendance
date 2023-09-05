@@ -16,5 +16,7 @@ namespace The_Attendance.Interfaces
 
 		public void update_duration(int seconds);
 
+		public  void open_in_browser();
+
 	}
 }

@@ -8,15 +8,18 @@ public partial class LoginPage : ContentPage
 	public  LoginPage()
 	{
 		InitializeComponent();
+		
 		check_already_signed_in();
+
 	}
 
 	public async void check_already_signed_in()
 	{
+		
 		string pass = await SecureStorage.GetAsync("password");
 		string usernm = await SecureStorage.GetAsync("username");
-
-		if(pass != null && usernm != null)
+		string xz = sc.ScrollX.ToString();
+		if (pass != null && usernm != null)
 		{
 			usrname.Text = usernm;
 			passcode.Text = pass;
@@ -34,8 +37,10 @@ public partial class LoginPage : ContentPage
 	private async void Login_to_app(object sender, EventArgs e)
 	{
 		actind.IsVisible = true;
+		
+		
 
-	 await	Task.Run(() => { connect_to_db("", ""); });
+		await	Task.Run(() => { connect_to_db("", ""); });
 	 
 		if(!nothing_found)
 		{
@@ -83,7 +88,7 @@ public partial class LoginPage : ContentPage
 			return false;
 		}
 
-		string sql_cmd_string = "select * from admin where employee_id='" +employee_id +"';";
+		string sql_cmd_string = "select * from employee where emp_id='" +employee_id +"' and is_admin='yes'";
 
 		MySqlCommand mySqlCommand = new MySqlCommand(sql_cmd_string, conn);
 
@@ -128,8 +133,7 @@ public partial class LoginPage : ContentPage
 			return;
 		}
 
-		string sql_cmd_string = "select * from login_accounts where username='"+usrname.Text.ToString().Trim()+"';";
-
+		string sql_cmd_string = "select * from employee where username='"+usrname.Text.ToString().Trim()+"';";
 		MySqlCommand mySqlCommand =	new MySqlCommand(sql_cmd_string, conn);
 
 	
@@ -155,7 +159,7 @@ public partial class LoginPage : ContentPage
 			while (!reader.IsClosed && reader.Read())
 
 			{
-				if (reader[1].ToString().Trim() == usrname.Text.ToString().Trim() && reader[2].ToString().Trim() == passcode.Text.ToString().Trim())
+				if (reader[16].ToString().Trim() == usrname.Text.ToString().Trim() && reader[17].ToString().Trim() == passcode.Text.ToString().Trim())
 				{
 					//	DisplayAlert("Welcome !", "Hello " + reader[1].ToString(), "Go !");
 					string temp = reader[0].ToString().Trim();

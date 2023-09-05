@@ -1,8 +1,9 @@
 ﻿using Attendance.Data;
 using Attendance.Pages;
 using The_Attendance.Interfaces;
-#if ANDROID 
+#if ANDROID
 using The_Attendance.Platforms;
+
 #endif
 namespace Attendance;
 
@@ -16,6 +17,7 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 #if ANDROID
 		DependencyService.Register<IAndroid,AndroidLocationService>();
+		
 
 		if(DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
 		{
@@ -26,7 +28,7 @@ public partial class MainPage : ContentPage
 
 #endif
 
-		
+
 		Task.Run(async() =>
 		{
 			DataClass dt = new DataClass();
@@ -39,9 +41,9 @@ public partial class MainPage : ContentPage
 			MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				  if(rem_sales > 0)
-				target_remaning.Text = rem_sales.ToString() + " needed to achive target";
+				target_remaning.Text = rem_sales.ToString() + " needed to achieve your target";
 				 
-				else target_remaning.Text = " This months target achived ";
+				else target_remaning.Text = " This months target has been achieved ";
 
 			});
 
@@ -75,9 +77,25 @@ public partial class MainPage : ContentPage
 			Clkin.Text = "Clock-In";
 		}
 
+
 #endif
 
 	}
+
+	 private void open_in_browser(object sender, EventArgs e) 
+	 {
+
+#if ANDROID
+      
+
+          DependencyService.Resolve<IAndroid>().open_in_browser();
+            
+
+#endif
+
+	}
+
+
 
 	private async void UpdateRecentSales_Clicked(object sender, EventArgs e)
 	{
@@ -101,14 +119,20 @@ public partial class MainPage : ContentPage
 			MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (rem_sales > 0)
-					target_remaning.Text = rem_sales.ToString() + " needed to achive your target";
+					target_remaning.Text = rem_sales.ToString() + "Rs needed to achieve your target";
 
-				else target_remaning.Text = " This month's target achived ";
+				else target_remaning.Text = " This month's target achieved ";
 
 			});
 
 		});
 	}
+
+	private void ViewYourSalesClicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new YourSales());
+	}
+
 
 	private void ContentPage_NavigatedFrom(object sender, NavigatedFromEventArgs e)
 	{

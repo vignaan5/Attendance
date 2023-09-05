@@ -1,3 +1,5 @@
+using Attendance.Data;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 using MySqlConnector;
 using System;
 
@@ -6,11 +8,186 @@ namespace Attendance.Pages;
 public partial class ViewEmployees : ContentPage
 {
 	public List<Frame> Frames = new List<Frame>();
+	public List<List<string>> emp_details = new List<List<string>>();	
+	public DataClass dt = new DataClass();
 	public  ViewEmployees()
 	{
 		InitializeComponent();
-		create_ui_for_employees();
+		Task.Run(() => { get_employee_details(); });
+		
 	}
+
+	public async void get_employee_details()
+	{
+		 dt.start_connection();
+		 emp_details= dt.get_employee_details();
+
+		if (emp_details != null)
+		{
+			for (int i = 0; i < emp_details.Count; i++)
+			{
+				int target = 0;
+				int rem_sales = dt.get_remaining_sales_needed_to_reach_target(ref target, emp_details[i][0]);
+
+				if (rem_sales > 0)
+				{
+					emp_details[i].Add(rem_sales.ToString());
+				}
+				else
+				{
+					emp_details[i].Add( rem_sales.ToString());
+				}
+
+				int this_month_sale = Convert.ToInt32(emp_details[i][12]);
+				    
+				this_month_sale -= rem_sales;
+
+					
+
+
+				emp_details[i].Add(this_month_sale.ToString());
+
+			}
+
+			dt.close_connection();
+			string html = create_html_string(emp_details);
+			MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+
+				vs.Clear();
+
+				VerticalStackLayout innervs_stack = new VerticalStackLayout();
+
+				innervs_stack.Add(new WebView { Source = new HtmlWebViewSource { Html = html } });
+				
+
+
+				Button xlbutton = new Button { Text = "Generate Excel" };
+
+				xlbutton.Clicked += (async (object sender, EventArgs e) =>
+				{
+
+					string path = AppDomain.CurrentDomain.BaseDirectory;
+
+
+
+					var destination = System.IO.Path.Combine(path, "report.html");
+
+
+#if WINDOWS
+        
+   destination= @"C:\Users\Public\Documents\report.html";
+            
+#endif
+
+
+
+					try
+					{
+
+
+						File.WriteAllText(destination, html);
+					}
+					catch(Exception ex)
+					{
+						DisplayAlert("Error", ex.Message.ToString(),"Ok");
+					}
+#if WINDOWS
+              try
+			  {
+             System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",destination);
+                 }
+				 catch(Exception ex)
+				 {
+				 DisplayAlert("Error", ex.Message.ToString(),"Ok");
+				 }
+			 return;
+
+#endif
+
+					await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
+				     
+
+				});
+
+				innervs_stack.Add(xlbutton);
+
+				vs.Add(new ScrollView { Content = innervs_stack });
+
+
+			});
+		}
+		else {
+			dt.close_connection();
+			Navigation.PopAsync();
+		}
+	}
+
+
+
+	public string create_html_string(List<List<string>> rows)
+	{
+		string htmlstring = "<html> <body> <table border='1' id='table'> <thead>   <tr bgcolor=#D3D3D3>  <th> Employee ID </th> <th> First Name </th> <th>  Last Name </th> <th> Age </th> <th> Join Date </th> <th> City </th> <th> State </th> <th> Store Name </th> <th> DOB </th> <th> Contact </th>  <th> Bank Account No </th>  <th> IFSC Code </th> <th> Monthly Target </th> <th> WeekOff Day </th> <th> Name As Per Bank Account </th> <th> Area </th> <th> UserName </th> <th> IsAccount Active </th> <th> Remaining Sales to reach monthly target </th> <th>This Month Sales</th>  </tr> </thead> <tbody> ";
+
+		int sum = 0;
+
+		for (int i = 0; i < rows.Count; i++)
+		{
+			htmlstring += "<tr>";
+
+			
+			for(int j = 0; j < rows[i].Count;j++)
+			{
+				if (j == rows[i].Count-4 || j == rows[i].Count-5)
+				{
+					continue;
+				}
+
+		       if(j == 5 || j==9)
+				{
+					string[] onlydate = rows[i][j].Split(' ');
+
+					htmlstring += String.Format("<td>{0}</td>", onlydate[0]);
+					continue;
+				}
+
+			   if(j==21)
+				{
+					int month_target = Convert.ToInt32(rows[i][12]);
+					int current_sale = Convert.ToInt32(rows[i][21]);
+
+					if(current_sale>month_target)
+					{
+						htmlstring += String.Format("<td bgcolor=#008000>{0}</td>", rows[i][j]);
+						continue;
+					}
+
+					htmlstring += String.Format("<td>{0}</td>", rows[i][j]);
+					continue;
+
+				}
+
+				htmlstring += String.Format("<td>{0}</td>", rows[i][j]);
+
+			}
+
+			
+
+			htmlstring += "</tr>";
+
+		}
+
+		htmlstring += String.Format( "</tbody> </table> {0} </body></html>",dt.get_js2excel_script());
+
+		return htmlstring;
+
+
+
+	}
+
+
+
+
 
 	public  void connect_to_db_and_get_employees()
 	{

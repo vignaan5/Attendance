@@ -11,17 +11,22 @@ using Android.Graphics;
 using Android.Media;
 using Android.OS;
 using Android.Runtime;
+using Android.Text;
 using AndroidX;
 using AndroidX.Core;
 using AndroidX.Core.App;
 using Attendance.Location;
 using static Android.Icu.Text.CaseMap;
+using Org;
+using System.Security.Policy;
+
 
 namespace The_Attendance.Platforms
 {
 	[Service]
 	public class AndroidLocationService : Service,Interfaces.IAndroid
 	{
+		
 
 		public static bool is_foreground_service_running=false ;
 		public override IBinder OnBind(Intent intent)
@@ -129,6 +134,72 @@ namespace The_Attendance.Platforms
 		public void update_duration(int seconds)
 		{
 			throw new NotImplementedException();
+		}
+
+		private async void BrowserOpen_Clicked(object sender, EventArgs e)
+		{
+			try
+			{
+				Uri uri = new Uri("https://www.microsoft.com");
+				await Browser.Default.OpenAsync(uri, BrowserLaunchMode.SystemPreferred);
+			}
+			catch (Exception ex)
+			{
+				// An unexpected error occurred. No browser may be installed on the device.
+			}
+		}
+
+
+		
+
+
+
+
+
+		public async void open_in_browser(string html)
+		{
+			 var files =await FileSystem.OpenAppPackageFileAsync("HTMLPage1.html");
+			string path2 = AppDomain.CurrentDomain.BaseDirectory;
+	    		string path = Android.App.Application.Context.GetExternalFilesDir(null).ToString();
+
+		
+			var destination = System.IO.Path.Combine(path,"raju.html");
+			File.WriteAllText(destination, "<html> <body> <h1> helloworld !  </h1> <script> let p = document.createElement('P');  p.innerText='raju';  document.body.appendChild(p); </script>   </body>  </html>");
+		
+
+		
+
+			BrowserLaunchOptions launchOptions = new BrowserLaunchOptions()
+			{
+				LaunchMode = BrowserLaunchMode.SystemPreferred,
+				TitleMode = BrowserTitleMode.Show,
+				PreferredToolbarColor = Colors.Violet,
+				PreferredControlColor = Colors.SandyBrown
+			};
+
+			  LocationClass l = new LocationClass();
+			  bool given= await  l.check_and_get_storage_permissions();
+
+			PickOptions pk = new PickOptions();
+			
+			var result = await FilePicker.PickAsync(pk);
+
+			 
+			
+			try
+			{
+
+				await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel From Browser",new ReadOnlyFile(destination)));
+			}
+			catch(Exception ex) 
+			{ 
+
+			}
+		}
+
+		public void open_in_browser()
+		{
+			open_in_browser((string)null);	
 		}
 	}
 }

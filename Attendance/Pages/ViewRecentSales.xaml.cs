@@ -54,6 +54,7 @@ public partial class ViewRecentSales : ContentPage
 			string sold_date = "";
 			string sno = "";
 			string amount = "";
+			string order_id = "";
 
 			foreach (var product_details in product)
 			{
@@ -101,6 +102,10 @@ public partial class ViewRecentSales : ContentPage
 					sold_date = sold_date2[2] + "-" + sold_date2[0] + "-" + sold_date2[1];
 					
 				}
+				if(product_details.Key=="order_id")
+				{
+					order_id= product_details.Value;
+				}
 
 
 				vs2.Add(l);
@@ -111,16 +116,29 @@ public partial class ViewRecentSales : ContentPage
 
 			rm.Clicked += (async(object sender, EventArgs e) =>
 			{
-				string remove_sql_qry = String.Format("delete from employee_sales2 where emp_id='{0}' and Sno={1} and pcs={2} and The_date='{3}' and The_Time='{4}' and amount={5};",emp_id,sno,pcs,sold_date,sold_time,amount);
-
+				//string remove_sql_qry = String.Format("delete from employee_sales2 where emp_id='{0}' and sno={1} and pcs={2} and The_date='{3}' and The_Time='{4}' and amount={5};",emp_id,sno,pcs,sold_date,sold_time,amount);
+				string remove_sql_qry = String.Format("delete from employee_sales2 where order_id={0}", order_id);
 				dt.start_connection();
-				MySqlCommand cmd= new MySqlCommand(remove_sql_qry,dt.connection);
 
+				MySqlCommand cmd = null;
 				try
 				{
-					cmd.ExecuteNonQuery();
+					cmd= new MySqlCommand(remove_sql_qry, dt.connection);
 				}
-				catch (Exception ex) { }
+				catch(Exception ex)
+				{
+					
+				}
+				try
+				{
+				  var y=	cmd.ExecuteNonQuery();
+					
+				}
+				catch (Exception ex) 
+				{
+					DisplayAlert("ERROR !",ex.Message.ToString(), "ok");
+
+				}
 
 				dt.close_connection();
 

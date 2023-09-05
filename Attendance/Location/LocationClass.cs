@@ -109,6 +109,37 @@ namespace Attendance.Location
 			return "";
 		}
 
+		public  async Task<bool> check_and_get_storage_permissions()
+		{
+
+		var storage_status_read = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+		  
+		if(storage_status_read != PermissionStatus.Granted)
+		{
+		     storage_status_read = await Permissions.RequestAsync<Permissions.StorageRead>();
+		                if(storage_status_read != PermissionStatus.Granted)
+						 {
+						   				send_notification_to_the_user("Read Storage Permission Denied !", "Read Storage permission is required");
+										return false;
+						 }
+	    }
+
+		var storage_status_write = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+		  
+		if(storage_status_write != PermissionStatus.Granted)
+		{
+		     storage_status_write = await Permissions.RequestAsync<Permissions.StorageWrite>();
+		                if(storage_status_write != PermissionStatus.Granted)
+						 {
+						   				send_notification_to_the_user("Write Storage Permission Denied !", "Write Storage permission is required");
+										return false;
+						 }
+	    }
+
+		return true;
+
+		}
+
 
 		public async Task<bool> check_and_get_permissions()
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.YourSales"
+             Title="YourSales">
+    <VerticalStackLayout x:Name="vs">
+        <Label 
+            Text="Choose dates and get the sales!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <HorizontalStackLayout>
+            <Label Text="From :"></Label>
+        <DatePicker x:Name="dtstart"></DatePicker>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Label Text="To :"></Label>
+            <DatePicker x:Name="dtend"></DatePicker>
+        </HorizontalStackLayout>
+        <Button Text="Get Report" Clicked="GetYourSalesClicked"></Button>
+        <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+    </VerticalStackLayout> 
+</ContentPage>

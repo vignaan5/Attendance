@@ -45,7 +45,7 @@ public partial class DataGrid : ContentPage
 
 	public string create_html_string()
 	{
-		string htmlstring = "<html> <body> <table border='1'><tr bgcolor=#D3D3D3> <th> Sno </th> <th> Particulars </th> <th>  HSN/SAC </th> <th> MRP </th> <th> PCS </th> <th> Amount </th> </tr> ";
+		string htmlstring = "<html> <body> <table border='1' id='table'> <thead> <tr bgcolor=#D3D3D3> <th> Sno </th> <th> Particulars </th> <th>  HSN/SAC </th> <th> MRP </th> <th> PCS </th> <th> Amount </th> </tr> </thead> <tbody> ";
 		string sql_str = get_date_from_picker();
 		int sum = 0;
 		dt.start_connection();
@@ -67,7 +67,7 @@ public partial class DataGrid : ContentPage
 
 	   
 
-		htmlstring += String.Format( "</table> <h1> Daily Sale : {0} </h1> </body> </html>",sum);
+		htmlstring += String.Format("</tbody></table> {0}  <h1> Daily Sale : {1} </h1> </body> </html>",dt.get_js2excel_script(), sum);
 		
 		
 		return htmlstring;
@@ -97,6 +97,21 @@ public partial class DataGrid : ContentPage
 
 		vs.Add(hs_temp);
 
+		Button xlbutton = new Button { Text="Generate Excel",HorizontalOptions=LayoutOptions.Center };
+
+		xlbutton.Clicked += (async (object sender, EventArgs e) => {
+
+			string path = AppDomain.CurrentDomain.BaseDirectory;
+
+			var destination = System.IO.Path.Combine(path, "report.html");
+
+			File.WriteAllText(destination, create_html_string());
+
+			await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
+
+
+		});
+
 		Button button = new Button();
 
 		button.Text = "Get Cumulative Sales";
@@ -118,8 +133,9 @@ public partial class DataGrid : ContentPage
 		
 		});
 
-
+	
 		vs.Add(button);
+		vs.Add(xlbutton);
 
 	}
 }

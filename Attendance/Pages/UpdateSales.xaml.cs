@@ -3,6 +3,7 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Layouts;
 using MySqlConnector;
+using TextAlignment = Microsoft.Maui.TextAlignment;
 
 namespace Attendance.Pages;
 
@@ -347,7 +348,9 @@ public partial class UpdateSales : ContentPage
 				                      string amount =   (price*qty_in_int) .ToString();
 
 				// string stemp = "INSERT INTO employee_sales2 values ('" + dt.emp_id2 + "','" + snostr + "','"+qty_in_int.ToString()+"','"+amount+ "',convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
-				string stemp = "INSERT INTO employee_sales2 values ('" + dt.emp_id2 + "'," + snostr + "," + qty_in_int.ToString() + "," + amount + ",convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
+				//string stemp = "INSERT INTO employee_sales2 values (emp_id,sno,pcs,amount,The_Time,The_date) ('" + dt.emp_id2 + "'," + snostr + "," + qty_in_int.ToString() + "," + amount + ",convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
+				string stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
+
 				commandsstrs.Add(stemp);	
 				
 

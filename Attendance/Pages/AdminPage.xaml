@@ -6,7 +6,7 @@
     <VerticalStackLayout x:Name="vs" Spacing="10">
         <Button  Clicked="Addempbtn" Text="Add an Employee" HorizontalOptions="Center"></Button>
         <Button Clicked="View_Employees" Text="View Employees" HorizontalOptions="Center"></Button>
-        <Button Clicked="DailyReports" Text="View  Reports" HorizontalOptions="Center"></Button>
+        <Button Clicked="DailyReports" Text="View All Products Report" HorizontalOptions="Center"></Button>
         <Button Clicked="Statereports" Text="View State Reports" HorizontalOptions="Center"></Button>
 
         <Button Clicked="UpdateStoreTarget" Text="Update Store Target" HorizontalOptions="Center"></Button>

@@ -10,25 +10,20 @@
             VerticalOptions="Center">
 
             <Image
-                Source="dotnet_bot.png"
+                Source="clayvedamp.jpg"
                 SemanticProperties.Description="Have a nice day!"
                 HeightRequest="200"
                 HorizontalOptions="Center" />
 
             <Label
-                Text="Hello, World!"
+                Text="Clayveda !"
                 SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
+                FontSize="18"
                 HorizontalOptions="Center"
                 x:Name="target_remaning"
                 />
 
-            <Label
-                Text="Welcome to .Attendance App"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
+      
 
             <Button
                 x:Name="CounterBtn"
@@ -38,9 +33,15 @@
                 HorizontalOptions="Center" />
             <Button
                 x:Name="UpdateRecentSales"
-                Text="View Your Recent Sales"
-                SemanticProperties.Hint="Updates or Deletes Recent Sales"
+                Text="Edit Sales"
+                SemanticProperties.Description="Updates or Deletes Recent Sales"
                 Clicked="UpdateRecentSales_Clicked"
+                HorizontalOptions="Center" />
+            <Button
+                x:Name="mysales"
+                Text="My Sales"
+                SemanticProperties.Description="View all of your sales here"
+                Clicked="ViewYourSalesClicked"
                 HorizontalOptions="Center" />
             <Button
                 x:Name="Clkin"
@@ -48,6 +49,8 @@
                 SemanticProperties.Hint="Updates the attendance"
                 Clicked="Clkin_Clicked"     
                 HorizontalOptions="Center" />
+
+     
 
 
         </VerticalStackLayout>
