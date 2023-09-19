@@ -191,7 +191,19 @@ public partial class ViewEmployees : ContentPage
 
 	public  void connect_to_db_and_get_employees()
 	{
-		string sql_conn_string = "Server=MYSQL8002.site4now.net;Database=db_a9daf3_vignaan;Uid=a9daf3_vignaan;Pwd=gyanu@18;SSL MODE = None;";
+		string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
+		var builder = new MySqlConnectionStringBuilder
+		{
+			Server = "clayveda.mysql.database.azure.com",
+			UserID = "vignaan",
+			Password = "gyanu@18",
+			Database = "clayveda",
+			TlsVersion = "TLS 1.2",
+			SslMode = MySqlSslMode.VerifyCA,
+			SslCa = sslcertificate_path,
+		};
+
+		string sql_conn_string = builder.ToString();
 
 		MySqlConnection conn = new MySqlConnection(sql_conn_string);
 

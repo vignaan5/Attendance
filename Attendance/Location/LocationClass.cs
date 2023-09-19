@@ -178,7 +178,19 @@ namespace Attendance.Location
 				_cancelTokenSource = new CancellationTokenSource();
 				Microsoft.Maui.Devices.Sensors.Location location = null;
 
-				await MainThread.InvokeOnMainThreadAsync(async() => {  location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token); });
+				await MainThread.InvokeOnMainThreadAsync(async() => {
+
+					try
+					{
+
+						location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+					}
+					catch(System.Exception ex) 
+					{ 
+					         send_notification_to_the_user("Error",ex.Message.ToString()); 
+					}
+				
+				});
 				
 
 				if (location != null)
@@ -188,7 +200,16 @@ namespace Attendance.Location
 
 					string str_adr = null;
 
-					await MainThread.InvokeOnMainThreadAsync(async () => { str_adr = await GetGeocodeReverseData(location.Latitude, location.Longitude); });
+					await MainThread.InvokeOnMainThreadAsync(async () => {
+						try
+						{
+							str_adr = await GetGeocodeReverseData(location.Latitude, location.Longitude);
+						}
+						catch(System.Exception ex)
+						{
+							send_notification_to_the_user("Error", ex.Message.ToString());
+						}
+					});
 				    
 					
 					
@@ -200,7 +221,7 @@ namespace Attendance.Location
 					sql_date_string += mySqlDate.Month.ToString() + '-';
 					sql_date_string += mySqlDate.Day.ToString();
 
-					string sql_address_query = "INSERT INTO employee_location VALUES  ('" + temp_emp_id + "',convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30')";
+					string sql_address_query = "INSERT INTO employee_location VALUES  ('" + temp_emp_id + "',convert_tz(now(),'+00:00','+05:30')";
 					foreach (string val in str_adr_arr)
 					{
 						sql_address_query += ",'" + val + "'";
@@ -218,7 +239,7 @@ namespace Attendance.Location
 			catch (System.Exception ex)
 			{
 
-				send_notification_to_the_user("Location is Turned Off", "Turnon the location to send data");
+				send_notification_to_the_user("Location is Turned Off", "Turn on  location and connect to the internet");
 			}
 			finally
 			{
@@ -231,19 +252,33 @@ namespace Attendance.Location
 
 		public async Task connect_to_db_and_upload_data(string query)
 		{
+		  	string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
+			var builder = new MySqlConnectionStringBuilder
+			{
+				Server = "clayveda.mysql.database.azure.com",
+				UserID = "vignaan",
+				Password = "gyanu@18",
+				Database = "clayveda",
+				TlsVersion = "TLS 1.2",
+				SslMode = MySqlSslMode.VerifyCA,
+				SslCa = sslcertificate_path,
+			};
+    
 
-			string conn = "Server=MYSQL8002.site4now.net;Database=db_a9daf3_vignaan;Uid=a9daf3_vignaan;Pwd=gyanu@18;SSL MODE = None;";
+			string conn = builder.ToString();
 			MySqlConnection mySqlConnection = new MySqlConnection(conn);
 			try
 			{
 				mySqlConnection.Open();
-
+				
 			}
 			catch (System.Exception ex)
 			{
 
 				mySqlConnection.Close();
-				send_notification_to_the_user("Exception Thrown", ex.Message.ToString());
+				send_notification_to_the_user("Failed to Connect to the server", ex.Message.ToString());
+
+				
 
 				return;
 			}

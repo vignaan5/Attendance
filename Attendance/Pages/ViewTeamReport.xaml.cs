@@ -5,16 +5,28 @@ namespace Attendance.Pages;
 public partial class ViewTeamReport : ContentPage
 {
 	Dictionary<string, Dictionary<string,List<Dictionary<string,string>>>> stores = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
- public	Dictionary<string, Dictionary<string, string>> state_report = new Dictionary<string, Dictionary<string, string>>();
+    public List<string> all_States  = new List<string>();
+	public	Dictionary<string, Dictionary<string, string>> state_report = new Dictionary<string, Dictionary<string, string>>();
 	public DataClass dt = new DataClass();
 	public ViewTeamReport()
 	{
 		InitializeComponent();
-		get_store_list();
+		get_state_list();
 
 		DateTime temp = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
 		dtstart.Date = temp.Date;
 	}
+
+	public async void get_state_list()
+	{
+		dt.start_connection();
+		all_States = dt.get_all_states_from_employees();
+		dt.close_connection();
+		all_States.Add("All");
+		stpicker.ItemsSource=all_States;
+	}
+
+
 
 	public async void get_store_list()
 	{
@@ -38,10 +50,39 @@ public partial class ViewTeamReport : ContentPage
 		return sql_string_start_day;
 	}
 
+	public string create_html_string_for_employee_daily_sale(string emp_id,string sql_date,string total_sales)
+	{
+		if (sql_date == "total")
+			return "";
+		List<List<string>> emp_sales = dt.get_employee_sales_between_two_dates(sql_date,sql_date,emp_id);
+		string html_sales_str = String.Format("<html> <body> <h1>{0} sold products on {1} </h1> <table border='1'><thead><tr bgcolor=#D3D3D3> <th>Particulars</th> <th>Mrp</th> <th> PCS sold </th> <th> Amount </th> <th> Date </th> </thead> <tbody> ",emp_id,sql_date);
+		for(int i=0;i<emp_sales.Count;i++)
+		{
+			html_sales_str += String.Format("<tr> <td>{0}  </td> <td> {1} </td>  <td> {2} </td> <td> {3} </td> </tr> ", emp_sales[i][8], emp_sales[i][10], emp_sales[i][2], emp_sales[i][3], emp_sales[i][5]);
+
+		}
+
+		html_sales_str += String.Format("</tbody> </table> <h3>total sales = {0} </h3> </body> </html>",total_sales);
+
+		string path = AppDomain.CurrentDomain.BaseDirectory;
+
+		var destination = System.IO.Path.Combine(path, emp_id+" "+sql_date+".html");
+#if WINDOWS
+
+			destination = @"C:\Users\Public\Documents\"+emp_id+" "+sql_date+".html";
+
+#endif
+
+		File.WriteAllText(destination, html_sales_str);
+
+
+		return destination;
+	}
+
 
 	public string create_html_string()
 	{
-		string htmlstring = "<html> <body> <table border='1'><tr bgcolor=#D3D3D3> <th>emp_id</th> ";
+		string htmlstring = "<html> <body> <table border='1'><thead><tr bgcolor=#D3D3D3> <th>emp_id</th> ";
 
 		int sum = 0;
 
@@ -52,23 +93,29 @@ public partial class ViewTeamReport : ContentPage
 			
 		}
 
-		htmlstring += "</tr>";
+		htmlstring += "</thead><tbody></tr>";
 
-
+		dt.start_connection();
 		foreach(var employee in state_report)
 		{
+
 			htmlstring += String.Format("<tr> <td> {0} </td>", employee.Key);
 			foreach(var date in employee.Value)
 			{
-				htmlstring += String.Format("<td>{0}</td>", date.Value);
+				  if(date.Value!="0")
+				htmlstring += String.Format("<td><a href='{0}'>{1} </a> </td>",create_html_string_for_employee_daily_sale(employee.Key,date.Key,date.Value) ,date.Value);
+				else htmlstring += String.Format("<td> {0} </td>",date.Value);
+
+
 			}
 
 			htmlstring += " </tr> ";
 		}
+		dt.close_connection();
 
 	
 
-		return htmlstring;
+		return htmlstring+=String.Format("</tbody></table>{0}</body></html>",dt.get_js2excel_script());
 	}
 
 
@@ -171,8 +218,43 @@ public partial class ViewTeamReport : ContentPage
 
 
 		vs.Clear();
+		VerticalStackLayout innervs = new VerticalStackLayout();
 
-		vs.Add(new WebView { Source = new HtmlWebViewSource { Html=html_str} });
+		Button xlbutton = new Button { Text = "Generate Excel", HorizontalOptions = LayoutOptions.Center };
+
+		xlbutton.Clicked += (async (object sender, EventArgs e) => {
+
+			string path = AppDomain.CurrentDomain.BaseDirectory;
+
+			var destination = System.IO.Path.Combine(path, "report.html");
+#if WINDOWS
+
+			destination = @"C:\Users\Public\Documents\report.html";
+
+#endif
+
+			File.WriteAllText(destination, html_str);
+#if WINDOWS
+			try
+			{
+				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe", destination);
+			}
+			catch (Exception ex)
+			{
+				DisplayAlert("Error", ex.Message.ToString(), "Ok");
+			}
+			return;
+
+#endif
+			await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
+
+
+		});
+
+		innervs.Add(new WebView { Source = new HtmlWebViewSource { Html = html_str } });
+		innervs.Add(xlbutton);
+
+		vs.Add(new ScrollView { Content=innervs });
 	
 	}
 

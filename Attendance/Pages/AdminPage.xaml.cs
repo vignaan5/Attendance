@@ -61,6 +61,18 @@ public partial class AdminPage : ContentPage
 	}
 
 
+	private void SearchEmployeeClicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new ViewEmployeeLocations());
+
+	}
+
+
+	private void EmployeeAttendance(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new EmployeeAttendance());
+	}
+
 
 	private void DailyReports(object sender,EventArgs e)
 	{

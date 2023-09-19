@@ -4,22 +4,23 @@
              x:Class="Attendance.Pages.LoginPage"
              Title="LoginPage">
     <ScrollView x:Name="sc" >
-    <VerticalStackLayout x:Name="vs" >
-            <Frame VerticalOptions="FillAndExpand" >
-        <Image Source="vignaan.png" HorizontalOptions="Center" VerticalOptions="Center" x:Name="img" ></Image>
-            </Frame>
-            <Frame VerticalOptions="FillAndExpand">
+    <VerticalStackLayout x:Name="vs" MaximumHeightRequest="800" MaximumWidthRequest="400" >
+            
+            <Image Source="vignaan.png" HorizontalOptions="Center" VerticalOptions="Center" x:Name="img" ></Image>
+
+           
             <Entry x:Name="usrname"  Placeholder="Enter Username" VerticalOptions="Center" HorizontalOptions="Center" >
                 
                 
             </Entry>
-        </Frame>
-        <Frame VerticalOptions="FillAndExpand">
+        
+   
             <Entry x:Name="passcode" Placeholder="Enter Password" IsPassword="True" HorizontalOptions="Center" VerticalOptions="Center"></Entry>
-        </Frame>
-
+       
+             
         <Button Clicked="Login_to_app"  x:Name="login_btn"   HorizontalOptions="Center" VerticalOptions="End" Text="Login" BackgroundColor="Orange"></Button>
-        <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True" BackgroundColor="White"></ActivityIndicator>
+            
+            <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True" BackgroundColor="White"></ActivityIndicator>
     </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

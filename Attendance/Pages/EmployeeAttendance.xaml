@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.EmployeeAttendance"
+             Title="EmployeeAttendance">
+    <VerticalStackLayout x:Name="vs">
+        <DatePicker x:Name="startDate" SemanticProperties.Description="Choose Start Date" ></DatePicker>
+        <DatePicker x:Name=" endDate" SemanticProperties.Description="Choose End Date"></DatePicker>
+        <Button Text="Get Attendance Report" Clicked="Button_Clicked"></Button>
+        <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+    </VerticalStackLayout>
+</ContentPage>

@@ -16,10 +16,13 @@ public partial class LogoutPage : ContentPage
 		bool ps = SecureStorage.Remove("password");
 		bool un = SecureStorage.Remove("username");
 		bool ad = SecureStorage.Remove("admin");
-		 if(DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning()) 
+#if ANDROID
+		if(DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning()) 
 		     DependencyService.Resolve<IAndroid>().StopMyService();
-		
+#endif   
 		App.Current.MainPage= new MainPage();
 		App.Current.MainPage=new LoginPage();
 	}
+
+	
 }

@@ -14,9 +14,20 @@ public partial class UpdateSales : ContentPage
 	public List<string> picker_list = new List<string>();
 	public HashSet<int> hsh = new HashSet<int>();
 	public int total_price=0;
+	
 	public UpdateSales()
 	{
 		InitializeComponent();
+		 DatePicker tdp = new DatePicker();
+	    List<string> dp_items = new List<string>();
+
+		dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+		DateTime dt_temp = tdp.Date;
+		dt_temp=dt_temp.AddDays(-1);
+		tdp.Date = dt_temp;
+		dp_items.Add( tdp.Date.ToString("yyyy-MM-dd"));
+	    dpicker.ItemsSource = dp_items;
+		dpicker.SelectedIndex = 0;
 		exc_tmp();
 
 	}
@@ -349,7 +360,16 @@ public partial class UpdateSales : ContentPage
 
 				// string stemp = "INSERT INTO employee_sales2 values ('" + dt.emp_id2 + "','" + snostr + "','"+qty_in_int.ToString()+"','"+amount+ "',convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
 				//string stemp = "INSERT INTO employee_sales2 values (emp_id,sno,pcs,amount,The_Time,The_date) ('" + dt.emp_id2 + "'," + snostr + "," + qty_in_int.ToString() + "," + amount + ",convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
-				string stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
+				string stemp = "";
+				if (dpicker.SelectedIndex == 0)
+				{
+					 stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'));", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
+				}
+				else if(dpicker.SelectedIndex==1)
+				{
+					stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},'{4}','{5}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[1]);
+
+				}
 
 				commandsstrs.Add(stemp);	
 				

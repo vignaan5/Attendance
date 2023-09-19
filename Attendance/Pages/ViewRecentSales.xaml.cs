@@ -30,7 +30,22 @@ public partial class ViewRecentSales : ContentPage
 			DatePicker temp= new DatePicker();
 			 today=temp.Date.Year.ToString()+"-"+temp.Date.Month.ToString()+"-"+temp.Date.Day.ToString();
 			recent_sales = dt.get_employee_recent_sales_on_the_day(today);
-			dt.close_connection();    
+			DateTime yesterday_date= temp.Date;
+			yesterday_date= yesterday_date.AddDays(-1);
+			var list2= new List<Dictionary<string,string>>();
+			list2 = dt.get_employee_recent_sales_on_the_day(yesterday_date.Date.ToString("yyyy-MM-dd"));
+			
+			if (recent_sales!=null &&  recent_sales.Count>0 && list2 != null && list2.Count>0)
+			{
+				recent_sales.AddRange(list2);
+			}
+			else if((recent_sales==null || recent_sales.Count==0) && list2 != null && list2.Count>0) 
+			{ 
+			  recent_sales=list2;
+			
+			}
+			dt.close_connection();
+		
 		});
 		 
 		if(recent_sales==null || recent_sales.Count<=0)
@@ -99,7 +114,8 @@ public partial class ViewRecentSales : ContentPage
 				 string[]	sold_date1 = product_details.Value.Split(' ');
 					string[] sold_date2 = sold_date1[0].Split('/');
 
-					sold_date = sold_date2[2] + "-" + sold_date2[0] + "-" + sold_date2[1];
+					//sold_date = sold_date2[2] + "-" + sold_date2[0] + "-" + sold_date2[1];
+					sold_date =product_details.Value.Substring(6,4)+"-"+product_details.Value.Substring(3,2) + "-" +product_details.Value.Substring(0,2);
 					
 				}
 				if(product_details.Key=="order_id")

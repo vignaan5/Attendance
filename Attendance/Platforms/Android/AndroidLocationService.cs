@@ -19,14 +19,16 @@ using Attendance.Location;
 using static Android.Icu.Text.CaseMap;
 using Org;
 using System.Security.Policy;
-
+using Attendance.Data;
+using MySqlConnector;
 
 namespace The_Attendance.Platforms
 {
 	[Service]
 	public class AndroidLocationService : Service,Interfaces.IAndroid
 	{
-		
+
+		public DataClass dt = new DataClass();
 
 		public static bool is_foreground_service_running=false ;
 		public override IBinder OnBind(Intent intent)
@@ -60,7 +62,8 @@ namespace The_Attendance.Platforms
 				}
 			});
 
-
+			Task.Run(() => { insert_clock_to_db(); });
+			
 
 			NotificationManager manager = (NotificationManager)Android.App.Application.Context.GetSystemService(NotificationService);
 
@@ -117,6 +120,8 @@ namespace The_Attendance.Platforms
 
 		public void StopMyService()
 		{
+			Task.Run(() => { update_clock_out(); });
+			
 			var intent = new Intent(Android.App.Application.Context,typeof(AndroidLocationService));
 			LocationClass templ = new LocationClass();
 			templ.send_notification_to_the_user("Clocked Out", "You have successfully Clocked out");
@@ -152,7 +157,46 @@ namespace The_Attendance.Platforms
 
 		
 
+		public async void insert_clock_to_db()
+		{
+			await dt.get_emp_id();
+			dt.start_connection();
+			string cmd = string.Format("insert into clock_in_and_out values ('{0}',convert_tz(now(),'+00:00','+05:30'),null);",dt.emp_id2);
+			MySqlCommand mySqlCommand = new MySqlCommand(cmd,dt.connection);
 
+			try
+			{
+				mySqlCommand.ExecuteNonQuery();
+			}
+			catch(Exception ex) 
+			{ 
+			
+			}
+			dt.close_connection();
+			return;
+		}
+
+
+		public async void update_clock_out()
+		{
+			await dt.get_emp_id();
+			string sql_cmd = string.Format("update clock_in_and_out set clock_out=convert_tz(now(),'+00:00','+05:30') where date(clock_in)=date(convert_tz(now(),'+00:00','+05:30')) and  clock_out is null and emp_id='{0}';", dt.emp_id2);
+		
+			dt.start_connection();
+			MySqlCommand cmd = new MySqlCommand(sql_cmd,dt.connection);
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			dt.close_connection();
+
+			return;
+		}
 
 
 

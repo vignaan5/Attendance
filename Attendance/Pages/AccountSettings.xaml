@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.AccountSettings"
+             Title="AccountSettings">
+    <VerticalStackLayout>
+        <Label 
+            Text="Welcome to Account Settings!"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+         
+        <Button Text="Change Password" x:Name="changepassbtn" HorizontalOptions="Center" VerticalOptions="Center"></Button>
+        <Entry IsVisible="False" IsEnabled="False" x:Name="currentpasswordentry" HorizontalOptions="Center" VerticalOptions="Center" Placeholder="Enter Current Password"></Entry>
+        <Entry IsVisible="False" IsEnabled="False" x:Name="new_password_entry" HorizontalOptions="Center" VerticalOptions="Center" Placeholder="Enter New Password"></Entry>
+        <Entry IsVisible="False" IsEnabled="False" x:Name="confirm_password" HorizontalOptions="Center" VerticalOptions="Center" Placeholder="Confirm Password"></Entry>
+        <Button Text="Update Password" IsVisible="False" IsEnabled="False" x:Name="updatepassbtn" HorizontalOptions="Center" VerticalOptions="Center"></Button>
+
+
+    </VerticalStackLayout>
+</ContentPage>

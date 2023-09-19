@@ -1,8 +1,11 @@
 ﻿
+
+using Microsoft.Maui.Platform;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,13 +25,41 @@ namespace Attendance.Data
 		 public MySqlConnection connection;
 		public DataClass()
 		{
+
+			string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
+			var builder = new MySqlConnectionStringBuilder
+			{
+				Server = "clayveda.mysql.database.azure.com",
+				UserID = "vignaan",
+				Password = "gyanu@18",
+				Database = "clayveda",
+				TlsVersion = "TLS 1.2",
+				SslMode = MySqlSslMode.VerifyCA,
+				SslCa = sslcertificate_path,
+			};
+
+			
+		   
 			this.connstring = "Server=MYSQL8002.site4now.net;Database=db_a9daf3_vignaan;Uid=a9daf3_vignaan;Pwd=gyanu@18;SSL MODE = None;";
-		    this.is_conn_open = false;
+			this.connstring = builder.ToString();
+			this.is_conn_open = false;
 		}
 
 		public DataClass(string emp_id)
 		{
-			this.connstring = "Server=MYSQL8002.site4now.net;Database=db_a9daf3_vignaan;Uid=a9daf3_vignaan;Pwd=gyanu@18;SSL MODE = None;";
+			string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
+			var builder = new MySqlConnectionStringBuilder
+			{
+				Server = "clayveda.mysql.database.azure.com",
+				UserID = "vignaan",
+				Password = "gyanu@18",
+				Database = "clayveda",
+				TlsVersion = "TLS 1.2",
+				SslMode = MySqlSslMode.VerifyCA,
+				SslCa = sslcertificate_path,
+			};
+
+			this.connstring = builder.ToString();
 			this.is_conn_open = false;
 			get_emp_id();
 
@@ -96,7 +127,61 @@ namespace Attendance.Data
 
 
 
-	    
+		public List<List<string>> get_employee_sales_between_two_dates(string start_date, string end_date,string emp_id)
+		{
+			if (!is_conn_open)
+				return null;
+
+			List<List<string>> result = new List<List<string>>();
+
+
+			string sql_string = String.Format("select * from employee_sales2 left join products on employee_sales2.sno = products.sno where The_date between '{0}' and '{1}'  and emp_id = '{2}';", start_date, end_date, emp_id);
+			MySqlCommand cmd = new MySqlCommand(sql_string, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+			catch (Exception ex) { }
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				List<string> emp_sales_between_dates = new List<string>();
+
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					try
+					{
+						emp_sales_between_dates.Add(reader[i].ToString());
+					}
+					catch (Exception ex)
+					{
+						emp_sales_between_dates.Add("");
+					}
+				}
+
+				result.Add(emp_sales_between_dates);
+
+			}
+			reader.Close();
+			return result;
+
+		}
+
+
+
+
 		public List<string> get_all_employee_id_in_a_specific_state(string state)
 		{
 			if (!is_conn_open)
@@ -105,6 +190,12 @@ namespace Attendance.Data
 			List<string> emp_id = new List<string>();
 
 			string sql_q = string.Format("select emp_id from employee where state='{0}';", state);
+
+			   if(state=="All")
+			{
+				sql_q = string.Format("select emp_id from employee ;");
+			}
+
 
 			MySqlCommand cmd = new MySqlCommand(sql_q, connection);
 
@@ -147,6 +238,12 @@ namespace Attendance.Data
 
 			int sum = 0;
 			string mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.state='{2}';",sql_date,temp_emp_id,state);
+
+			if(state=="All")
+			{
+				mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}';", sql_date, temp_emp_id);
+			}
+
 
 			MySqlCommand cmd = null;
 
@@ -206,13 +303,82 @@ namespace Attendance.Data
 
 
 
+		public List<List<string>> get_employee_sales_on_a_specific_day(string sql_date,string temp_emp_id)
+		{
+			if (!is_conn_open)
+				return null;
+
+			int sum = 0;
+			string mysql_string = String.Format("select * from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' ;", sql_date, temp_emp_id);
+
+			MySqlCommand cmd = null;
+
+			try
+			{
+				cmd = new MySqlCommand(mysql_string, connection);
+			}
+			catch (Exception ex)
+			{
+
+			}
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+			try
+			{
+				reader = cmd.ExecuteReader();
+
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<List<string>> employee_sales_on_a_specific_day = new List<List<string>>();
+
+			while (reader!=null && !reader.IsClosed && reader.Read())
+			{
+				List<string> temp = new List<string>();
+
+				for(int i=0;i<reader.FieldCount;i++)
+				{
+					try
+					{
+						temp.Add(reader[i].ToString());
+					}
+					catch(Exception ex)
+					{
+
+					}
+				}
+
+				employee_sales_on_a_specific_day.Add(temp);
+
+
+			}
+
+
+			reader.Close();
+			return employee_sales_on_a_specific_day;
+
+		}
+
+
+
 
 		public List<List<string>> get_rows(string sql_date,ref int sum)
 		{
 			if (!is_conn_open)
 				return null;
 
-			string sql_cmd = string.Format("select * from products2 left join employee_sales2   on products2.Sno = employee_sales2.sno and The_date = '{0}' ;  ",sql_date);
+			string sql_cmd = string.Format("select p.*,ifnull( sales.pcs,0) as pcs,ifnull(sales.amount,0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join employee_sales2 e on e.sno=p.sno where The_date ='{0}'  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", sql_date);
 
 			   MySqlCommand cmd = new MySqlCommand(sql_cmd,connection);
 
@@ -242,48 +408,33 @@ namespace Attendance.Data
 			{ 
 			   List<string> row = new List<string>();
 
-				row.Add(mySqlDataReader[0].ToString());
-				row.Add(mySqlDataReader[1].ToString());
-				row.Add(mySqlDataReader[2].ToString());
-				row.Add(mySqlDataReader[3].ToString());
-
-				if (mySqlDataReader[6]==null)
-				{
-					row.Add("0");
-					
-				}
-				else
-				{
-					  if(mySqlDataReader[6].ToString()=="")
-						row.Add("0");
-
-					else row.Add(mySqlDataReader[6].ToString());
-				}
-
-				if (mySqlDataReader[7] == null)
-				{
-					row.Add("0");
-				}
-				else
-				{
-					if (mySqlDataReader[6].ToString() == "")
-						row.Add("0");
-
-					else
+			
+				   for(int i = 0; i < mySqlDataReader.FieldCount;i++)
+				 {
+				     try
 					{
-						row.Add(mySqlDataReader[7].ToString());
-						try
+						if (i == 5 || i == 4)
 						{
-							string amt = mySqlDataReader[7].ToString();
-							sum += Convert.ToInt32(amt);
+							int temp = Convert.ToInt32(mySqlDataReader[i].ToString());
 						}
-						catch { }
+							row.Add(mySqlDataReader[i].ToString());
+						if(i==5)
+						{
+							sum += Convert.ToInt32(mySqlDataReader[i].ToString());
+						}
+						
 					}
-				}
+					catch
+					{
+						row.Add("0");
+					}
+			     }
 
+				
+			
 				rows.Add(row);
 			}
-
+			mySqlDataReader.Close();
 			return rows;
 		}
 
@@ -818,6 +969,28 @@ namespace Attendance.Data
 
 		}
 
+		public int update_account_password(string current_password,string new_password)
+		{
+			if (!is_conn_open)
+				return -1;
+
+			string update_password_query = String.Format("update employee set password='{0}' where emp_id='{1}' and password='{2}' ",new_password,emp_id2,current_password);
+			MySqlCommand cmd  = new MySqlCommand(update_password_query,connection);
+
+			int rows_affected = 0;
+
+			try
+			{
+			 rows_affected=	cmd.ExecuteNonQuery();
+			}
+			catch(Exception e) { }
+
+			return rows_affected;
+
+		}
+
+
+
 
 
 		public List<Dictionary<string,string>> get_employee_recent_sales_on_the_day(string today)
@@ -881,17 +1054,258 @@ namespace Attendance.Data
 				items.Add(item);
 
 			}
-		
 
 
+			reader.Close();
 			return items;
 		}
+
+
+		public List<string> get_all_states_from_employees()
+		{
+			if (!is_conn_open)
+				return null;
+
+			string states_query = String.Format("select distinct state  from employee;");
+
+			MySqlCommand cmd = new MySqlCommand(states_query, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+
+		    catch(Exception ex) 
+			{ 
+			
+			
+			}
+
+			List<string> states = new List<string>();
+
+			while(!reader.IsClosed && reader.Read())
+			{
+				try
+				{
+					states.Add(reader[0].ToString());
+				}
+				catch(Exception ex)
+				{
+
+				}
+			}
+
+			return states;
+		}
+
+
+
+
 
 
 		public string date_picker_to_sql_date(DatePicker dp)
 		{
 			return dp.Date.Year.ToString() + "-" + dp.Date.Month.ToString() + "-" + dp.Date.Day.ToString();
 		}
+
+		public  List<string> employee_ids_who_were_present_on_specific_day(string sql_date)
+		{
+			if (!is_conn_open)
+				return null;
+
+		 string attendance_query = String.Format("select distinct emp_id,date_format(the_date_and_time,'%d-%m-%y')  from employee_location where date(the_date_and_time)='{0}' and time(the_date_and_time) between '00:00:00' and '23:59:59';",sql_date);
+
+			MySqlCommand cmd = new MySqlCommand(attendance_query, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex) 
+			{ 
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			List<string> emp_ids = new List<string>();
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				try
+				{
+					emp_ids.Add(reader[0].ToString());
+				}
+				catch(Exception ex)
+				{
+
+				}
+		    }
+
+			reader.Close();
+			return emp_ids;
+
+		}
+
+		public string get_version_no()
+		{
+			if (!is_conn_open)
+				return "";
+
+			string sql_query = "select * from version;";
+			MySqlCommand version_cmd = new MySqlCommand(sql_query, connection);	
+
+			try
+			{
+			 return	version_cmd.ExecuteScalar().ToString();
+			}
+			catch( Exception ex) 
+			{
+				
+			}
+
+			return "";
+
+		}
+
+
+
+		public List<List<string>> get_employee_location_details_on_a_specific_day(string employee_id,string sql_date)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string sql_location_query = String.Format("select * from employee_location where date(the_date_and_time) = '{0}' and emp_id='{1}' ;",sql_date,employee_id);
+
+			MySqlCommand cmd = new MySqlCommand(sql_location_query, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			
+
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			List<List<string>> emp_locations = new List<List<string>>();
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				List<string> emp_location = new List<string>();
+				for(int i=0;i<reader.FieldCount;i++) 
+				{ 
+				    
+					try
+					{
+						emp_location.Add(reader[i].ToString());
+					}
+					catch(Exception ex)
+					{
+						emp_location.Add("No Data");
+					}
+
+				}
+
+				emp_locations.Add(emp_location);
+			}
+
+			return emp_locations;
+
+		}
+
+
+
+
+		public List<List<string>> get_all_employee_details_in_a_list()
+		{
+			if (!is_conn_open)
+				return null;
+
+			string all_emp_querey = String.Format("select * from employee");
+
+			MySqlCommand mySqlCommand = new MySqlCommand(all_emp_querey, connection);	
+
+			try
+			{
+				mySqlCommand.ExecuteNonQuery();
+			}
+			catch(Exception ex) { }
+
+			MySqlDataReader mySqlDataReader = null;
+
+			try
+			{
+				mySqlDataReader = mySqlCommand.ExecuteReader();
+			}
+			catch(Exception ex) { }
+
+			List<List<string>> rows = new List<List<string>>();
+
+			while(!mySqlDataReader.IsClosed && mySqlDataReader != null && mySqlDataReader.Read() )
+			{
+				List<string> emp = new List<string>();
+
+				for(int i=0;i<mySqlDataReader.FieldCount;i++) 
+				{ 
+				   try
+					{
+						emp.Add(mySqlDataReader[i].ToString());
+					}
+					catch (Exception ex) 
+					{
+						emp.Add("No data");				
+					}
+				}
+
+				rows.Add(emp);
+			}
+
+			return rows;
+
+		}
+
+
+		 
+
+
+
 
 
 

@@ -24,9 +24,7 @@ public partial class DataGrid : ContentPage
 		string[] tempd = d.Split(' ');
 		string[] days = tempd[0].Split("/");
 
-		string year = days[2];
-		string month = days[1];
-		string day = days[0];
+		
 
 		string sql_string_date = "" + dpicker.Date.Year.ToString() + "-" + dpicker.Date.Month.ToString() + "-" + dpicker.Date.Day.ToString();
 		cpage.Title= sql_string_date+"'s Daily Report";
@@ -104,9 +102,25 @@ public partial class DataGrid : ContentPage
 			string path = AppDomain.CurrentDomain.BaseDirectory;
 
 			var destination = System.IO.Path.Combine(path, "report.html");
+#if WINDOWS
+        
+   destination= @"C:\Users\Public\Documents\report.html";
+            
+#endif
 
 			File.WriteAllText(destination, create_html_string());
+#if WINDOWS
+              try
+			  {
+             System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",destination);
+                 }
+				 catch(Exception ex)
+				 {
+				 DisplayAlert("Error", ex.Message.ToString(),"Ok");
+				 }
+			 return;
 
+#endif
 			await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
 
 

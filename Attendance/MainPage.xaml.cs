@@ -53,12 +53,12 @@ public partial class MainPage : ContentPage
 
 	private async void OnCounterClicked(object sender, EventArgs e)
 	{
-#if ANDROID
+
 
 		Navigation.PushAsync(new Pages.UpdateSales());
 
 
-#endif
+
 	}
 
 	private void Clkin_Clicked(object sender, EventArgs e)

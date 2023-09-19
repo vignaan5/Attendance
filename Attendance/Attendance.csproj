@@ -61,6 +61,7 @@
 	  <None Remove="Resources\AppIcon\clayveda.svg" />
 	  <None Remove="Resources\Images\clayvedamp.jpg" />
 	  <None Remove="Resources\Images\vignaan.png" />
+	  <None Remove="Resources\Raw\DigiCertGlobalRootG2.crt.pem" />
 	  <None Remove="Resources\Raw\HTMLPage1.html" />
 	  <None Remove="Resources\Splash\splashclayveda.svg" />
 	</ItemGroup>
@@ -71,6 +72,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Pages\AccountSettings.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\AddEmployee.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -83,6 +87,9 @@
 	  <MauiXaml Update="Pages\DataGrid.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\EmployeeAttendance.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\EmployeePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -93,6 +100,15 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Test.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\UpdateAvailable.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\UserProfile.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ViewEmployeeLocations.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ViewRecentSales.xaml">

@@ -49,6 +49,12 @@ namespace Attendance
 						},
 						new ShellContent
 						{
+							Title = "AccountSettings",
+							Route = nameof(Pages.AccountSettings),
+							ContentTemplate = new DataTemplate(typeof(AccountSettings))
+						},
+						new ShellContent
+						{
 							Title = "Logout",
 							Route = nameof(Pages.LogoutPage),
 							ContentTemplate = new DataTemplate(typeof(LogoutPage))
@@ -84,8 +90,13 @@ namespace Attendance
 							Route = nameof(MainPage),
 							ContentTemplate = new DataTemplate(typeof(MainPage))
 						},
+							new ShellContent
+						{
+							Title = "AccountSettings",
+							Route = nameof(Pages.AccountSettings),
+							ContentTemplate = new DataTemplate(typeof(AccountSettings))
+						},
 
-						
 						new ShellContent
 						{
 							Title = "Logout",

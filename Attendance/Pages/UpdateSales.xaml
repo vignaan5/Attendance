@@ -7,14 +7,20 @@
     <VerticalStackLayout x:Name="vs">
         <ActivityIndicator x:Name="actind" IsVisible="True" IsRunning="True" IsEnabled="True"></ActivityIndicator>
         <Label
-           
+            
             Text="You can update your sales here update your sales !"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-
+            <HorizontalStackLayout Spacing="10">
             <Button Text="Check And Tally Items" Clicked="Button_Clicked_1" HorizontalOptions="Start" VerticalOptions="Start" IsVisible="False" IsEnabled="False" x:Name="uitmbtn"></Button>
-            <Button x:Name="additm" Text="Add Item" HorizontalOptions="Center" Clicked="Button_Clicked" IsVisible="False" IsEnabled="False"></Button>
-    
+                <Picker Title="Select a Date (yyyy-mm-dd):" x:Name="dpicker">
+                    
+                   
+                    
+                </Picker>       
+    </HorizontalStackLayout>
+        <Button x:Name="additm" Text="Add Item" HorizontalOptions="Center" Clicked="Button_Clicked" IsVisible="False" IsEnabled="False"></Button>
+             
     </VerticalStackLayout>
 
       

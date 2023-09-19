@@ -11,7 +11,19 @@ public partial class AddEmployee : ContentPage
 
 	public  bool is_unique()
 	{
-		string sql_conn_string = "Server=MYSQL8002.site4now.net;Database=db_a9daf3_vignaan;Uid=a9daf3_vignaan;Pwd=gyanu@18;SSL MODE = None;";
+		string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
+		var builder = new MySqlConnectionStringBuilder
+		{
+			Server = "clayveda.mysql.database.azure.com",
+			UserID = "vignaan",
+			Password = "gyanu@18",
+			Database = "clayveda",
+			TlsVersion = "TLS 1.2",
+			SslMode = MySqlSslMode.VerifyCA,
+			SslCa = sslcertificate_path,
+		};
+
+		string sql_conn_string = builder.ToString();
 
 		MySqlConnection conn = new MySqlConnection(sql_conn_string);
 
@@ -68,8 +80,19 @@ public partial class AddEmployee : ContentPage
 
 	public void add_employee_to_db()
 	{
+		string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
+		var builder = new MySqlConnectionStringBuilder
+		{
+			Server = "clayveda.mysql.database.azure.com",
+			UserID = "vignaan",
+			Password = "gyanu@18",
+			Database = "clayveda",
+			TlsVersion = "TLS 1.2",
+			SslMode = MySqlSslMode.VerifyCA,
+			SslCa = sslcertificate_path,
+		};
 
-		string sql_conn_string = "Server=MYSQL8002.site4now.net;Database=db_a9daf3_vignaan;Uid=a9daf3_vignaan;Pwd=gyanu@18;SSL MODE = None;";
+		string sql_conn_string = builder.ToString();
 
 		MySqlConnection conn = new MySqlConnection(sql_conn_string);
 
