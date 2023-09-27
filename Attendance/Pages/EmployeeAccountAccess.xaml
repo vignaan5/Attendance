@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.EmployeeAccountAccess"
+             Title="EmployeeAccountAccess" BackgroundImageSource="whiteback.jpg">
+    <VerticalStackLayout x:Name="vs">
+        <VerticalStackLayout x:Name="searchvs" HorizontalOptions="Center">
+            <SearchBar x:Name="search_emp" Placeholder="Enter employee Name or ID" TextChanged="search_emp_TextChanged"></SearchBar>
+            <ListView x:Name="emplist" ItemSelected="emplis_ItemSelected" IsVisible="False"></ListView>
+        </VerticalStackLayout>
+
+
+    </VerticalStackLayout>
+</ContentPage>

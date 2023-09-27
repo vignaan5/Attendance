@@ -4,7 +4,10 @@ namespace Attendance.Pages;
 
 public partial class ViewEmployeeLocations : ContentPage
 {
-	public DataClass dt = new DataClass();
+	public string emp_id { get; set; }
+	DataClass dt = new DataClass();
+	public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
+
 	List<List<string>> emp_locations = new List<List<string>>();	
 	public ViewEmployeeLocations()
 	{
@@ -17,13 +20,20 @@ public partial class ViewEmployeeLocations : ContentPage
 	  await	Task.Run(() => {
 
 		  dt.start_connection();
-		 emp_locations= dt.get_employee_location_details_on_a_specific_day(emp_id_entry.Text.ToString().Trim(),dtpicker.Date.ToString("yyyy-MM-dd"));
+		 emp_locations= dt.get_employee_location_details_on_a_specific_day(emp_id,dtpicker.Date.ToString("yyyy-MM-dd"));
 		  dt.close_connection();
 		
 		});
 
 		
 		vs.Clear();
+
+		if(emp_locations.Count==0)
+		{
+			DisplayAlert("Nothing Found !", "No Location Details Found for this employee", "Ok");
+			return;
+		}
+
 		vs.MinimumWidthRequest = 500;
 		vs.HorizontalOptions= LayoutOptions.Center;
 
@@ -168,6 +178,61 @@ public partial class ViewEmployeeLocations : ContentPage
 
 	}
 
+	private void emplis_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+	{
+		this.emp_id = (string)emplist.SelectedItem;
+		this.emp_id= this.emp_id.Split(' ')[0];
+		searchvs.Clear();
+		
+		getlcnbtn.IsVisible=true;
+		getlcnbtn.IsEnabled = true;
+	}
 
-	
+	private void search_emp_TextChanged(object sender, TextChangedEventArgs e)
+	{
+		if (search_emp.Text.Trim() == "")
+		{
+
+			emplist.ItemsSource = nothing_found_temp;
+			return;
+		}
+
+		Task.Run(async () => {
+
+			while (dt.is_conn_open)
+			{
+
+			}
+
+			dt.start_connection();
+			List<List<string>> result = dt.search_employee_in_db(search_emp.Text.Trim(), search_emp.Text.Trim(), search_emp.Text.Trim());
+			dt.close_connection();
+
+			MainThread.InvokeOnMainThreadAsync(() => {
+				List<string> temp = new List<string>();
+				foreach (List<string> list in result)
+				{
+					temp.Add(list[0] + " " + list[1] + " " + list[2]);
+
+				}
+				if (temp.Count == 0)
+				{
+					emplist.ItemsSource = nothing_found_temp;
+				}
+				else
+				{
+					emplist.ItemsSource = temp;
+				}
+
+				emplist.IsVisible = true;
+			});
+
+
+		});
+
+
+
+
+	}
+
 }

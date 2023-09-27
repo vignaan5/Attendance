@@ -59,8 +59,22 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\AppIcon\clayveda.svg" />
+	  <None Remove="Resources\Images\addemployee.png" />
+	  <None Remove="Resources\Images\back.jpg" />
+	  <None Remove="Resources\Images\clayveda.png" />
 	  <None Remove="Resources\Images\clayvedamp.jpg" />
+	  <None Remove="Resources\Images\clockin1.png" />
+	  <None Remove="Resources\Images\editsales.png" />
+	  <None Remove="Resources\Images\employeereports.png" />
+	  <None Remove="Resources\Images\insertsales.png" />
+	  <None Remove="Resources\Images\managemployee.png" />
+	  <None Remove="Resources\Images\mysales.png" />
+	  <None Remove="Resources\Images\overridesales1.png" />
+	  <None Remove="Resources\Images\updatesales.png" />
+	  <None Remove="Resources\Images\viewemployees.png" />
 	  <None Remove="Resources\Images\vignaan.png" />
+	  <None Remove="Resources\Images\vignaan2.png" />
+	  <None Remove="Resources\Images\whiteback.jpg" />
 	  <None Remove="Resources\Raw\DigiCertGlobalRootG2.crt.pem" />
 	  <None Remove="Resources\Raw\HTMLPage1.html" />
 	  <None Remove="Resources\Splash\splashclayveda.svg" />
@@ -81,10 +95,16 @@
 	  <MauiXaml Update="Pages\AdminPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\ApplyLeave.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\DailyReport.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\DataGrid.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\EmployeeAccountAccess.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\EmployeeAttendance.xaml">
@@ -93,10 +113,25 @@
 	  <MauiXaml Update="Pages\EmployeePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\LeaveRequests.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\LogoutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ManageEmployee.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\OverrideEmployeeSales.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ReportsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\SupervisorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\Test.xaml">

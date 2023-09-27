@@ -5,13 +5,22 @@ namespace Attendance.Pages;
 
 public partial class EmployeeAttendance : ContentPage
 {
+	string state = String.Empty;
 	DataClass dt = new DataClass();
 	public List<List<string>> all_employee_id=new List<List<string>>();
-	public Dictionary<string, List<string>> emp_attendance = new Dictionary<string, List<string>>(); 
+	public Dictionary<string, List<string>> emp_attendance = new Dictionary<string, List<string>>();
+	public Dictionary<string, List<string>> emp_week_off = new Dictionary<string, List<string>>();
+
 	public EmployeeAttendance()
 	{
 		InitializeComponent();
 		
+	}
+
+	public EmployeeAttendance(string state)
+	{
+		InitializeComponent();
+		this.state=state;
 	}
 
 	public string create_html_string(DateTime start,DateTime end)
@@ -21,7 +30,7 @@ public partial class EmployeeAttendance : ContentPage
 
 		while(startdate.Date<=end.Date)
 		{
-			htmlstring += String.Format("<th>{0}</th>", startdate.Date.ToString("dd-MM-yyyy"));
+			htmlstring += String.Format("<th>{0}</th>", startdate.Date.ToString("dd-MM-yyyy")+" "+startdate.Date.DayOfWeek.ToString());
 		    startdate=startdate.AddDays(1);
 		}
 
@@ -40,8 +49,22 @@ public partial class EmployeeAttendance : ContentPage
 			{
 				if (emp_attendance[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
 				{
-					htmlstring += "<td bgcolor=#90EE90> present </td>";
+					if (emp_week_off[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
+					{
+						htmlstring += "<td bgcolor=#ADD8E6> present on Weekoffday </td>";
+
+					}
+					else
+					{
+						htmlstring += "<td bgcolor=#90EE90> present </td>";
+					}
+					
 					total_working_days++;
+				}
+				else if(emp_week_off[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
+				{
+					htmlstring += "<td bgcolor=#FFFFED> Weekoff </td>";
+
 				}
 				else
 				{
@@ -73,6 +96,16 @@ public partial class EmployeeAttendance : ContentPage
 		dt.close_connection();
 	}
 
+	public void get_employee_list_and_create_attendance_table(string state)
+	{
+		dt.start_connection();
+		all_employee_id = dt.get_all_employee_details_in_a_list_of_a_spefic_state(state);
+		dt.close_connection();
+	}
+
+
+
+
 	private async void Button_Clicked(object sender, EventArgs e)
 	{
 		actind.IsVisible = true;
@@ -100,8 +133,16 @@ public partial class EmployeeAttendance : ContentPage
 
 		await Task.Run(async () =>
 		{
-			 get_employee_list_and_create_attendance_table();
-			dt.start_connection();
+			if (this.state == String.Empty)
+			{
+
+				get_employee_list_and_create_attendance_table();
+			}
+			else
+			{
+				get_employee_list_and_create_attendance_table(this.state);
+			}
+				dt.start_connection();
 
 
 
@@ -126,6 +167,12 @@ public partial class EmployeeAttendance : ContentPage
 				{
 				}
 
+			  string day_name =	startdt.Date.DayOfWeek.ToString();
+
+
+
+
+				emp_week_off[daytoyear] = dt.employee_ids_who_were_on_weekoff(day_name);
 				emp_attendance[daytoyear] = dt.employee_ids_who_were_present_on_specific_day(yeartoday);
 
 				startdt = startdt.Date.AddDays(1);

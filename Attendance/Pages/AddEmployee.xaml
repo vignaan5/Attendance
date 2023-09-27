@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.AddEmployee"
-             Title="AddEmployee">
+             Title="AddEmployee" BackgroundImageSource="whiteback.jpg">
     <ScrollView Orientation="Vertical">
     <VerticalStackLayout x:Name="vs">
         <Label 

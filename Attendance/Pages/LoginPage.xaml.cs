@@ -10,6 +10,7 @@ public partial class LoginPage : ContentPage
 	public bool is_admin=false;
 	public bool nothing_found=false;
 	public string version = "0.00";
+	public string store_name=String.Empty;
 #if ANDROID26_0_OR_GREATER
 	public Location.LocationClass l = new Location.LocationClass();
 #endif   
@@ -66,9 +67,11 @@ public partial class LoginPage : ContentPage
 		if(!nothing_found)
 		{
 
+
 				await SecureStorage.SetAsync("username", usrname.Text.ToString().Trim());
 				await SecureStorage.SetAsync("password", passcode.Text.ToString().Trim());
 			await SecureStorage.SetAsync("employee_id", this.emp_id);
+			await SecureStorage.SetAsync("store_name", this.store_name.ToUpper().Trim());
 			if(is_admin)
 				await SecureStorage.SetAsync("admin","yes");
 			else
@@ -96,7 +99,13 @@ public partial class LoginPage : ContentPage
 			//	App.Current.MainPage = new AppShell();
 			//	App.Current.MainPage = new AppShell(this.emp_id,usrname.Text.ToString());
 
-			App.Current.MainPage = new AppShell2(usrname.Text.ToString(),is_admin);
+			if(store_name!=String.Empty)
+			{
+			 store_name=	store_name.ToUpper().Trim();
+			}
+
+
+			App.Current.MainPage =  new AppShell2(usrname.Text.ToString(),is_admin,store_name);
 
 
 
@@ -267,6 +276,20 @@ public partial class LoginPage : ContentPage
 			while (!reader.IsClosed && reader.Read())
 
 			{
+				store_name = reader[7].ToString();
+
+				if (reader[19].ToString().Trim()=="no")
+				{
+					nothing_found = true;
+					reader.Close();
+					conn.Close();
+					MainThread.InvokeOnMainThreadAsync(() => {
+						DisplayAlert("Account not active !", "Your account is not in active", "ok!");
+					});
+					return true;
+				}
+				
+
 				if (reader[16].ToString().Trim() == usrname.Text.ToString().Trim() && reader[17].ToString().Trim() == passcode.Text.ToString().Trim())
 				{
 					//	DisplayAlert("Welcome !", "Hello " + reader[1].ToString(), "Go !");

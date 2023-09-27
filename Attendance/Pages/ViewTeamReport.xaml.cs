@@ -17,6 +17,19 @@ public partial class ViewTeamReport : ContentPage
 		dtstart.Date = temp.Date;
 	}
 
+	public ViewTeamReport(string state)
+	{
+		InitializeComponent();
+
+
+		all_States.Add(state);
+		stpicker.ItemsSource = all_States;
+
+		DateTime temp = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+		dtstart.Date = temp.Date;
+		
+	}
+
 	public async void get_state_list()
 	{
 		dt.start_connection();

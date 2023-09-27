@@ -22,6 +22,7 @@ public partial class MainPage : ContentPage
 		if(DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
 		{
 			Clkin.Text = "Clock-Out";
+			
 		}
 
 	
@@ -75,6 +76,7 @@ public partial class MainPage : ContentPage
 		{
 			DependencyService.Resolve<IAndroid>().StopMyService();
 			Clkin.Text = "Clock-In";
+			
 		}
 
 
@@ -138,5 +140,11 @@ public partial class MainPage : ContentPage
 	{
 
 	}
+
+	private void applyleavebtn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new ApplyLeave());
+
+    }
 }
 

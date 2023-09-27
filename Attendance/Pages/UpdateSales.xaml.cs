@@ -9,6 +9,7 @@ namespace Attendance.Pages;
 
 public partial class UpdateSales : ContentPage
 {
+	public string employee_ID = String.Empty;
 	public Dictionary<string, Dictionary<string, string>> products = new Dictionary<string, Dictionary<string, string>>();
 	public DataClass dt  = new DataClass();	
 	public List<string> picker_list = new List<string>();
@@ -30,6 +31,25 @@ public partial class UpdateSales : ContentPage
 		dpicker.SelectedIndex = 0;
 		exc_tmp();
 
+	}
+
+
+	public UpdateSales(string emp_id,DatePicker temp_date_time)
+	{
+		InitializeComponent();
+		DatePicker tdp = new DatePicker();
+		tdp.Date=temp_date_time.Date;
+		List<string> dp_items = new List<string>();
+
+		dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+		DateTime dt_temp = tdp.Date;
+		dt_temp = dt_temp.AddDays(-1);
+		tdp.Date = dt_temp;
+		dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+		dpicker.ItemsSource = dp_items;
+		dpicker.SelectedIndex = 0;
+		employee_ID= emp_id;
+		exc_tmp();
 	}
 
 	public async void exc_tmp()
@@ -363,12 +383,27 @@ public partial class UpdateSales : ContentPage
 				string stemp = "";
 				if (dpicker.SelectedIndex == 0)
 				{
-					 stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'));", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
+					if (employee_ID == String.Empty)
+					{
+						stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'));", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
+					}
+					else if(employee_ID != String.Empty)
+					{
+						stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},'{4}','{5}');", employee_ID, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[0]);
+
+					}
 				}
 				else if(dpicker.SelectedIndex==1)
 				{
-					stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},'{4}','{5}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[1]);
+					if (employee_ID == String.Empty)
+					{
+						stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},'{4}','{5}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[1]);
+					}
+					else if(employee_ID!=String.Empty)
+					{
+						stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},'{4}','{5}');", employee_ID, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[1]);
 
+					}
 				}
 
 				commandsstrs.Add(stemp);	
@@ -422,13 +457,13 @@ public partial class UpdateSales : ContentPage
 
 		string usr = await SecureStorage.GetAsync("username");
 		string is_admin = await SecureStorage.GetAsync("admin");
-
+		string str_name = await SecureStorage.GetAsync("store_name");
 		bool is_admin2 = false;
 
 		if(is_admin=="yes")
 			is_admin2=true;
 
-		App.Current.MainPage=new AppShell2(usr,is_admin2);
+		App.Current.MainPage=new AppShell2(usr,is_admin2,str_name);
 		
 
 	}

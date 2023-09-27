@@ -73,6 +73,12 @@ public partial class AdminPage : ContentPage
 		Navigation.PushAsync(new EmployeeAttendance());
 	}
 
+	private void manageempclicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new EmployeeAccountAccess());
+
+	}
+
 
 	private void DailyReports(object sender,EventArgs e)
 	{
@@ -96,4 +102,19 @@ public partial class AdminPage : ContentPage
 	{
 		Navigation.PushAsync(new ViewEmployees());
 	}
+
+	private void Button_Clicked(object sender, EventArgs e)
+	{
+
+	}
+
+	private void overrideempsalesbtn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new OverrideEmployeeSales());
+    }
+
+	private void leavereqbtn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new LeaveRequests());
+    }
 }

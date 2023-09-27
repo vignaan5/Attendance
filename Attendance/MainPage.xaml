@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Attendance.MainPage" >
+             x:Class="Attendance.MainPage" BackgroundImageSource="whiteback.jpg" >
 
     <ScrollView>
         <VerticalStackLayout
@@ -10,9 +10,9 @@
             VerticalOptions="Center">
 
             <Image
-                Source="clayvedamp.jpg"
+                Source="clayveda.png"
                 SemanticProperties.Description="Have a nice day!"
-                HeightRequest="200"
+                MaximumHeightRequest="300"
                 HorizontalOptions="Center" />
 
             <Label
@@ -23,35 +23,72 @@
                 x:Name="target_remaning"
                 />
 
-      
+           
+                
+                
+          
 
             <Button
+               
                 x:Name="CounterBtn"
+              
                 Text="Update Sales"
+                
+                WidthRequest="120"
+             
                 SemanticProperties.Hint="Updates the Sold Goods"
                 Clicked="OnCounterClicked"
                 HorizontalOptions="Center" />
             <Button
+               
                 x:Name="UpdateRecentSales"
                 Text="Edit Sales"
+                 WidthRequest="120"
+              
+              
                 SemanticProperties.Description="Updates or Deletes Recent Sales"
                 Clicked="UpdateRecentSales_Clicked"
                 HorizontalOptions="Center" />
             <Button
+              
                 x:Name="mysales"
                 Text="My Sales"
+              
+                WidthRequest="120"
+              
                 SemanticProperties.Description="View all of your sales here"
                 Clicked="ViewYourSalesClicked"
                 HorizontalOptions="Center" />
+
             <Button
+              
+               
+                x:Name="applyleavebtn"
+                Text="Apply Leave"
+            
+                 WidthRequest="120"
+                SemanticProperties.Hint="Updates the attendance"
+                Clicked="applyleavebtn_Clicked"     
+                HorizontalOptions="Center" />
+
+
+
+            <Button
+              
+               
                 x:Name="Clkin"
                 Text="Clock-In"
+            
+                 WidthRequest="120"
                 SemanticProperties.Hint="Updates the attendance"
                 Clicked="Clkin_Clicked"     
                 HorizontalOptions="Center" />
 
-     
-
+            <Image
+                Source="vignaan2.png"
+                SemanticProperties.Description="Have a nice day!"
+                MaximumHeightRequest="300"
+                HorizontalOptions="Center" />
 
         </VerticalStackLayout>
     </ScrollView>

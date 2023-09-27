@@ -164,13 +164,13 @@ public partial class ViewRecentSales : ContentPage
 
 				string usr = await SecureStorage.GetAsync("username");
 				string is_admin = await SecureStorage.GetAsync("admin");
-
+				string str_name = await SecureStorage.GetAsync("store_name");
 				bool is_admin2 = false;
 
 				if (is_admin == "yes")
 					is_admin2 = true;
 
-				App.Current.MainPage = new AppShell2(usr, is_admin2);
+				App.Current.MainPage = new AppShell2(usr, is_admin2,str_name);
 
 			});
 

@@ -2,13 +2,28 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.AdminPage"
-             Title="AdminPage">
-    <VerticalStackLayout x:Name="vs" Spacing="10">
-        <Button  Clicked="Addempbtn" Text="Add an Employee" HorizontalOptions="Center"></Button>
-        <Button Clicked="View_Employees" Text="View Employees" HorizontalOptions="Center"></Button>
-        <Button Clicked="DailyReports" Text="View All Products Report" HorizontalOptions="Center"></Button>
-        <Button Clicked="Statereports" Text="View State Reports" HorizontalOptions="Center"></Button>
-        <Button Clicked="EmployeeAttendance" HorizontalOptions="Center"  Text="View Employee Attendance"></Button>
-        <Button Clicked="SearchEmployeeClicked" HorizontalOptions="Center" Text="Search Employee Location"></Button>
-    </VerticalStackLayout>
+             Title="AdminPage" BackgroundImageSource="whiteback.jpg" >
+    <ScrollView>
+    <VerticalStackLayout x:Name="vs" Spacing="25" Padding="30,0">
+        <Image
+                Source="clayveda.png"
+                SemanticProperties.Description="Have a nice day!"
+                MaximumHeightRequest="300"
+                HorizontalOptions="Center" />
+        <Button  Clicked="Addempbtn" Text="Add an Employee" HorizontalOptions="Center" WidthRequest="250"></Button>
+        <Button Clicked="View_Employees" Text="View Employees" HorizontalOptions="Center" WidthRequest="250"></Button>
+        <Button Clicked="DailyReports" Text="View All Products Report" HorizontalOptions="Center" WidthRequest="250"></Button>
+        <Button Clicked="Statereports" Text="View State Reports" HorizontalOptions="Center" WidthRequest="250"></Button>
+        <Button Clicked="EmployeeAttendance" HorizontalOptions="Center"  Text="View Employee Attendance" WidthRequest="250"></Button>
+        <Button Clicked="SearchEmployeeClicked" HorizontalOptions="Center" Text="Search Employee Location" WidthRequest="250"></Button>
+        <Button  HorizontalOptions="Center" Text="Manage Employee Accounts" Clicked="manageempclicked" WidthRequest="250"></Button>
+        <Button HorizontalOptions="Center" Text="Override Employee Sales" x:Name="overrideempsalesbtn" Clicked="overrideempsalesbtn_Clicked" WidthRequest="250"></Button>
+            <Button HorizontalOptions="Center" Text="Employee Leave Requests" x:Name="leavereqbtn" Clicked="leavereqbtn_Clicked" WidthRequest="250" ></Button>
+        <Image
+                Source="vignaan2.png"
+                SemanticProperties.Description="Have a nice day!"
+                MaximumHeightRequest="300"
+                HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

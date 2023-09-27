@@ -2,11 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.LoginPage"
-             Title="LoginPage">
+             Title="LoginPage" BackgroundImageSource="whiteback.jpg">
     <ScrollView x:Name="sc" >
     <VerticalStackLayout x:Name="vs" MaximumHeightRequest="800" MaximumWidthRequest="400" >
             
-            <Image Source="vignaan.png" HorizontalOptions="Center" VerticalOptions="Center" x:Name="img" ></Image>
+            <Image Source="vignaan2.png" HorizontalOptions="Center" VerticalOptions="Center" x:Name="img" ></Image>
 
            
             <Entry x:Name="usrname"  Placeholder="Enter Username" VerticalOptions="Center" HorizontalOptions="Center" >

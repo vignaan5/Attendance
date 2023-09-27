@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.EmployeeAttendance"
-             Title="EmployeeAttendance">
+             Title="EmployeeAttendance" BackgroundImageSource="whiteback.jpg">
     <VerticalStackLayout x:Name="vs">
         <DatePicker x:Name="startDate" SemanticProperties.Description="Choose Start Date" ></DatePicker>
         <DatePicker x:Name=" endDate" SemanticProperties.Description="Choose End Date"></DatePicker>

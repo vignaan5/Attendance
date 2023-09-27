@@ -2,12 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.ViewEmployeeLocations"
-             Title="ViewEmployeeLocations">
+             Title="ViewEmployeeLocations" BackgroundImageSource="whiteback.jpg">
     <ScrollView>
     <VerticalStackLayout x:Name="vs">
-        <Entry Placeholder="Enter Employee Id" x:Name="emp_id_entry"></Entry>
+            <VerticalStackLayout x:Name="searchvs" HorizontalOptions="Center">
+                <SearchBar x:Name="search_emp" Placeholder="Enter employee Name or ID" TextChanged="search_emp_TextChanged"></SearchBar>
+                <ListView x:Name="emplist" ItemSelected="emplis_ItemSelected" IsVisible="False"></ListView>
+            </VerticalStackLayout>
         <DatePicker x:Name="dtpicker"></DatePicker>
-        <Button Text="Get Locations" Clicked="Button_Clicked" VerticalOptions="Center"></Button>
+        <Button Text="Get Locations" Clicked="Button_Clicked" VerticalOptions="Center" IsEnabled="False" IsVisible="False" x:Name="getlcnbtn"></Button>
         <ActivityIndicator IsVisible="False" IsRunning="True" IsEnabled="True" x:Name="actind"></ActivityIndicator>
     </VerticalStackLayout>
     </ScrollView>
