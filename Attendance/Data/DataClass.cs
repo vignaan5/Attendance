@@ -1886,6 +1886,9 @@ namespace Attendance.Data
 
 				rows.Add(emp);
 			}
+			mySqlDataReader.Close();
+
+
 
 			return rows;
 
@@ -1939,6 +1942,114 @@ namespace Attendance.Data
 			return rows;
 
 		}
+
+		public string get_recently_marked_attendance_date()
+		{
+			if (!is_conn_open)
+				return String.Empty;
+
+			string cmd = "select date(the_date_and_time) from employee_location order by the_date_and_time desc limit 1;";
+
+			MySqlCommand sqlcmd = new MySqlCommand(cmd,connection);
+
+			string res = String.Empty; 
+
+			try
+			{
+			 var resu=	sqlcmd.ExecuteScalar();
+				res= resu.ToString().Replace('/','-').Split(' ')[0];
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			return res;
+		}
+
+
+
+		public Dictionary<string,List<string>> get_all_employee_approved_leave_dates(string state)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string cmd = "";
+
+			if (state != null)
+			{
+				 cmd = String.Format("select l.* from employee_leave_request l left join employee e on l.emp_id=e.emp_id  where approved is true  and e.state='{0}';", state);
+			}
+			else
+			{
+				 cmd = String.Format("select l.* from employee_leave_request l left join employee e on l.emp_id=e.emp_id  where approved is true  ;");
+			}
+
+
+			MySqlCommand mysqlcommand = new MySqlCommand(cmd,connection);
+
+			try
+			{
+				mysqlcommand.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+				return null;
+			}
+
+			MySqlDataReader reader = null;
+
+			Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
+			try
+			{
+				reader= mysqlcommand.ExecuteReader();
+			}
+			catch(Exception ex)
+			{
+				
+			}
+
+
+			while(reader != null && !reader.IsClosed && reader.Read()) 
+			{
+				if (!result.ContainsKey(reader[0].ToString().Trim()))
+				{
+					result[reader[0].ToString().Trim()] = new List<string>();
+				}
+
+				string[] strdttemp = reader[1].ToString().Split('/',' ');
+
+				string[] enddtemp = reader[2].ToString().Split('/',' ');
+
+				DateTime strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[1] + "/" + strdttemp[0]+" 00:00:00 AM");
+				
+				DateTime end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[1] + "/" + enddtemp[0]+" 00:00:00 AM");	
+			
+				
+				while(strt_dt.Date<=end_dt.Date)
+				{
+
+					result[reader[0].ToString().Trim()].Add(strt_dt.Date.ToString("dd-MM-yyyy"));
+					
+					strt_dt = strt_dt.AddDays(1);
+				}
+
+
+			
+			}
+
+			reader.Close();
+
+			return result;
+
+
+
+
+		
+
+		}
+
+
 
 		public void revoke_employee_account_access(string emp_id)
 		{

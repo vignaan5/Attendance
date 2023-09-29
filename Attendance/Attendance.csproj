@@ -15,7 +15,7 @@
 		<ApplicationTitle>ClayVeda</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.attendance</ApplicationId>
+		<ApplicationId>com.gyanusoft.clayveda</ApplicationId>
 		<ApplicationIdGuid>8b773acb-1ff1-4090-8862-da1c1fb8d121</ApplicationIdGuid>
 
 		<!-- Versions -->

@@ -10,7 +10,10 @@ public partial class EmployeeAttendance : ContentPage
 	public List<List<string>> all_employee_id=new List<List<string>>();
 	public Dictionary<string, List<string>> emp_attendance = new Dictionary<string, List<string>>();
 	public Dictionary<string, List<string>> emp_week_off = new Dictionary<string, List<string>>();
+	public Dictionary<string,List<string>> employee_on_leave = new Dictionary<string, List<string>>();
+	public string last_marked_attendance = String.Empty;
 
+	
 	public EmployeeAttendance()
 	{
 		InitializeComponent();
@@ -45,22 +48,39 @@ public partial class EmployeeAttendance : ContentPage
 			htmlstring += String.Format("<td> {0} </td> <td> {1} </td> <td> {2} </td> <td> {3} </td> <td> {4} </td> <td> {5} </td> <td> {6} </td> ", all_employee_id[employee][0], all_employee_id[employee][1], all_employee_id[employee][2], all_employee_id[employee][7], all_employee_id[employee][15], all_employee_id[employee][5], all_employee_id[employee][6]);
 			startdate = start;
 			int total_working_days = 0;
-			 while(startdate.Date<=end)
+			int total_weekoff_day = 0;
+			int total_leave_days = 0;
+			while (startdate.Date <= end)
 			{
 				if (emp_attendance[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
 				{
 					if (emp_week_off[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
 					{
 						htmlstring += "<td bgcolor=#ADD8E6> present on Weekoffday </td>";
-
+						
 					}
 					else
 					{
 						htmlstring += "<td bgcolor=#90EE90> present </td>";
 					}
-					
+
 					total_working_days++;
 				}
+				else if (employee_on_leave!=null && employee_on_leave.ContainsKey(all_employee_id[employee][0])  )
+				{
+					string check_date = startdate.Date.ToString("dd-MM-yyyy");
+					if (employee_on_leave[all_employee_id[employee][0]].Contains(check_date))
+					{
+						htmlstring += "<td bgcolor=#FFFFED> Employee on leave </td>";
+						total_leave_days++;
+					}
+					else
+					{
+						htmlstring += "<td bgcolor=#ffcccb> absent </td>";
+					}
+				}
+
+
 				else if(emp_week_off[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
 				{
 					htmlstring += "<td bgcolor=#FFFFED> Weekoff </td>";
@@ -68,7 +88,10 @@ public partial class EmployeeAttendance : ContentPage
 				}
 				else
 				{
-					htmlstring += "<td > </td>";
+
+					
+						htmlstring += "<td bgcolor=#ffcccb> absent </td>"; 
+					
 				}
 
 				startdate = startdate.AddDays(1);
@@ -80,7 +103,7 @@ public partial class EmployeeAttendance : ContentPage
 		}
 
 
-
+		
 
 		htmlstring += String.Format("</tbody> </table> {0} </body> </html>",dt.get_js2excel_script());
 
@@ -89,17 +112,21 @@ public partial class EmployeeAttendance : ContentPage
 	}
 
 
-	public void get_employee_list_and_create_attendance_table()
+	public async Task get_employee_list_and_create_attendance_table()
 	{
 		dt.start_connection();
 		all_employee_id=dt.get_all_employee_details_in_a_list();
+		employee_on_leave = dt.get_all_employee_approved_leave_dates(null);
 		dt.close_connection();
+		 
 	}
 
-	public void get_employee_list_and_create_attendance_table(string state)
+	public async Task  get_employee_list_and_create_attendance_table(string state)
 	{
 		dt.start_connection();
 		all_employee_id = dt.get_all_employee_details_in_a_list_of_a_spefic_state(state);
+		employee_on_leave = dt.get_all_employee_approved_leave_dates(state);
+		last_marked_attendance = dt.get_recently_marked_attendance_date();
 		dt.close_connection();
 	}
 
@@ -136,11 +163,11 @@ public partial class EmployeeAttendance : ContentPage
 			if (this.state == String.Empty)
 			{
 
-				get_employee_list_and_create_attendance_table();
+			 	await get_employee_list_and_create_attendance_table();
 			}
 			else
 			{
-				get_employee_list_and_create_attendance_table(this.state);
+				await get_employee_list_and_create_attendance_table(this.state);
 			}
 				dt.start_connection();
 

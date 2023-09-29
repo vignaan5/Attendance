@@ -48,7 +48,7 @@ public partial class LeaveRequests : ContentPage
 			requests = dt.get_employee_processed_leave_requests();
 			dt.close_connection();
 
-			MainThread.InvokeOnMainThreadAsync(async () => { await create_ui(true); });
+			MainThread.InvokeOnMainThreadAsync(async () => { await create_ui(true);return; });
 		});
 
 	}
@@ -163,7 +163,8 @@ public partial class LeaveRequests : ContentPage
 		if (requests.Count == 0)
 		{
 			DisplayAlert("No Leave Requests", "There are no leave request Currently", "Ok");
-			
+			Navigation.PopAsync();
+			Navigation.PopAsync();
 			return;
 		}
 

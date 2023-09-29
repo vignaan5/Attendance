@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.ApplyLeave"
              Title="ApplyLeave" BackgroundImageSource="whiteback.jpg">
+    <ScrollView Orientation="Vertical">
+        
     <VerticalStackLayout
             Spacing="25"
             Padding="30,0"
@@ -13,7 +15,7 @@
                 SemanticProperties.Description="Have a nice day!"
                 MaximumHeightRequest="300"
                 HorizontalOptions="Center" />
-
+            <ScrollView Orientation="Horizontal">
         <HorizontalStackLayout VerticalOptions="Center" Spacing="10" x:Name="hs">
 
             <Label Text="Choose Day-off Starting Date : " VerticalOptions="Center"></Label>
@@ -23,6 +25,9 @@
             <DatePicker x:Name="edt" VerticalOptions="Center" DateSelected="edt_DateSelected"  ></DatePicker>
             <Button x:Name="viewrecentreqbtn" Text="View Recent Leaves" HorizontalOptions="Center" Clicked="viewrecentreqbtn_Clicked"></Button>
         </HorizontalStackLayout>
+            </ScrollView>
+
+            <VerticalStackLayout x:Name="innervs2"></VerticalStackLayout>
         <Label VerticalOptions="Center" HorizontalOptions="Center" Text="Apply Leave for 1 day" x:Name="Leavedur"></Label>
         <Button Text="Apply Leave" x:Name="applyleavebtn" Clicked="applyleavebtn_Clicked"> </Button>
 
@@ -38,4 +43,6 @@
                 HorizontalOptions="Center" />
 
     </VerticalStackLayout>
+      
+    </ScrollView>
 </ContentPage>

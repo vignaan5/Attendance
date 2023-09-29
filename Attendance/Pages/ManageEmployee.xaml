@@ -5,8 +5,8 @@
              Title="ManageEmployee" BackgroundImageSource="whiteback.jpg">
     <VerticalStackLayout Spacing="10">
 
-        <Button Text="View Employees" x:Name="showempbtn" Clicked="showempbtn_Clicked" HorizontalOptions="Center"></Button>
-       
+        <Button Text="View Employees" x:Name="showempbtn" Clicked="showempbtn_Clicked" HorizontalOptions="Center" WidthRequest="180"></Button>
+        <Button Text="Leave Requests" x:Name="leavreqbtn" Clicked="leavreqbtn_Clicked" HorizontalOptions="Center" WidthRequest="180"> </Button>
       
     </VerticalStackLayout>
 </ContentPage>
