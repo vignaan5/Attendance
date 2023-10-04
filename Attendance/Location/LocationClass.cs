@@ -31,7 +31,9 @@ using MySqlConnector;
 using Android.Media;
 using Android.Service;
 using Java.Sql;
-
+using The_Attendance.Interfaces;
+using Attendance.Pages;
+using Android.Content.Res;
 
 namespace Attendance.Location
 {
@@ -46,7 +48,9 @@ namespace Attendance.Location
 		private CancellationTokenSource _cancelTokenSource;
 		private bool _isCheckingLocation;
 
-		public string global_sql_address_query;
+		public string global_sql_address_query="";
+
+		public string global_sql_address_query2="";
 
 		const string channel_id = "default";
 		const string channel_name = "Default";
@@ -141,6 +145,33 @@ namespace Attendance.Location
 		}
 
 
+			private string ReadDeviceInfo()
+	{
+		System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+		sb.AppendLine($"Model: {DeviceInfo.Current.Model}");
+		sb.AppendLine($"Manufacturer: {DeviceInfo.Current.Manufacturer}");
+		sb.AppendLine($"Name: {DeviceInfo.Current.Name}");
+		sb.AppendLine($"OS Version: {DeviceInfo.Current.VersionString}");
+		sb.AppendLine($"Idiom: {DeviceInfo.Current.Idiom}");
+		sb.AppendLine($"Platform: {DeviceInfo.Current.Platform}");
+
+		bool isVirtual = DeviceInfo.Current.DeviceType switch
+		{
+			DeviceType.Physical => false,
+			DeviceType.Virtual => true,
+			_ => false
+		};
+
+		sb.AppendLine($"Virtual device? {isVirtual}");
+
+		return sb.ToString();
+	}
+
+
+
+
+
 		public async Task<bool> check_and_get_permissions()
 
 		{
@@ -187,7 +218,8 @@ namespace Attendance.Location
 					}
 					catch(System.Exception ex) 
 					{ 
-					         send_notification_to_the_user("Error",ex.Message.ToString()); 
+					         send_notification_to_the_user("Oops!",ex.Message.ToString()); 
+					
 					}
 				
 				});
@@ -207,7 +239,9 @@ namespace Attendance.Location
 						}
 						catch(System.Exception ex)
 						{
-							send_notification_to_the_user("Error", ex.Message.ToString());
+							send_notification_to_the_user("Location Not Reachable !", ex.Message.ToString());
+							
+							return;
 						}
 					});
 				    
@@ -227,9 +261,31 @@ namespace Attendance.Location
 						sql_address_query += ",'" + val + "'";
 					}
 
+					
+
 					sql_address_query += ");";
 					global_sql_address_query = sql_address_query;
 
+					sql_address_query="";
+
+					sql_address_query = "INSERT INTO employee_location_with_device_info VALUES  ('" + temp_emp_id + "',convert_tz(now(),'+00:00','+05:30')";
+					foreach (string val in str_adr_arr)
+					{
+						sql_address_query += ",'" + val + "'";
+					}
+
+					global_sql_address_query2=sql_address_query;
+
+					sql_address_query += ");";
+					
+
+
+
+
+				
+
+					global_sql_address_query2+=System.String.Format(",'{0}');",ReadDeviceInfo());
+					
 				}
 			}
 			// Catch one of the following exceptions:
@@ -289,19 +345,31 @@ namespace Attendance.Location
 
 
 				MySqlCommand cmd2 = new MySqlCommand(global_sql_address_query, mySqlConnection);
+				MySqlCommand cmd3 = new MySqlCommand(global_sql_address_query2, mySqlConnection);
+
 				try
 				{
 					cmd2.ExecuteNonQuery();
+					cmd3.ExecuteNonQuery();
 					send_notification_to_the_user("Attendance Updated", "Your attendance has been updated successfully");
 				}
 				catch (System.Exception ex)
 				{
-					if(ex.Message.ToString().Contains("Duplicate entry"))
+					if (ex.Message.ToString().Contains("Duplicate entry"))
 					{
 						send_notification_to_the_user("Attendance already Marked", "Your Attendance is already given");
 					}
 					else send_notification_to_the_user("Error", ex.Message.ToString());
 				}
+			}
+			else
+			{
+
+				
+				send_notification_to_the_user("Attendance Not Updated", "Please re-clock-in");
+				DependencyService.Resolve<IAndroid>().StopMyService();
+				
+
 			}
 
 

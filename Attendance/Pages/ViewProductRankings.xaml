@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.ViewProductRankings"
+             Title="ViewProductRankings">
+    <ScrollView Orientation="Vertical">
+        <ScrollView Orientation="Horizontal">
+            <VerticalStackLayout  Spacing="10">
+                <Picker x:Name="statepicker"></Picker>
+                <Picker x:Name="orderbypicker"></Picker>
+                <WebView x:Name="wview"></WebView>
+                <WebView x:Name="gview" ></WebView>
+                <VerticalStackLayout x:Name="vs" Spacing="10">
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </ScrollView>
+</ContentPage>

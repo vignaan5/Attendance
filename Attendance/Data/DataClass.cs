@@ -1,5 +1,7 @@
 ﻿
 
+
+
 using Microsoft.Maui.Platform;
 using MySqlConnector;
 using System;
@@ -7,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -227,6 +230,7 @@ namespace Attendance.Data
 				}
 			}
 
+			reader.Close();
 			return emp_id;
 		}
 
@@ -1281,6 +1285,267 @@ namespace Attendance.Data
 
 		}
 
+		public string create_table_header(List<string> header)
+		{
+			string html = "<thead> <tr>";
+
+			for(int i=0;i<header.Count;i++)
+			{
+				html += String.Format("<th> {0} </th>", header[i]);
+			}
+
+			return html += "</tr> </thead>";
+
+		}
+
+		public string create_bar_graph(string graph_name, List<string> xvalues, List<string> yvalues)
+		{
+			string xvalue = "[";
+			string yvalue = "[";
+			string html_color = "[";
+			for (int i = 0; i < xvalues.Count; i++)
+			{
+				if (xvalues.Count - 1 == i)
+				{
+					xvalue += String.Format("'{0}']", xvalues[i]);
+					yvalue += String.Format("'{0}']", yvalues[i]);
+				}
+				else
+				{
+					xvalue += String.Format("'{0}',", xvalues[i]);
+					yvalue += String.Format("'{0}',", yvalues[i]);
+				}
+			}
+
+			List<string> html_colors = new List<string> { "black", "orange", "gray", "silver", "maroon", "red", "purple", "fushsia", "green", "lime", "olive", "yellow", "navy", "blue", "teal", "aqua" };
+
+			string[] arr = html_colors.ToArray();
+			arr=   arr.OrderBy(x =>  Guid.NewGuid()).ToArray();
+			
+			html_colors=arr.ToList();
+			
+			int k = 0;
+			for(int i=0;i<xvalues.Count;i++)
+			{
+				if(k>=html_colors.Count)
+				{
+					k = 0;
+				}
+
+				if (xvalues.Count - 1 == i)
+				{
+					html_color += string.Format("'{0}']", html_colors[k]);
+				}
+
+				else html_color += string.Format("'{0}',", html_colors[k]);
+				k++;
+
+			}
+
+			string htmlstr = "";
+			try
+			{
+				//htmlstr += "<!DOCTYPE html><html><script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js'></script><body><canvas id='myChart' style='width:100%;max-width:600px'></canvas><script>var xValues = ['Kaithwar', 'Pushpak Beauty', 'GOUTHAM ENTERPRIESE', 'PRIYA BEAUTY', 'RUKMANI BEAUTY'];var yValues = [55558, 38456, 18935, 20000, 8888];var barColors = ['grey'];new Chart('myChart', {  type: 'bar',  data: {   labels: xValues,   datasets: [{      backgroundColor: barColors,      data: yValues   }]  }, options: {   legend: {display: false},    title: {   display: true,     text: 'Store Sales'   } }});</script></body></html>";
+				htmlstr += "<!DOCTYPE html><html><script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js'></script><body><canvas id='myChart' style='width:100%;max-width:600px'></canvas><script>var xValues = "+xvalue+";var yValues = "+yvalue+";var barColors = "+html_color+";new Chart('myChart', {  type: 'bar',  data: {   labels: xValues,   datasets: [{      backgroundColor: barColors,      data: yValues   }]  }, options: {   legend: {display: false},    title: {   display: true,     text: '"+graph_name+"'   } }});</script></body></html>";
+			
+			}
+			catch(Exception ex)
+			{
+
+			}
+			return htmlstr;
+		}
+
+
+		public string create_table_body(List<List<string>> body)
+		{
+			
+
+			string html = "<tbody>";
+
+			for(int i=0;i<body.Count;i++)
+			{
+				html += "<tr>";
+				for(int j = 0; j < body[i].Count;j++)
+				{
+				  html+=	String.Format("<td>{0}</td>", body[i][j]);
+				}
+
+				html += "</tr>";
+			}
+
+			return html += "</tbody>";
+
+		}
+
+
+
+
+
+
+
+		public string create_html_string(List<string> header,List<List<string>>body)
+		{
+			if (header == null)
+				return "";
+
+		 	return String.Format( "<html> <body> <table border='1' id='table'>" + create_table_header(header)+create_table_body(body)+"</table> {0} </body> </html>",get_js2excel_script());
+
+			
+		}
+
+		public List<List<string>> get_product_rankings(string state, ref string html_string)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string sql_query = String.Format(" select products2.paticulars,sales.qty,sales.sold_amount from  (select sno,sum(pcs) as qty,sum(amount) as sold_amount from employee_sales2 group by sno) as sales left join products2 on sales.sno=products2.sno order by qty desc ;");
+			if (state != null)
+			{
+				sql_query = String.Format(" select products2.paticulars,sales.qty,sales.sold_amount from  (select sno,sum(pcs) as qty,sum(amount) as sold_amount from employee_sales2 where emp_id in(select emp_id from employee where state='{0}') group by sno) as sales left join products2 on sales.sno=products2.sno order by qty desc ;", state);
+			}
+
+			MySqlCommand sql_cmd = new MySqlCommand(sql_query, connection);
+
+			try
+			{
+				sql_cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = sql_cmd.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<string> table_header = new List<string>();
+			List<List<string>> table_rows = new List<List<string>>();
+
+			bool table_header_accuried = false;
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				List<string> table_row = new List<string>();
+
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					if (!table_header_accuried)
+					{
+						table_header.Add(reader.GetName(i).ToString());
+					}
+
+					table_row.Add(reader[i].ToString());
+
+
+				}
+
+				table_header_accuried = true;
+
+				table_rows.Add(table_row);
+
+
+			}
+
+			reader.Close();
+
+			if (html_string != null)
+			{
+				html_string = create_html_string(table_header, table_rows);
+			}
+
+			return table_rows;
+
+
+
+		}
+
+
+		public List<List<string>> get_store_rankings(string state,ref string html_string)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string sql_query = String.Format(" select e.store_name,s.sales from employee e left join (select emp_id,sum(amount) as sales from employee_sales2   group by emp_id) as s on e.emp_id=s.emp_id     order by sales desc ;");
+				if(state!=null)
+			    {
+				sql_query = String.Format(" select e.store_name,s.sales from employee e left join (select emp_id,sum(amount) as sales from employee_sales2   group by emp_id) as s on e.emp_id=s.emp_id  where state='{0}'    order by sales desc ;",state);
+			    }
+
+				MySqlCommand sql_cmd = new MySqlCommand(sql_query,connection);
+
+			try
+			{
+				sql_cmd.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = sql_cmd.ExecuteReader();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			List<string> table_header = new List<string>();
+			List<List<string>> table_rows = new List<List<string>>();
+
+			bool table_header_accuried = false;
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				List<string> table_row= new List<string>();
+
+				for(int i=0;i<reader.FieldCount;i++)
+				{
+					if(!table_header_accuried)
+					{
+						table_header.Add(reader.GetName(i).ToString());
+					}
+
+					table_row.Add(reader[i].ToString());
+
+
+				}
+
+				table_header_accuried = true;
+
+				table_rows.Add(table_row);
+
+
+			}
+
+			reader.Close();
+
+			if(html_string!=null)
+			{
+				html_string=create_html_string(table_header, table_rows);
+			}
+
+			return table_rows; 
+
+    			    
+		
+		}
+
+
+
+
 
 		public List<List<string>> search_employee_in_db(string emp_id,string first_name,string last_name)
 		{
@@ -1372,9 +1637,56 @@ namespace Attendance.Data
 		}
 
 
+		public int update_employee_details(List<string> place_holer_list)
+		{
+			if (!is_conn_open)
+				return 0;
 
+			int rows_affected = 0;
 
-		public List<List<string>> get_employee_details()
+			string sql_string = String.Format("update employee set firstname='{0}',lastname='{1}',age={2},bank_account_name='{3}',bank_account_number='{4}',ifsc_code='{5}' where emp_id='{6}'; ", place_holer_list[0], place_holer_list[1], place_holer_list[2], place_holer_list[3], place_holer_list[4], place_holer_list[5], emp_id2);
+
+			MySqlCommand sqlCommand = new MySqlCommand(sql_string, connection);
+			try
+			{
+			 rows_affected =	sqlCommand.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+				return 0;
+			}
+
+			return rows_affected;
+		}
+
+		public int update_employee_details(List<string> place_holer_list,string employee_ID,bool is_admin)
+		{
+			if (!is_conn_open)
+				return 0;
+
+			int rows_affected = 0;
+			       
+			string sql_string = String.Format("update employee set firstname='{0}',lastname='{1}',age={2},bank_account_name='{3}',bank_account_number='{4}',ifsc_code='{5}' where emp_id='{6}'; ", place_holer_list[0], place_holer_list[1], place_holer_list[2], place_holer_list[3], place_holer_list[4], place_holer_list[5], employee_ID);
+
+			if(is_admin)
+			{
+				sql_string = String.Format("update employee set firstname='{0}',lastname='{1}',age={2},bank_account_name='{3}',bank_account_number='{4}',ifsc_code='{5}',store_name='{6}',area='{7}', city='{8}',state='{9}',monthly_target={10} where emp_id='{11}'; ", place_holer_list[0], place_holer_list[1], place_holer_list[2], place_holer_list[3], place_holer_list[4], place_holer_list[5], place_holer_list[6], place_holer_list[7], place_holer_list[8], place_holer_list[9], place_holer_list[10], employee_ID);
+			}
+
+			MySqlCommand sqlCommand = new MySqlCommand(sql_string, connection);
+			try
+			{
+				rows_affected = sqlCommand.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				return 0;
+			}
+
+			return rows_affected;
+		}
+
+		public List<List<string>> get_employee_details( )
 		{
 			if (!is_conn_open)
 				return null;
@@ -1413,6 +1725,8 @@ namespace Attendance.Data
 				{ 
 				        try
 					    {
+
+					     
 						 employee.Add(reader[i].ToString());
 					    }
 					    catch(Exception ex)
@@ -1424,6 +1738,134 @@ namespace Attendance.Data
 				
 				}
 				employee_details.Add(employee);
+			}
+
+			reader.Close();
+
+			return employee_details;
+
+		}
+
+		public Dictionary<string, string> get_employee_details_with_column_names()
+		{
+			if (!is_conn_open)
+				return null;
+
+
+
+			Dictionary<string, string> employee_details = new Dictionary<string, string>();
+
+			string cmd_string = String.Format("SELECT * FROM employee WHERE emp_id='{0}';", emp_id2);
+
+			MySqlCommand cmd = new MySqlCommand(cmd_string, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception e)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+
+			catch (Exception ex)
+			{
+
+			}
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				Dictionary<string, string> employee = new Dictionary<string, string>();
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					try
+					{
+
+
+						employee[reader.GetName(i).ToString()] = reader[i].ToString();
+					}
+					catch (Exception ex)
+					{
+						employee[reader.GetName(i).ToString()] = "No Data";
+					}
+
+
+
+				}
+				employee_details = employee;
+			}
+
+			reader.Close();
+
+			return employee_details;
+
+		}
+
+
+
+
+
+		public Dictionary<string,string> get_employee_details_with_column_names(string employee_ids)
+		{
+			if (!is_conn_open)
+				return null;
+
+			
+
+		Dictionary<string,string> employee_details = new Dictionary<string, string>();	
+
+			string cmd_string = String.Format("SELECT * FROM employee WHERE emp_id='{0}';",employee_ids);
+
+			MySqlCommand cmd = new MySqlCommand(cmd_string, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception e)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+
+			catch (Exception ex)
+			{
+
+			}
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				Dictionary<string, string> employee = new Dictionary<string, string>();
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					try
+					{
+
+
+						employee[reader.GetName(i).ToString()] = reader[i].ToString();
+					}
+					catch (Exception ex)
+					{
+						employee[reader.GetName(i).ToString()] = "No Data";
+					}
+
+
+
+				}
+				employee_details = employee;
 			}
 
 			reader.Close();
@@ -1697,6 +2139,8 @@ namespace Attendance.Data
 				}
 			}
 
+			reader.Close();
+
 			return states;
 		}
 
@@ -1827,6 +2271,66 @@ namespace Attendance.Data
 						emp_location.Add(reader[i].ToString());
 					}
 					catch(Exception ex)
+					{
+						emp_location.Add("No Data");
+					}
+
+				}
+
+				emp_locations.Add(emp_location);
+			}
+
+			return emp_locations;
+
+		}
+
+
+		public List<List<string>> get_employee_location_details_on_a_specific_day_with_device_info(string employee_id, string sql_date)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string sql_location_query = String.Format("select * from employee_location_with_device_info where date(the_date_and_time) = '{0}' and emp_id='{1}' ;", sql_date, employee_id);
+
+			MySqlCommand cmd = new MySqlCommand(sql_location_query, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+
+
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<List<string>> emp_locations = new List<List<string>>();
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				List<string> emp_location = new List<string>();
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+
+					try
+					{
+						emp_location.Add(reader[i].ToString());
+					}
+					catch (Exception ex)
 					{
 						emp_location.Add("No Data");
 					}

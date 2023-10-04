@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.UpdateYourSales"
+             Title="UpdateYourSales">
+    <ScrollView Orientation="Vertical" >
+        <VerticalStackLayout x:Name="vs" Spacing="10" HorizontalOptions="Center">
+            <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
+            <Label
+            
+            Text="You can update your sales here update your sales !"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+            <HorizontalStackLayout Spacing="10">
+                <Button Text="Check And Tally Items"   HorizontalOptions="Start" VerticalOptions="Start" IsVisible="True" IsEnabled="True" x:Name="uitmbtn" Clicked="uitmbtn_Clicked"></Button>
+                <Picker Title="Select a Date (yyyy-mm-dd):" x:Name="dpicker">
+
+                </Picker>
+            </HorizontalStackLayout>
+            <Button x:Name="additm" Text="Add Item" HorizontalOptions="Center" Clicked="additm_Clicked" IsVisible="True" IsEnabled="True"></Button>
+
+        </VerticalStackLayout>
+
+
+
+    </ScrollView>
+</ContentPage>

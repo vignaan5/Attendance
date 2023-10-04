@@ -131,7 +131,7 @@ public partial class ApplyLeave : ContentPage
 
 	private async void viewrecentreqbtn_Clicked(object sender, EventArgs e)
 	{
-		MainThread.InvokeOnMainThreadAsync(() => { Navigation.PushAsync(new LeaveRequests(true)); });
+		MainThread.InvokeOnMainThreadAsync(async() => { Navigation.PushAsync(new LeaveRequests(true)); });
 
 	
 

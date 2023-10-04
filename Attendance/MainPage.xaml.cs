@@ -1,5 +1,8 @@
-﻿using Attendance.Data;
+﻿
+
+using Attendance.Data;
 using Attendance.Pages;
+using Microsoft.Maui.LifecycleEvents;
 using The_Attendance.Interfaces;
 #if ANDROID
 using The_Attendance.Platforms;
@@ -17,13 +20,35 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 #if ANDROID
 		DependencyService.Register<IAndroid,AndroidLocationService>();
-		
 
-		if(DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
-		{
-			Clkin.Text = "Clock-Out";
+		 Task.Run(() => {
 			
-		}
+			while (true)
+			{
+				if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning()  )
+				{
+					  
+					MainThread.InvokeOnMainThreadAsync(() => { Clkin.Text = "Clock-Out";  });
+
+
+				}
+				else
+				{
+					  
+					MainThread.InvokeOnMainThreadAsync(() => { Clkin.Text = "Clock-In";  });
+
+
+				}
+
+			}
+
+		});
+	
+
+	
+				
+		
+		
 
 	
 
@@ -55,9 +80,22 @@ public partial class MainPage : ContentPage
 	private async void OnCounterClicked(object sender, EventArgs e)
 	{
 
+#if WINDOWS
+		Navigation.PushAsync(new Pages.UpdateSalesAndroid());
+#endif
 
-		Navigation.PushAsync(new Pages.UpdateSales());
+#if ANDROID
+		if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
+		{
 
+			Navigation.PushAsync(new Pages.UpdateSalesAndroid());
+		}
+		else
+		{
+			DisplayAlert("Not Clocked in !", "Please clock in to update your sales", "ok");
+		}
+
+#endif
 
 
 	}
@@ -66,13 +104,13 @@ public partial class MainPage : ContentPage
 	{
 #if ANDROID
 
-		if (Clkin.Text == "Clock-In")
+		if (!DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
 		{
 
 			DependencyService.Resolve<IAndroid>().StartMyService();
 			Clkin.Text = "Clock-Out";
 		}
-		else if (Clkin.Text == "Clock-Out" && DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
+		else if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
 		{
 			DependencyService.Resolve<IAndroid>().StopMyService();
 			Clkin.Text = "Clock-In";
@@ -102,8 +140,25 @@ public partial class MainPage : ContentPage
 	private async void UpdateRecentSales_Clicked(object sender, EventArgs e)
 	{
 
+#if WINDOWS
 
-		Navigation.PushAsync(new ViewRecentSales());
+Navigation.PushAsync(new ViewRecentSales());
+
+#endif
+
+
+#if ANDROID
+		if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
+		{
+
+			Navigation.PushAsync(new ViewRecentSales());
+		}
+		else
+		{
+			DisplayAlert("Not Clocked in !", "Please clock in to Edit your sales", "ok");
+		}
+
+#endif
 
 	}
 
@@ -121,8 +176,12 @@ public partial class MainPage : ContentPage
 			MainThread.InvokeOnMainThreadAsync(() =>
 			{
 				if (rem_sales > 0)
-					target_remaning.Text = rem_sales.ToString() + "Rs needed to achieve your target";
+				{
+					int rupee_conv = Convert.ToInt32(rem_sales);
+					string rupee = @String.Format(new System.Globalization.CultureInfo("en-IN"), "{0:c}", decimal.Parse(rem_sales.ToString(), System.Globalization.CultureInfo.InvariantCulture));
 
+					target_remaning.Text = rupee.ToString() + "Rs needed to achieve your target";
+				}
 				else target_remaning.Text = " This month's target achieved ";
 
 			});

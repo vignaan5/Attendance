@@ -46,11 +46,11 @@ public partial class EmployeeAttendance : ContentPage
 			htmlstring += "<tr>";
 
 			htmlstring += String.Format("<td> {0} </td> <td> {1} </td> <td> {2} </td> <td> {3} </td> <td> {4} </td> <td> {5} </td> <td> {6} </td> ", all_employee_id[employee][0], all_employee_id[employee][1], all_employee_id[employee][2], all_employee_id[employee][7], all_employee_id[employee][15], all_employee_id[employee][5], all_employee_id[employee][6]);
-			startdate = start;
+			startdate = start.Date;
 			int total_working_days = 0;
 			int total_weekoff_day = 0;
 			int total_leave_days = 0;
-			while (startdate.Date <= end)
+			while (startdate.Date <= end.Date)
 			{
 				if (emp_attendance[startdate.Date.ToString("dd-MM-yyyy")].Contains(all_employee_id[employee][0]))
 				{
@@ -137,24 +137,11 @@ public partial class EmployeeAttendance : ContentPage
 	{
 		actind.IsVisible = true;
 
-		DateTime startdt = DateTime.Now;
-		try
-		{
-			startdt= Convert.ToDateTime(startDate.Date.Day.ToString() + "-" + startDate.Date.Month.ToString() + "-" + startDate.Date.Year.ToString());
-		}
-		catch(Exception ex) 
-		{ 
+		DateTime startdt = DateTime.Parse(startDate.Date.ToString("dd/MM/yyyy 00:00:00"));
+	
+		DateTime enddt =   DateTime.Parse(endDate.Date.ToString("dd/MM/yyyy 00:00:00"));
 		
-		}
-		DateTime enddt = DateTime.Now;
-		try
-		{
-		  enddt =	Convert.ToDateTime(endDate.Date.Day.ToString() + "-" + endDate.Date.Month.ToString() + "-" + endDate.Date.Year.ToString());
-		}
-		catch(Exception ex) 
-		{ 
-		
-		}
+
 		DateTime start = startdt;
 
 

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.UpdateSales"
              Title="UpdateSales" BackgroundImageSource="whiteback.jpg">
-    <ScrollView Orientation="Vertical" >
+    
     <VerticalStackLayout x:Name="vs">
         <ActivityIndicator x:Name="actind" IsVisible="True" IsRunning="True" IsEnabled="True"></ActivityIndicator>
         <Label
@@ -25,5 +25,5 @@
 
       
 
-    </ScrollView>
+    
 </ContentPage>

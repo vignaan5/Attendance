@@ -10,8 +10,7 @@
 
            
             <Entry x:Name="usrname"  Placeholder="Enter Username" VerticalOptions="Center" HorizontalOptions="Center" >
-                
-                
+                               
             </Entry>
         
    

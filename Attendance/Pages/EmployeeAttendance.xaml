@@ -4,8 +4,8 @@
              x:Class="Attendance.Pages.EmployeeAttendance"
              Title="EmployeeAttendance" BackgroundImageSource="whiteback.jpg">
     <VerticalStackLayout x:Name="vs">
-        <DatePicker x:Name="startDate" SemanticProperties.Description="Choose Start Date" ></DatePicker>
-        <DatePicker x:Name=" endDate" SemanticProperties.Description="Choose End Date"></DatePicker>
+        <DatePicker x:Name="startDate" SemanticProperties.Description="Choose Start Date" Format="dd/MM/yyyy" ></DatePicker>
+        <DatePicker x:Name=" endDate" SemanticProperties.Description="Choose End Date"  Format="dd/MM/yyyy"></DatePicker>
         <Button Text="Get Attendance Report" Clicked="Button_Clicked"></Button>
         <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>
     </VerticalStackLayout>

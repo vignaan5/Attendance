@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.AdminUpdateEmployee"
+             Title="AdminUpdateEmployee">
+    <VerticalStackLayout>
+        <ActivityIndicator x:Name="actind"></ActivityIndicator>
+        <VerticalStackLayout x:Name="emp_vs">
+            <SearchBar x:Name="search_emp" TextChanged="search_emp_TextChanged" Placeholder="Search For an Employee" HorizontalOptions="Center">
+
+            </SearchBar>
+            <ListView x:Name="emplist" IsVisible="False" HorizontalOptions="Center" ItemSelected="emplist_ItemSelected">
+
+            </ListView>
+        </VerticalStackLayout>
+
+
+        <VerticalStackLayout x:Name="vs">
+        <Button x:Name="update_details_btn" Text="Update Employee Details (+)"  Clicked="update_details_btn_Clicked" IsVisible="False" IsEnabled="False" HorizontalOptions="Center"></Button>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Entry Placeholder="Your First Name is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Entry Placeholder="Your Last Name is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Entry Placeholder="Your Age is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Entry Placeholder="Bank Name is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Entry Placeholder="Bank(NO) is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+        </HorizontalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Entry Placeholder="IFSC is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+        </HorizontalStackLayout>
+        
+
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="Store Name is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+            
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="Area is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+            
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="City is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+            
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="State is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+            
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="Monthly Target is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+
+
+            <Button x:Name="update_details2_btn" Text="Save and Update Details" HorizontalOptions="Center" IsEnabled="False" IsVisible="False" Clicked="update_details2_btn_Clicked"></Button>
+
+     </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

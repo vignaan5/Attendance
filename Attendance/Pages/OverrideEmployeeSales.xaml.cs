@@ -120,7 +120,7 @@ public partial class OverrideEmployeeSales : ContentPage
 			   MainThread.InvokeOnMainThreadAsync(() => 
 			   {
 
-				   Navigation.PushAsync(new UpdateSales(this.emp_id, datePicker));
+				   Navigation.PushAsync(new UpdateYourSales(this.emp_id, datePicker));
 			   });
 		
 		   });

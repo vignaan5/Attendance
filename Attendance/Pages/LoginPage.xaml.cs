@@ -21,6 +21,13 @@ public partial class LoginPage : ContentPage
 		check_already_signed_in();
 
 	}
+
+	public LoginPage(bool has_checked_signin_to_be_true)
+	{
+		InitializeComponent ();	
+	}
+
+
 	public async Task CopyFileToAppDataDirectory(string filename)
 	{
 		// Open the source file
@@ -34,6 +41,9 @@ public partial class LoginPage : ContentPage
 		await inputStream.CopyToAsync(outputStream);
 	}
 
+
+
+
 	public async void check_already_signed_in()
 	{
 		await CopyFileToAppDataDirectory("DigiCertGlobalRootG2.crt.pem");
@@ -46,8 +56,9 @@ public partial class LoginPage : ContentPage
 			usrname.Text = usernm;
 			passcode.Text = pass;
 			login_btn.IsEnabled = false;
-		
-	       
+
+			
+
 			Login_to_app(null,null);
 
 		}
@@ -118,7 +129,7 @@ public partial class LoginPage : ContentPage
 			DisplayAlert("Sorry !", "No account found with " + usrname.Text.ToString(), "Ok !");
 			nothing_found = false;
 			is_admin = false;
-			App.Current.MainPage = new LoginPage();
+			App.Current.MainPage = new LoginPage(true);
 			
 		}
 	

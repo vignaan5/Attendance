@@ -5,13 +5,16 @@ namespace Attendance.Pages;
 public partial class ViewEmployeeLocations : ContentPage
 {
 	public string emp_id { get; set; }
+
 	DataClass dt = new DataClass();
 	public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
-
+	
 	List<List<string>> emp_locations = new List<List<string>>();	
 	public ViewEmployeeLocations()
 	{
 		InitializeComponent();
+		emplist.ItemsSource = nothing_found_temp;
+		emplist.IsVisible = true;
 	}
 
 	private async void Button_Clicked(object sender, EventArgs e)
@@ -20,7 +23,7 @@ public partial class ViewEmployeeLocations : ContentPage
 	  await	Task.Run(() => {
 
 		  dt.start_connection();
-		 emp_locations= dt.get_employee_location_details_on_a_specific_day(emp_id,dtpicker.Date.ToString("yyyy-MM-dd"));
+		 emp_locations= dt.get_employee_location_details_on_a_specific_day_with_device_info(emp_id,dtpicker.Date.ToString("yyyy-MM-dd"));
 		  dt.close_connection();
 		
 		});
@@ -42,6 +45,7 @@ public partial class ViewEmployeeLocations : ContentPage
 			VerticalStackLayout tempvs = new VerticalStackLayout { Spacing=10};
 		     for(int i=0;i<location_details.Count;i++) 
 			{
+
 				if(i==0)
 				{
 					Label lbl = new Label { Text = "Employee_id :" + location_details[i], FontSize = 10 };
@@ -131,8 +135,14 @@ public partial class ViewEmployeeLocations : ContentPage
 					tempvs.Add(lbl);
 
 				}
+				else if(i== 14) 
+				{
+					Label lbl = new Label { Text = "Device Info :\n" + location_details[i] };
+					tempvs.Add(lbl);
 
+				}
 
+			
 
 
 
@@ -144,8 +154,8 @@ public partial class ViewEmployeeLocations : ContentPage
 
 			mapsbutton.Clicked += (async (object sender,EventArgs e) => {
 
-				double latitude = Convert.ToDouble(location_details[location_details.Count-2]);
-				double longitude = Convert.ToDouble(location_details[location_details.Count - 1]);
+				double latitude = Convert.ToDouble(location_details[location_details.Count-3]);
+				double longitude = Convert.ToDouble(location_details[location_details.Count - 2]);
 				Microsoft.Maui.Devices.Sensors.Location l = new Microsoft.Maui.Devices.Sensors.Location(latitude, longitude);
 
 
@@ -180,6 +190,9 @@ public partial class ViewEmployeeLocations : ContentPage
 
 	private void emplis_ItemSelected(object sender, SelectedItemChangedEventArgs e)
 	{
+		if ((string)emplist.SelectedItem == "Nothing Found")
+			return;
+
 		this.emp_id = (string)emplist.SelectedItem;
 		this.emp_id= this.emp_id.Split(' ')[0];
 		searchvs.Clear();
@@ -190,6 +203,7 @@ public partial class ViewEmployeeLocations : ContentPage
 
 	private void search_emp_TextChanged(object sender, TextChangedEventArgs e)
 	{
+		
 		if (search_emp.Text.Trim() == "")
 		{
 

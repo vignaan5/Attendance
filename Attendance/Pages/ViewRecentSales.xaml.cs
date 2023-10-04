@@ -1,6 +1,7 @@
 using Attendance.Data;
 using Microsoft.Maui.Graphics;
 using MySqlConnector;
+using The_Attendance.Interfaces;
 
 namespace Attendance.Pages;
 
@@ -132,6 +133,15 @@ public partial class ViewRecentSales : ContentPage
 
 			rm.Clicked += (async(object sender, EventArgs e) =>
 			{
+#if ANDROID
+				if(!DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning()) 
+				{
+					DisplayAlert("Not Clocked in !", "Please clock in to Edit your sales", "ok");
+					Navigation.PopAsync();
+					return;
+				}
+#endif
+
 				//string remove_sql_qry = String.Format("delete from employee_sales2 where emp_id='{0}' and sno={1} and pcs={2} and The_date='{3}' and The_Time='{4}' and amount={5};",emp_id,sno,pcs,sold_date,sold_time,amount);
 				string remove_sql_qry = String.Format("delete from employee_sales2 where order_id={0}", order_id);
 				dt.start_connection();

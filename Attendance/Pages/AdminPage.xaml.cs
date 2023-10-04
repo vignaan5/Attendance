@@ -71,6 +71,7 @@ public partial class AdminPage : ContentPage
 	private void EmployeeAttendance(object sender, EventArgs e)
 	{
 		Navigation.PushAsync(new EmployeeAttendance());
+		//Navigation.PushAsync(new Attendance2());
 	}
 
 	private void manageempclicked(object sender, EventArgs e)
@@ -117,4 +118,19 @@ public partial class AdminPage : ContentPage
 	{
 		Navigation.PushAsync(new LeaveRequests());
     }
+
+	private void manage_accounts_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new AdminUpdateEmployee());
+    }
+
+	private void store_rankings_btn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new ViewStoreRankings());
+	}
+
+	private void products_rankings_btn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new ViewProductRankings());
+	}
 }
