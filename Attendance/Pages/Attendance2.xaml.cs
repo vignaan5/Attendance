@@ -1,3 +1,4 @@
+
 using Attendance.Data;
 
 
@@ -27,8 +28,10 @@ public string state = String.Empty;
 
 				list.Add("All");
 
-        
-				statepicker.ItemsSource = list; 
+		       xlbtn.IsEnabled = false;
+		xlbtn.IsVisible = false;
+				statepicker.ItemsSource = list;
+		statepicker.SelectedIndex = 0;
 				actind.IsVisible = false;
 
 			
@@ -37,11 +40,47 @@ public string state = String.Empty;
 		
 	}
 
+	public Attendance2(string state)
+	{
+		InitializeComponent();
+		actind.IsVisible = true;
 
-	public  void get_attendance()
+
+
+		List<string> list = new List<string> {state };
+	
+
+		
+
+		xlbtn.IsEnabled = false;
+		xlbtn.IsVisible = false;
+		statepicker.ItemsSource = list;
+		statepicker.SelectedIndex = 0;
+		actind.IsVisible = false;
+
+
+
+
+
+	}
+
+
+	public async  void get_attendance()
 	{
 		if(datepicker_start.Date>datepicker_end.Date)
 		{
+			await MainThread.InvokeOnMainThreadAsync(() => {
+				DisplayAlert("Incorrect Date Range", "end date should be greater than start date", "ok");
+			     actind.IsVisible = false;
+			});
+			return;
+		}
+
+		if(statepicker.SelectedIndex==-1)
+		{
+			await MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Select State", "Please select a state", "ok"); actind.IsVisible = false; });
+		
+
 			return;
 		}
 
@@ -50,7 +89,7 @@ public string state = String.Empty;
 		dt.start_connection();
 		
 		all_employee_id = dt.get_all_employee_id_in_a_specific_state(state);
-		Dictionary<string, List<string>> approved_leaves = dt.get_all_employee_approved_leave_dates(state);
+		Dictionary<string, List<string>> approved_leaves = dt.get_all_employee_approved_leave_dates(null);
 
 		while (datepicker_start.Date<=datepicker_end.Date)
 		{
@@ -68,7 +107,7 @@ public string state = String.Empty;
 					Dictionary<string, string> emp = dt.get_employee_details_with_column_names(empid);
 					emp["date"]=appdate;
 					
-					if(present_emp_ids.Contains(empid))
+					if(present_emp_ids!=null && present_emp_ids.Contains(empid))
 					 {
 						emp["present"] = "yes";
 					 }
@@ -76,6 +115,26 @@ public string state = String.Empty;
 					{
 						emp["present"] = "no";
 					}
+
+					if(approved_leaves!=null && approved_leaves.ContainsKey(empid) && approved_leaves[empid].Contains(appdate))
+					{
+						if (emp["present"]=="yes")
+						{
+							emp["present_on_leave"] = "yes";
+						}
+						else
+						{
+							emp["present_on_leave"] = "no";
+						}
+
+						emp["on_leave"] = "yes";
+					}
+					else
+					{
+						emp["on_leave"] = "no";
+					}
+
+
 					dates[appdate].Add(emp);
 				}
 				else
@@ -98,18 +157,208 @@ public string state = String.Empty;
 
 			}
 
-			  datepicker_start.Date=  datepicker_start.Date.AddDays(1);
+		 await	MainThread.InvokeOnMainThreadAsync(() => { datepicker_start.Date = datepicker_start.Date.AddDays(1); });
+			  
 		}
+
+		dt.close_connection();
+
+
+		string[] table_header_dates = dates.Keys.ToArray();
+
+		List<string> table_header_dates_list = new List<string> { "employee id", "first name", "last name", "store name", "area", "city", "state" };
 		
+		table_header_dates_list.AddRange( table_header_dates.ToList());
+
+		
+
+
+
+		string[,] table_coloumns = new string[all_employee_id.Count, 5];
+		string[,] table_row_arr=new string[all_employee_id.Count,table_header_dates_list.Count];
+
+		for(int i=0;i<table_coloumns.GetLength(0);i++)
+		{
+			for(int j=0;j<table_coloumns.GetLength(1);j++)
+			{
+				table_coloumns[i,j] = "0";
+			}
+		}
+
+
+		Dictionary<string, List<Dictionary<string, string>>> emp_attendance = new Dictionary<string, List<Dictionary<string, string>>>();
+
+		for(int i=0;i<all_employee_id.Count;i++)
+		{
+			table_row_arr[i,0] = all_employee_id[i];
+		}	
+
+		for(int i=7;i<table_header_dates_list.Count;i++)
+		{
+			for(int j=0;j<dates[table_header_dates_list[i]].Count;j++)
+			{
+				for(int k=0;k<table_row_arr.GetLength(0);k++) 
+				{
+					if (dates[table_header_dates_list[i]][j]["emp_id"] == table_row_arr[k,0])
+					{
+						table_row_arr[k, 1] = dates[table_header_dates_list[i]][j]["firstname"];
+						table_row_arr[k, 2] = dates[table_header_dates_list[i]][j]["lastname"];
+						table_row_arr[k, 3] = dates[table_header_dates_list[i]][j]["store_name"];
+						table_row_arr[k, 4] = dates[table_header_dates_list[i]][j]["area"];
+						table_row_arr[k, 5] = dates[table_header_dates_list[i]][j]["city"];
+						table_row_arr[k, 6] = dates[table_header_dates_list[i]][j]["state"];
+
+						 if(dates[table_header_dates_list[i]][j].ContainsKey("on_leave") &&  dates[table_header_dates_list[i]][j]["on_leave"]=="yes")
+						{
+							table_row_arr[k, i] = "on leave";
+							int val = Convert.ToInt32(table_coloumns[k, 2]);
+							val++;
+							table_coloumns[k, 2] = val.ToString();
+							
+						}
+						 else
+						{
+							DateTime tempdt = DateTime.Parse(table_header_dates_list[i]+" 00:00:00");
+
+							if (tempdt.Date.DayOfWeek.ToString().ToUpper().Equals(dates[table_header_dates_list[i]][j]["weekoff_day"].ToUpper()) )
+							{
+								if (dates[table_header_dates_list[i]][j]["present"] == "yes")
+								{
+									int val = Convert.ToInt32(table_coloumns[k, 0]);
+									val++;
+									table_coloumns[k,0] = val.ToString();
+
+									table_row_arr[k, i] = "present on weekoff day";
+								}
+								else
+								{
+									table_row_arr[k, i] = "weekoff_day";
+
+									int val = Convert.ToInt32(table_coloumns[k, 1]);
+									val++;
+									table_coloumns[k, 1] = val.ToString();
+
+								}
+
+							}
+							else
+							{
+								table_row_arr[k, i] = dates[table_header_dates_list[i]][j]["present"];
+
+								if (table_row_arr[k,i]=="yes")
+								{
+									int val = Convert.ToInt32(table_coloumns[k, 0]);
+									val++;
+									table_coloumns[k, 0] = val.ToString();
+								}
+								else if(table_row_arr[k, i] == "no")
+								{
+									int val = Convert.ToInt32(table_coloumns[k, 3]);
+									val++;
+									table_coloumns[k, 3] = val.ToString();
+								}
+
+							}
+						}
+
+						
+					}
+				}
+
+				
+
+			}
+		}
+
+		List<List<string>> table_rows = new List<List<string>>();
+
+		for(int i=0;i<table_row_arr.GetLength(0);i++)
+		{
+			List<string> temp = new List<string>();
+			for(int j=0;j<table_row_arr.GetLength(1);j++)
+			{
+				temp.Add(table_row_arr[i, j]);
+			}
+
+			 for(int j=0;j<5;j++) 
+			 {
+				if(j==4)
+				{
+					temp.Add(table_coloumns[i, 0]);
+				}
+
+				else temp.Add(table_coloumns[i,j]);
+			 }
+
+			table_rows.Add(temp);
+		}
+
+		List<string> additional_table_header_list = new List<string> { "present days","weekoff","leave days","absent days","total present days" };
+
+		table_header_dates_list.AddRange(additional_table_header_list);
+
+		string html_string = dt.create_html_string(table_header_dates_list, table_rows,true);
+
+		
+	
+
+
+
+		await MainThread.InvokeOnMainThreadAsync(() => { 
+			actind.IsVisible = false; wview.Source = new HtmlWebViewSource { Html = html_string }; 
+			xlbtn.IsVisible= true;
+			xlbtn.IsEnabled= true;
+			xlbtn.Clicked += (async (object sender, EventArgs e) => {
+
+				string path = AppDomain.CurrentDomain.BaseDirectory;
+
+				var destination = System.IO.Path.Combine(path, "report.html");
+
+#if WINDOWS
+
+			destination = @"C:\Users\Public\Documents\report.html";
+
+#endif
+
+				File.WriteAllText(destination, html_string);
+#if WINDOWS
+			try
+			{
+				System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe", destination);
+			}
+			catch (Exception ex)
+			{
+				DisplayAlert("Error", ex.Message.ToString(), "Ok");
+			}
+			return;
+
+#endif
+				await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
+
+
+			});
+
+		} );  
+		 
+
+
+
 
 	}
 
-	private void abtn_Clicked(object sender, EventArgs e)
+	private async void abtn_Clicked(object sender, EventArgs e)
 	{
-		get_attendance();
+		actind.IsVisible = true;
+
+	  await	Task.Run(() => { get_attendance(); });
 	}
 
 	private void abtn_Clicked_1(object sender, EventArgs e)
+	{
+
+	}
+
+	private void xlbtn_Clicked(object sender, EventArgs e)
 	{
 
 	}

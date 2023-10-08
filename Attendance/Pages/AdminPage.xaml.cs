@@ -70,8 +70,8 @@ public partial class AdminPage : ContentPage
 
 	private void EmployeeAttendance(object sender, EventArgs e)
 	{
-		Navigation.PushAsync(new EmployeeAttendance());
-		//Navigation.PushAsync(new Attendance2());
+		//Navigation.PushAsync(new EmployeeAttendance());
+		Navigation.PushAsync(new Attendance2());
 	}
 
 	private void manageempclicked(object sender, EventArgs e)

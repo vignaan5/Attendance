@@ -12,6 +12,7 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
         <DatePicker x:Name="dpicker"></DatePicker>
+            <Picker x:Name="statepicker" SelectedIndexChanged="statepicker_SelectedIndexChanged"></Picker>
         <Button Text="Generate Report" Clicked="get_report"></Button>
     </VerticalStackLayout>
        

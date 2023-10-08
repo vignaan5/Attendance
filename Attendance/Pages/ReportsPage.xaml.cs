@@ -17,7 +17,7 @@ public partial class ReportsPage : ContentPage
 		dt.start_connection();
 		string state = dt.get_current_employee_state(emp_id);
 		dt.close_connection();
-		Navigation.PushAsync(new EmployeeAttendance(state));
+		Navigation.PushAsync(new Attendance2(state));
 
 	}
 
@@ -28,6 +28,16 @@ public partial class ReportsPage : ContentPage
 		string state = dt.get_current_employee_state(emp_id);
 		dt.close_connection();
 		Navigation.PushAsync(new ViewTeamReport(state));
+
+	}
+
+	private async void showproducts_Clicked(object sender, EventArgs e)
+	{
+		string emp_id = await SecureStorage.GetAsync("employee_id");
+		dt.start_connection();
+		string state = dt.get_current_employee_state(emp_id);
+		dt.close_connection();
+		Navigation.PushAsync(new DataGrid(state));
 
 	}
 }

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.Attendance2"
              Title="Attendance2">
-    <VerticalStackLayout>
+    <VerticalStackLayout x:Name="vs" Spacing="10">
         <HorizontalStackLayout x:Name="hs">
             <DatePicker Format="dd-MM-yyyy" x:Name="datepicker_start"></DatePicker>
             <DatePicker Format="dd-MM-yyyy" x:Name="datepicker_end"></DatePicker>
@@ -11,8 +11,9 @@
         </HorizontalStackLayout>
         <ActivityIndicator IsVisible="False" IsRunning="True" IsEnabled="True" x:Name="actind"></ActivityIndicator>
 
-        <Button Text="Get Attendance" x:Name="abtn" Clicked="abtn_Clicked"></Button>
-
+        <Button HorizontalOptions="Center" Text="Get Attendance" x:Name="abtn" Clicked="abtn_Clicked"></Button>
+        <WebView x:Name="wview"></WebView>
+        <Button HorizontalOptions="Center" Text="Generate Excel" x:Name="xlbtn" IsEnabled="False" IsVisible="False" Clicked="xlbtn_Clicked"></Button>
     </VerticalStackLayout>
     
 </ContentPage>

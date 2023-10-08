@@ -1,3 +1,4 @@
+
 using Attendance.Data;
 
 namespace Attendance.Pages;
@@ -95,7 +96,8 @@ public partial class ViewTeamReport : ContentPage
 
 	public string create_html_string()
 	{
-		string htmlstring = "<html> <body> <table border='1'><thead><tr bgcolor=#D3D3D3> <th>emp_id</th> ";
+		string htmlstring = "<html> <body> <table border='1'><thead><tr bgcolor=#D3D3D3> <th>emp_id</th><th>first name</th> <th> last name </th> <th>store name</th> <th>area</th> <th> monthly target </th> ";
+
 
 		int sum = 0;
 
@@ -106,27 +108,48 @@ public partial class ViewTeamReport : ContentPage
 			
 		}
 
-		htmlstring += "</thead><tbody></tr>";
+		htmlstring += "</thead></tr><tbody>";
 
 		dt.start_connection();
-		foreach(var employee in state_report)
-		{
 
-			htmlstring += String.Format("<tr> <td> {0} </td>", employee.Key);
+		Dictionary<string, int> dates_total = new Dictionary<string, int>();
+
+
+		foreach (var employee in state_report)
+		{
+			Dictionary<string, string> emp_details = dt.get_employee_details_with_column_names(employee.Key);
+
+			htmlstring += String.Format("<tr> <td> {0} </td> <td>{1}</td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5} </td>", employee.Key, emp_details["firstname"], emp_details["lastname"],emp_details["store_name"], emp_details["area"], emp_details["monthly_target"]);
+
+			
 			foreach(var date in employee.Value)
 			{
 				  if(date.Value!="0")
 				htmlstring += String.Format("<td><a href='{0}'>{1} </a> </td>",create_html_string_for_employee_daily_sale(employee.Key,date.Key,date.Value) ,date.Value);
 				else htmlstring += String.Format("<td> {0} </td>",date.Value);
 
-
+				if(dates_total.ContainsKey(date.Key))
+				{
+					dates_total[date.Key]+=Convert.ToInt32(date.Value);
+				}
+				else
+				{
+					dates_total[date.Key] = 0;
+				}
 			}
 
 			htmlstring += " </tr> ";
 		}
 		dt.close_connection();
 
-	
+		htmlstring += String.Format("<tr bgcolor=#D3D3D3><td> </td> <td></td> <td> </td> <td> </td> <td> </td> <td> total sales </td> ");
+
+		foreach(var date in dates_total)
+		{
+			htmlstring += String.Format("<td>{0}</td>", date.Value);
+		}
+
+		htmlstring += "</tr>";
 
 		return htmlstring+=String.Format("</tbody></table>{0}</body></html>",dt.get_js2excel_script());
 	}

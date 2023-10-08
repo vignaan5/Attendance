@@ -6,5 +6,7 @@
     <VerticalStackLayout Spacing="10">
         <Button Text="View Attendance Report" x:Name="showempreportbtn" Clicked="showempreportbtn_Clicked" HorizontalOptions="Center"></Button>
         <Button Text="View Your Team Report" x:Name="showteamreportbtn" Clicked="showteamreportbtn_Clicked" HorizontalOptions="Center"></Button>
+        <Button Text="View Your Team Products Report" x:Name="showproducts" Clicked="showproducts_Clicked" HorizontalOptions="Center"></Button>
+
     </VerticalStackLayout>
 </ContentPage>
