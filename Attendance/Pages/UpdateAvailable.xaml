@@ -6,7 +6,7 @@
     <VerticalStackLayout>
         <Label 
             Text="This app is no longer supported , Please contact your admin and install newer version of the app"
-            VerticalOptions="Center" 
+            VerticalOptions="End" 
             HorizontalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

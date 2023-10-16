@@ -508,6 +508,9 @@ namespace Attendance.Data
 			return rows;
 		}
 
+		
+
+
 
 		public async Task get_emp_id()
 		{
@@ -2368,7 +2371,7 @@ namespace Attendance.Data
 
 			try
 			{
-			 return	version_cmd.ExecuteScalar().ToString();
+			 return	version_cmd.ExecuteScalar().ToString().Trim();
 			}
 			catch( Exception ex) 
 			{

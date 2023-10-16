@@ -97,6 +97,9 @@ public partial class DailyReport : ContentPage
 	}
 
 
+
+
+
 	private async void Button_Clicked(object sender, EventArgs e)
 	{
 		actind.IsVisible = true;

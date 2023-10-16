@@ -205,5 +205,11 @@ public partial class DataGrid : ContentPage
 	private void statepicker_SelectedIndexChanged(object sender, EventArgs e)
 	{
 		this.state = statepicker.SelectedItem as string;
+		//if(!vs.Contains(genxl))
+		//{
+
+		//}
+
+	
 	}
 }

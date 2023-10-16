@@ -44,8 +44,16 @@ public partial class ViewEmployees : ContentPage
 					emp_details[i].Add( rem_sales.ToString());
 				}
 
-				int this_month_sale = Convert.ToInt32(emp_details[i][12]);
-				    
+				int this_month_sale = 0;
+
+				try
+				{
+				 this_month_sale=	Convert.ToInt32(emp_details[i][12]);
+				}
+				catch(Exception ex)
+				{
+					this_month_sale = 0;
+				}
 				this_month_sale -= rem_sales;
 
 					
@@ -266,8 +274,25 @@ public partial class ViewEmployees : ContentPage
 
 			   if(j==21)
 				{
-					int month_target = Convert.ToInt32(rows[i][12]);
-					int current_sale = Convert.ToInt32(rows[i][21]);
+					int month_target = 0;
+					try
+					{
+						month_target= Convert.ToInt32(rows[i][12]);
+					}
+					catch(Exception ex)
+					{
+						month_target = 0;
+					}
+					int current_sale = 0;
+
+					try
+					{
+					 current_sale=	Convert.ToInt32(rows[i][21]);
+					}
+					catch(Exception ex)
+					{
+						current_sale = 0;
+					}
 
 					if(current_sale>month_target)
 					{
