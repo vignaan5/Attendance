@@ -1,7 +1,5 @@
 ﻿
 
-
-
 using Microsoft.Maui.Platform;
 using MySqlConnector;
 using System;
@@ -1491,10 +1489,10 @@ namespace Attendance.Data
 				html += "<tr>";
 				for (int j = 0; j < body[i].Count; j++)
 				{
-					if (body[i][j] == "yes")
+					if (body[i][j].Contains("present"))
 					{
 
-						html += String.Format("<td bgcolor=#90EE90>{0}</td>", "present");
+						html += String.Format("<td bgcolor=#90EE90>{0}</td>", body[i][j]);
 					}
 					else if (body[i][j] == "no")
 					{
@@ -1507,7 +1505,7 @@ namespace Attendance.Data
 				        html += String.Format("<td bgcolor=#FFD580>{0}</td>", body[i][j]);
 
 					}
-					else if(body[i][j] == "present on weekoff day" || body[i][j]=="weekoff_day")
+					else if(body[i][j].Contains("present on weekoff day") || body[i][j]=="weekoff_day")
 					{
 						html += String.Format("<td bgcolor=#ADD8E6>{0}</td>", body[i][j]);
 					}
@@ -2694,12 +2692,20 @@ namespace Attendance.Data
 
 					 enddtemp = reader[2].ToString().Split('/', ' ');
 
-                    strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1] + " 00:00:00 AM");
+					string tempdate = reader[1].ToString().Split(' ')[0];
 
-                    end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1] + " 00:00:00 AM");
+					string tempdate2 = reader[2].ToString().Split(' ')[0];
 
 
-                }
+					strt_dt = DateTime.ParseExact(tempdate, "dd/MM/yyyy", null);
+
+                    //strt_dt = DateTime.ParseExact(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1],"yyyy/MM/dd",null);
+
+                    //end_dt = DateTime.ParseExact(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1],"yyyy-MM-dd",null);
+
+					end_dt = DateTime.ParseExact(tempdate2,"dd/MM/yyyy", null);
+
+				}
                 else
 				{
                    strdttemp = reader[1].ToString().Split('-', ' ');
@@ -2941,7 +2947,70 @@ namespace Attendance.Data
 		}
 
 
+		public Dictionary<string,List<Tuple<string,string>>> get_employee_clock_in_and_out_times_on_a_specific_day(string state,string date)
+		{
 
+			if (!is_conn_open)
+				return null;
+
+			string sql_command = "";
+
+			if (state == "All")
+			{
+				 sql_command = String.Format("select emp_id,time(clock_in) ,ifnull(time(clock_out),'Not Clocked Out') as clocked_out  from clock_in_and_out where date(clock_in)='{0}' order by emp_id, clock_in,clocked_out desc ;", date);
+
+			}
+
+			else
+			{
+
+				 sql_command = String.Format("select emp_id,time(clock_in) ,ifnull(time(clock_out),'Not Clocked Out') as clocked_out  from clock_in_and_out where date(clock_in)='{0}' and emp_id in (select emp_id from employee where state='{1}' order by emp_id, clock_in,clock_out desc );", date,state);
+			}
+			MySqlCommand cmd = new MySqlCommand(sql_command, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{ 
+			
+			}
+
+			MySqlDataReader reader = null;
+
+			Dictionary<string, List<Tuple<string, string>>> dic = new Dictionary<string, List<Tuple<string, string>>>()
+;
+			reader = cmd.ExecuteReader();
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+
+				if (!dic.ContainsKey(reader[0].ToString()))
+				{
+				    dic[reader[0].ToString()]=new List<Tuple<string, string>>();
+
+				}
+				else
+				{
+					var clock_times = Tuple.Create(reader[1].ToString(), reader[2].ToString());
+
+
+					dic[reader[0].ToString()].Add(clock_times);
+
+
+				}
+
+
+
+
+			}
+
+			reader.Close();
+
+			return dic;
+			
+		}
 
 
 

@@ -10,6 +10,7 @@ public partial class Attendance2 : ContentPage
 public	DataClass dt = new DataClass();
 public Dictionary<string, List<Dictionary<string, string>>> dates = new Dictionary<string, List<Dictionary<string, string>>>();	
  public List<string> all_employee_id=new List<string>();
+public Dictionary<string, List<Tuple<string, string>>> clock_times = new Dictionary<string, List<Tuple<string, string>>>();
 public string state = String.Empty;
 
 	public Attendance2()
@@ -99,8 +100,11 @@ public string state = String.Empty;
 			foreach (string empid in  all_employee_id)
 			{
 				
-
+				
 				List<string>present_emp_ids=dt.employee_ids_who_were_present_on_specific_day(sqldate);
+
+				clock_times = dt.get_employee_clock_in_and_out_times_on_a_specific_day(state, sqldate);
+
 
 				if(dates.ContainsKey(appdate))
 				{
@@ -134,6 +138,21 @@ public string state = String.Empty;
 						emp["on_leave"] = "no";
 					}
 
+					   if(clock_times.ContainsKey(empid))
+					{
+						try
+						{
+							emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+						}
+						catch(Exception ex)
+						{
+							emp["clock_time"]="";
+						}
+					}
+					else
+					{
+						emp["clock_time"] = "";
+					}
 
 					dates[appdate].Add(emp);
 				}
@@ -151,6 +170,25 @@ public string state = String.Empty;
 					{
 						emp["present"] = "no";
 					}
+
+
+					if (clock_times.ContainsKey(empid))
+					{
+						try
+						{
+							emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+						}
+						catch (Exception ex)
+						{
+							emp["clock_time"] = "";
+						}
+					}
+					else
+					{
+						emp["clock_time"] = "";
+					}
+
+
 					dates[appdate].Add(emp);
 
 				} 
@@ -228,7 +266,7 @@ public string state = String.Empty;
 									val++;
 									table_coloumns[k,0] = val.ToString();
 
-									table_row_arr[k, i] = "present on weekoff day";
+									table_row_arr[k, i] = String.Format("present on weekoffday ({0})", dates[table_header_dates_list[i]][j]["clock_time"]);
 								}
 								else
 								{
@@ -250,6 +288,9 @@ public string state = String.Empty;
 									int val = Convert.ToInt32(table_coloumns[k, 0]);
 									val++;
 									table_coloumns[k, 0] = val.ToString();
+
+									table_row_arr[k, i] = String.Format("present ( {0} )", dates[table_header_dates_list[i]][j]["clock_time"]);
+
 								}
 								else if(table_row_arr[k, i] == "no")
 								{
