@@ -2680,16 +2680,41 @@ namespace Attendance.Data
 					result[reader[0].ToString().Trim()] = new List<string>();
 				}
 
-				string[] strdttemp = reader[1].ToString().Split('/',' ');
+				string[] strdttemp = null;
+				string[] enddtemp = null;
 
-				string[] enddtemp = reader[2].ToString().Split('/',' ');
+                DateTime strt_dt ;
 
-				DateTime strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[1] + "/" + strdttemp[0]+" 00:00:00 AM");
-				
-				DateTime end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[1] + "/" + enddtemp[0]+" 00:00:00 AM");	
-			
-				
-				while(strt_dt.Date<=end_dt.Date)
+                DateTime end_dt ;
+
+
+                if (reader[1].ToString().Contains("/"))
+				{
+					 strdttemp = reader[1].ToString().Split('/', ' ');
+
+					 enddtemp = reader[2].ToString().Split('/', ' ');
+
+                    strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1] + " 00:00:00 AM");
+
+                    end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1] + " 00:00:00 AM");
+
+
+                }
+                else
+				{
+                   strdttemp = reader[1].ToString().Split('-', ' ');
+
+                    enddtemp = reader[2].ToString().Split('-', ' ');
+
+                    strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[1] + "/" + strdttemp[0] + " 00:00:00 AM");
+
+                    end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[1] + "/" + enddtemp[0] + " 00:00:00 AM");
+
+
+                }
+
+
+                while (strt_dt.Date<=end_dt.Date)
 				{
 
 					result[reader[0].ToString().Trim()].Add(strt_dt.Date.ToString("dd-MM-yyyy"));

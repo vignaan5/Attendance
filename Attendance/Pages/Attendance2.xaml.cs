@@ -218,7 +218,7 @@ public string state = String.Empty;
 						}
 						 else
 						{
-							DateTime tempdt = DateTime.Parse(table_header_dates_list[i]+" 00:00:00");
+							DateTime tempdt = DateTime.ParseExact(table_header_dates_list[i],"dd-MM-yyyy",null);
 
 							if (tempdt.Date.DayOfWeek.ToString().ToUpper().Equals(dates[table_header_dates_list[i]][j]["weekoff_day"].ToUpper()) )
 							{
@@ -348,9 +348,29 @@ public string state = String.Empty;
 
 	private async void abtn_Clicked(object sender, EventArgs e)
 	{
-		actind.IsVisible = true;
 
-	  await	Task.Run(() => { get_attendance(); });
+		
+
+                actind.IsVisible = true;
+
+
+	await	Task.Run(() => {
+
+
+			//MainThread.InvokeOnMainThreadAsync(() => {
+
+                get_attendance();
+
+
+
+           // });
+		
+		
+		
+		});
+	 
+		 
+	 
 	}
 
 	private void abtn_Clicked_1(object sender, EventArgs e)
