@@ -2990,6 +2990,11 @@ namespace Attendance.Data
 				{
 				    dic[reader[0].ToString()]=new List<Tuple<string, string>>();
 
+					var clock_times = Tuple.Create(reader[1].ToString(), reader[2].ToString());
+
+
+					dic[reader[0].ToString()].Add(clock_times);
+
 				}
 				else
 				{

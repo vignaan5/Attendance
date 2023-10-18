@@ -142,7 +142,16 @@ public string state = String.Empty;
 					{
 						try
 						{
-							emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+							if (clock_times[empid].Count > 0)
+							{
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+							}
+							else
+							{
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count)].Item2;
+							}
+
+
 						}
 						catch(Exception ex)
 						{
@@ -176,7 +185,15 @@ public string state = String.Empty;
 					{
 						try
 						{
-							emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+							if (clock_times[empid].Count > 0)
+							{
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+							}
+							else
+							{
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count)].Item2;
+							}
+						
 						}
 						catch (Exception ex)
 						{

@@ -403,6 +403,7 @@ namespace Attendance.Location
 
 			await connect_to_db_and_upload_data(global_sql_address_query);
 
+
 			
 		}
 
