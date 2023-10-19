@@ -2747,13 +2747,13 @@ namespace Attendance.Data
 					string tempdate2 = reader[2].ToString().Split(' ')[0];
 
 
-					strt_dt = DateTime.ParseExact(tempdate, "dd/MM/yyyy", null);
+					//strt_dt = DateTime.ParseExact(tempdate, "dd-MM-yyyy", null);
 
-                    //strt_dt = DateTime.ParseExact(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1],"yyyy/MM/dd",null);
+                    strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1] + " 00:00:00 AM");
 
-                    //end_dt = DateTime.ParseExact(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1],"yyyy-MM-dd",null);
+                    end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1] + " 00:00:00 AM");
 
-					end_dt = DateTime.ParseExact(tempdate2,"dd/MM/yyyy", null);
+					//end_dt = DateTime.ParseExact(tempdate2,"dd/MM/yyyy", null);
 
 				}
                 else
