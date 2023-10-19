@@ -14,6 +14,8 @@ public partial class MainPage : ContentPage
 {
 	int count = 0;
 	public DateTime start_time { get; set; }
+	public static bool is_connected = true;
+	public static string conn_to_internet = "";
 
 	public MainPage()
 	{
@@ -31,13 +33,20 @@ public partial class MainPage : ContentPage
 					MainThread.InvokeOnMainThreadAsync(() => { 
 					
 					   Clkin.Text = "Clock-Out";  
-					   
-					   DateTime temp=DateTime.Now;
+
+					   if(is_connected)
+					   {
+
+			 DateTime temp=DateTime.Now;
 
 					   TimeSpan tt = temp.Subtract(start_time);
 
 		clktime.Text=String.Format("Session time => {0} Hr:{1} Min:{2} sec  ",tt.Hours.ToString(),tt.Minutes.ToString(),tt.Seconds.ToString());
 					
+		
+		              }
+					 
+					  
 					});
 
 
@@ -52,6 +61,32 @@ public partial class MainPage : ContentPage
 
 			}
 
+		});
+
+
+
+
+		Task.Run(()=>{
+		
+		 while(true)
+		 {
+
+		 NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+
+		if (accessType == NetworkAccess.Internet)
+		{
+			// Connection to internet is available
+			is_connected = true;
+			
+		}
+		else
+		{
+		   is_connected=false;
+		   start_time = DateTime.Now;
+		}
+		
+		}
+		
 		});
 	
 
@@ -110,8 +145,23 @@ public partial class MainPage : ContentPage
 
 	}
 
-	private void Clkin_Clicked(object sender, EventArgs e)
+	private async void Clkin_Clicked(object sender, EventArgs e)
 	{
+
+		NetworkAccess accessType = Connectivity.Current.NetworkAccess;
+
+		if (accessType == NetworkAccess.Internet)
+		{
+			// Connection to internet is available
+		}
+		else
+		{
+			DisplayAlert("No Internet !", "Please connect to internet !", "Ok!");
+			return;
+		}
+
+
+
 #if ANDROID
 
 		if (!DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
