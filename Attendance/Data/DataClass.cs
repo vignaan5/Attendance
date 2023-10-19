@@ -244,7 +244,7 @@ namespace Attendance.Data
 
 			if(state=="All")
 			{
-				mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.is_account_active=yes ;", sql_date, temp_emp_id);
+				mysql_string = String.Format("select ifnull(sum(es.amount),0) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.is_account_active='yes' ;", sql_date, temp_emp_id);
 			}
 
 
@@ -278,7 +278,7 @@ namespace Attendance.Data
 
 			}
 
-			while(!reader.IsClosed && reader.Read())
+			while(reader!=null && !reader.IsClosed && reader.Read())
 			{
 				if (reader[0]!=null && reader[0].ToString()!=null)
 				{
@@ -2731,9 +2731,9 @@ namespace Attendance.Data
 				string[] strdttemp = null;
 				string[] enddtemp = null;
 
-                DateTime strt_dt ;
+                DateTime strt_dt=new DateTime() ;
 
-                DateTime end_dt ;
+                DateTime end_dt=new DateTime();
 
 
                 if (reader[1].ToString().Contains("/"))
@@ -2748,11 +2748,22 @@ namespace Attendance.Data
 
 
 					//strt_dt = DateTime.ParseExact(tempdate, "dd-MM-yyyy", null);
-
-                    strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1] + " 00:00:00 AM");
-
-                    end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1] + " 00:00:00 AM");
-
+					try
+					{
+						strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[1] + "/" + strdttemp[0] + " 00:00:00 AM");
+					}
+					catch(Exception ex)
+					{
+						strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[0] + "/" + strdttemp[1] + " 00:00:00 AM");
+					}
+					try
+					{
+						end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[1] + "/" + enddtemp[0] + " 00:00:00 AM");
+					}
+					catch(Exception ex)
+					{
+						end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[0] + "/" + enddtemp[1] + " 00:00:00 AM");
+					}
 					//end_dt = DateTime.ParseExact(tempdate2,"dd/MM/yyyy", null);
 
 				}
@@ -2762,10 +2773,24 @@ namespace Attendance.Data
 
                     enddtemp = reader[2].ToString().Split('-', ' ');
 
-                    strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[1] + "/" + strdttemp[0] + " 00:00:00 AM");
+					try
+					{
 
-                    end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[1] + "/" + enddtemp[0] + " 00:00:00 AM");
+						strt_dt = DateTime.Parse(strdttemp[2] + "/" + strdttemp[1] + "/" + strdttemp[0] + " 00:00:00 AM");
+					}
+					catch(Exception ex)
+					{
 
+					}
+
+					try
+					{
+						end_dt = DateTime.Parse(enddtemp[2] + "/" + enddtemp[1] + "/" + enddtemp[0] + " 00:00:00 AM");
+					}
+					catch(Exception ex)
+					{
+
+					}
 
                 }
 
