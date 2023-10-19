@@ -193,7 +193,7 @@ public partial class EmployeeAttendance : ContentPage
 			}
 
 			dt.close_connection();
-
+			startdt = startdt.Date.AddDays(-1);
 
 		});
 

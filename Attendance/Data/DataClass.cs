@@ -190,11 +190,12 @@ namespace Attendance.Data
 
 			List<string> emp_id = new List<string>();
 
-			string sql_q = string.Format("select emp_id from employee where state='{0}';", state);
+
+			string sql_q = string.Format("select emp_id from employee where state='{0}' and is_account_active='yes' ;", state);
 
 			   if(state=="All")
 			{
-				sql_q = string.Format("select emp_id from employee ;");
+				sql_q = string.Format("select emp_id from employee where is_account_active='yes' ;");
 			}
 
 
@@ -239,11 +240,11 @@ namespace Attendance.Data
 				return 0;
 
 			int sum = 0;
-			string mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.state='{2}';",sql_date,temp_emp_id,state);
+			string mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.state='{2}' and e.is_account_active='yes';", sql_date,temp_emp_id,state);
 
 			if(state=="All")
 			{
-				mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}';", sql_date, temp_emp_id);
+				mysql_string = String.Format("select sum(es.amount) from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.is_account_active=yes ;", sql_date, temp_emp_id);
 			}
 
 
@@ -311,7 +312,7 @@ namespace Attendance.Data
 				return null;
 
 			int sum = 0;
-			string mysql_string = String.Format("select * from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' ;", sql_date, temp_emp_id);
+			string mysql_string = String.Format("select * from employee e left join employee_sales2 es on e.emp_id=es.emp_id and The_date='{0}' where The_date is not null and es.emp_id='{1}' and e.is_account_active='yes' ;", sql_date, temp_emp_id);
 
 			MySqlCommand cmd = null;
 
@@ -380,9 +381,14 @@ namespace Attendance.Data
 			if (!is_conn_open)
 				return null;
 
-			string sql_cmd = string.Format("select p.*,ifnull( sales.pcs,0) as pcs,ifnull(sales.amount,0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join employee_sales2 e on e.sno=p.sno where The_date ='{0}'  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", sql_date);
+			string sql_cmd = string.Format("select p.*,ifnull( sales.pcs,0) as pcs,ifnull(sales.amount,0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join employee_sales2 e on e.sno=p.sno where The_date ='{0}' and e.emp_id in (select emp_id from employee where is_account_active='yes')  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", sql_date);
+
+			string daily_sale_cmd = string.Format("select ifnull(sum(sales.amount),0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join employee_sales2 e on e.sno=p.sno where The_date ='{0}' and e.emp_id in (select emp_id from employee where is_account_active='yes')  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", sql_date);
+
 
 			   MySqlCommand cmd = new MySqlCommand(sql_cmd,connection);
+
+			MySqlCommand daly_sale_command = new MySqlCommand(daily_sale_cmd, connection);
 
 			try
 			{
@@ -420,10 +426,7 @@ namespace Attendance.Data
 							int temp = Convert.ToInt32(mySqlDataReader[i].ToString());
 						}
 							row.Add(mySqlDataReader[i].ToString());
-						if(i==5)
-						{
-							sum += Convert.ToInt32(mySqlDataReader[i].ToString());
-						}
+						
 						
 					}
 					catch
@@ -437,6 +440,19 @@ namespace Attendance.Data
 				rows.Add(row);
 			}
 			mySqlDataReader.Close();
+
+			string daily_sale_sum = daly_sale_command.ExecuteScalar().ToString();
+
+			try
+			{
+				sum = Convert.ToInt32(daily_sale_sum);
+			}
+			catch(Exception ex)
+			{
+				sum = 0;
+			}
+
+
 			return rows;
 		}
 
@@ -446,9 +462,15 @@ namespace Attendance.Data
 			if (!is_conn_open)
 				return null;
 
-			string sql_cmd = string.Format("select p.*,ifnull( sales.pcs,0) as pcs,ifnull(sales.amount,0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join ( select * from employee_sales2 es where es.emp_id in (select emp_id from employee where state ='{0}')) e on e.sno=p.sno where The_date ='{1}'  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", state,sql_date);
+			string sql_cmd = string.Format("select p.*,ifnull( sales.pcs,0) as pcs,ifnull(sales.amount,0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join ( select * from employee_sales2 es where es.emp_id in (select emp_id from employee where state ='{0}' and is_account_active='yes')) e on e.sno=p.sno where The_date ='{1}'  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", state,sql_date);
+
+			string daily_sale_cmd = string.Format("select sum(ifnull(sales.amount,0)) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join ( select * from employee_sales2 es where es.emp_id in (select emp_id from employee where state ='{0}' and is_account_active='yes')) e on e.sno=p.sno where The_date ='{1}'  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", state, sql_date);
+
 
 			MySqlCommand cmd = new MySqlCommand(sql_cmd, connection);
+
+			MySqlCommand daly_sale_command = new MySqlCommand(daily_sale_cmd, connection);
+
 
 			try
 			{
@@ -503,6 +525,19 @@ namespace Attendance.Data
 				rows.Add(row);
 			}
 			mySqlDataReader.Close();
+
+			string daily_sale_sum = daly_sale_command.ExecuteScalar().ToString();
+
+			try
+			{
+				sum = Convert.ToInt32(daily_sale_sum);
+			}
+			catch (Exception ex)
+			{
+				sum = 0;
+			}
+
+
 			return rows;
 		}
 
@@ -813,7 +848,7 @@ namespace Attendance.Data
 
 
 
-			string cumiliative_sales_command = string.Format("select ifnull(0,sum(amount)) from (select * from employee_sales2 where emp_id in (select emp_id from employee where state='{0}')) as employee_sales2 left join products2   on products2.Sno=employee_sales2.sno where The_date between '{1}' and '{2}';",state,start_date, end_date);
+			string cumiliative_sales_command = string.Format("select ifnull(sum(amount),0) from (select * from employee_sales2 where emp_id in (select emp_id from employee where state='{0}')) as employee_sales2 left join products2   on products2.Sno=employee_sales2.sno where The_date between '{1}' and '{2}';",state,start_date, end_date);
 
 			MySqlCommand cumiliative_cmd = new MySqlCommand(cumiliative_sales_command, connection);
 
@@ -1478,7 +1513,7 @@ namespace Attendance.Data
 
 		}
 
-		public string create_table_body(List<List<string>> body,bool is_attendance)
+		public string create_table_body(List<List<string>> body,bool is_attendance,Dictionary<string,List<Tuple<string,string>>> sessions)
 		{
 
 
@@ -1492,7 +1527,15 @@ namespace Attendance.Data
 					if (body[i][j].Contains("present"))
 					{
 
-						html += String.Format("<td bgcolor=#90EE90>{0}</td>", body[i][j]);
+						string session_details = "";
+						if (sessions.ContainsKey(body[i][0]))
+						foreach(var data in sessions[body[i][0]])
+						{
+							session_details += String.Format("\n {0} to {1} \n", data.Item1, data.Item2);
+						}
+
+
+						html += String.Format("<td bgcolor=#90EE90 title='{1}' >{0}</td>", body[i][j],session_details);
 					}
 					else if (body[i][j] == "no")
 					{
@@ -1507,7 +1550,14 @@ namespace Attendance.Data
 					}
 					else if(body[i][j].Contains("present on weekoff day") || body[i][j]=="weekoff_day")
 					{
-						html += String.Format("<td bgcolor=#ADD8E6>{0}</td>", body[i][j]);
+						string session_details = "";
+						if (sessions.ContainsKey(body[i][0]))
+							foreach (var data in sessions[body[i][0]])
+							{
+								session_details += String.Format("\n {0} to {1} \n", data.Item1, data.Item2);
+							}
+
+						html += String.Format("<td bgcolor=#ADD8E6 title='{1}'>{0}</td>", body[i][j],session_details);
 					}
 					else
 					{
@@ -1540,12 +1590,12 @@ namespace Attendance.Data
 		}
 
 
-		public string create_html_string(List<string> header, List<List<string>> body,bool is_attendance)
+		public string create_html_string(List<string> header, List<List<string>> body,bool is_attendance,Dictionary<string,List<Tuple<string,string>>> sessions)
 		{
 			if (header == null)
 				return "";
 
-			return String.Format("<html> <body> <table border='1' id='table'>" + create_table_header(header) + create_table_body(body,true) + "</table> {0} </body> </html>", get_js2excel_script());
+			return String.Format("<html> <body> <table border='1' id='table'>" + create_table_header(header) + create_table_body(body,true,sessions) + "</table> {0} </body> </html>", get_js2excel_script());
 
 
 		}

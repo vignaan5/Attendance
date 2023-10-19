@@ -85,6 +85,8 @@
                 Clicked="Clkin_Clicked"     
                 HorizontalOptions="Center" />
 
+            <Label x:Name="clktime" Text=""></Label>
+
             <Image
                 Source="vignaan2.png"
                 SemanticProperties.Description="Have a nice day!"

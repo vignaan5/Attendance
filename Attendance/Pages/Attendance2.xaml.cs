@@ -355,7 +355,7 @@ public string state = String.Empty;
 
 		table_header_dates_list.AddRange(additional_table_header_list);
 
-		string html_string = dt.create_html_string(table_header_dates_list, table_rows,true);
+		string html_string = dt.create_html_string(table_header_dates_list, table_rows,true,clock_times);
 
 		
 	
@@ -430,6 +430,28 @@ public string state = String.Empty;
 		 
 	 
 	}
+
+	public void create_clock_in_and_out_sessions(List<Tuple<string,string>> sessions,string employee_id)
+	{
+		string htmlstring = String.Format("<html> <body>");
+
+		foreach(var time in sessions)
+		{
+			htmlstring += string.Format("<h4>{0} to {1} </h4> ", time.Item1, time.Item2);
+		}
+
+		htmlstring += String.Format("</body> </html>");
+
+
+		string path = AppDomain.CurrentDomain.BaseDirectory;
+
+		var destination = System.IO.Path.Combine(path,employee_id+"_session_report.html");
+
+
+
+	}
+
+
 
 	private void abtn_Clicked_1(object sender, EventArgs e)
 	{

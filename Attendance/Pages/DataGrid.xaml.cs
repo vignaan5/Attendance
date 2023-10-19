@@ -101,8 +101,10 @@ public partial class DataGrid : ContentPage
 			htmlstring += "</tr>";
 		}
 
-		string lst_row = String.Format("<tr><td> </td> <td> </td> <td> </td> <td> </td> <td> Cumilative sales = </td> <td>{0} </td>", cumilative_sales_from_first_day.ToString());
+		string daily_sale_row= String.Format("<tr><td> </td> <td> </td> <td> </td> <td> </td> <td> Daily sale = </td> <td>{0} </td>", sum.ToString());
 
+		string lst_row = String.Format("<tr><td> </td> <td> </td> <td> </td> <td> </td> <td> Cumilative sales = </td> <td>{0} </td>", cumilative_sales_from_first_day.ToString());
+		htmlstring += daily_sale_row;
 		htmlstring += lst_row;
 
 		htmlstring += String.Format("</tbody></table> {0}  <h1> Daily Sale : {1} </h1> </body> </html>",dt.get_js2excel_script(), sum);
