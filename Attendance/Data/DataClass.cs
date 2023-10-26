@@ -541,7 +541,121 @@ namespace Attendance.Data
 			return rows;
 		}
 
-		
+
+		public List<List<string>> get_store_stock(string sql_date_start,string sql_date_end ,ref int sum, string state)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string sql_cmd = string.Format("select p.*,ifnull( sales.pcs,0) as pcs,ifnull(sales.amount,0) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join employee_stocks e on e.sno=p.sno where The_date between ('{2}' and '{3}') and e.emp_id in (select emp_id from employee where is_account_active='yes'and emp_id='{0}' and state='{1}')  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;",emp_id2,state,sql_date_start,sql_date_end);
+
+			string daily_sale_cmd = string.Format("select sum(ifnull(sales.amount,0)) as amount from products2 p left join (  select p.Sno, paticulars,HSN_SAC,Mrp,sum(pcs) as pcs ,sum(amount) as amount from products2 p left   join ( select * from employee_stocks es where es.emp_id in (select emp_id from employee where state ='{0}' and is_account_active='yes' and emp_id='{1}')) e on e.sno=p.sno where The_date between'{2}' and '{3}'  Group by p.sno, paticulars,HSN_SAC,MRP order by p.sno ) as sales   on sales.sno=p.sno;", state, emp_id2,sql_date_start,sql_date_end);
+
+
+			MySqlCommand cmd = new MySqlCommand(sql_cmd, connection);
+
+			MySqlCommand daly_sale_command = new MySqlCommand(daily_sale_cmd, connection);
+
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader mySqlDataReader = null;
+
+			try
+			{
+				mySqlDataReader = cmd.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<List<string>> rows = new List<List<string>>();
+
+			while (!mySqlDataReader.IsClosed && mySqlDataReader.Read())
+			{
+				List<string> row = new List<string>();
+
+
+				for (int i = 0; i < mySqlDataReader.FieldCount; i++)
+				{
+					try
+					{
+						if (i == 5 || i == 4)
+						{
+							int temp = Convert.ToInt32(mySqlDataReader[i].ToString());
+						}
+						row.Add(mySqlDataReader[i].ToString());
+						if (i == 5)
+						{
+							sum += Convert.ToInt32(mySqlDataReader[i].ToString());
+						}
+
+					}
+					catch
+					{
+						row.Add("0");
+					}
+				}
+
+
+
+				rows.Add(row);
+			}
+			mySqlDataReader.Close();
+
+			string daily_sale_sum = daly_sale_command.ExecuteScalar().ToString();
+
+			try
+			{
+				sum = Convert.ToInt32(daily_sale_sum);
+			}
+			catch (Exception ex)
+			{
+				sum = 0;
+			}
+
+
+			return rows;
+		}
+
+
+	public 	async void Excel_Function (string html_string,string file_name) 
+		{
+
+			string path = AppDomain.CurrentDomain.BaseDirectory;
+
+		var destination = System.IO.Path.Combine(path,file_name);
+#if WINDOWS
+        
+   destination= @"C:\Users\Public\Documents\"+file_name;
+            
+#endif
+
+		File.WriteAllText(destination,html_string );
+#if WINDOWS
+              try
+			  {
+             System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",destination);
+                 }
+				 catch(Exception ex)
+				 {
+				 //DisplayAlert("Error", ex.Message.ToString(),"Ok");
+				 }
+			 return;
+
+#endif
+			await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
+
+
+		}
 
 
 

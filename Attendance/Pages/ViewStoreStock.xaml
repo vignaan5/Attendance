@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.ViewStoreStock"
+             Title="ViewStoreStock">
+    <VerticalStackLayout x:Name="vs">
+
+        <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30">
+        </ImageButton>
+        <HorizontalStackLayout Spacing="10" >
+
+                
+          
+
+            <Label Text="Select Month and Year" ></Label>
+            
+            <Picker x:Name="month_picker"
+        Title="Select a month">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>January</x:String>
+                        <x:String>Febuary</x:String>
+                        <x:String>March</x:String>
+                        <x:String>April</x:String>
+                        <x:String>May</x:String>
+                        <x:String>June</x:String>
+                        <x:String>July</x:String>
+                        <x:String>August</x:String>
+                        <x:String>September</x:String>
+                        <x:String>October</x:String>
+                        <x:String>November</x:String>
+                        <x:String>December</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Picker x:Name="year_picker"
+Title="Select a year">
+                
+            </Picker>
+
+
+        </HorizontalStackLayout>
+        <Button Text="Get Stock Report" HorizontalOptions="Center" x:Name="get_stock_report" Clicked="get_stock_report_Clicked"></Button>
+        <WebView x:Name="wview"></WebView>
+    
+    </VerticalStackLayout>
+</ContentPage>

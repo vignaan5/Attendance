@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.StockInfo"
+             Title="StockInfo">
+    <ScrollView>
+        <VerticalStackLayout
+         Spacing="25"
+         Padding="30,0"
+         VerticalOptions="Center">
+
+            <Image
+             Source="clayveda.png"
+             SemanticProperties.Description="Have a nice day!"
+             MaximumHeightRequest="300"
+             HorizontalOptions="Center" />
+
+            <Button Text="View Store Stock" x:Name="view_store_stock" Clicked="view_store_stock_Clicked" HorizontalOptions="Center"></Button>
+
+            <Button Text="Update Store Stock" x:Name="update_store_stock" Clicked="update_store_stock_Clicked" HorizontalOptions='Center'></Button>
+            
+            
+            
+            
+
+            <Image
+        Source="vignaan2.png"
+        SemanticProperties.Description="Have a nice day!"
+        MaximumHeightRequest="300"
+        HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+
+    </ScrollView>
+
+</ContentPage>

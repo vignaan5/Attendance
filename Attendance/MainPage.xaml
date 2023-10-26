@@ -71,6 +71,19 @@
                 Clicked="applyleavebtn_Clicked"     
                 HorizontalOptions="Center" />
 
+            <Button
+    
+     
+      x:Name="stock_info"
+      Text="Stock"
+  
+      
+       WidthRequest="120"
+      SemanticProperties.Hint="Details about store stock"
+      Clicked="stock_info_Clicked"     
+      HorizontalOptions="Center" />
+
+
 
 
             <Button

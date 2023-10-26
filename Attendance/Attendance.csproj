@@ -71,6 +71,7 @@
 	  <None Remove="Resources\Images\clockin1.png" />
 	  <None Remove="Resources\Images\editsales.png" />
 	  <None Remove="Resources\Images\employeereports.png" />
+	  <None Remove="Resources\Images\home.png" />
 	  <None Remove="Resources\Images\insertsales.png" />
 	  <None Remove="Resources\Images\managemployee.png" />
 	  <None Remove="Resources\Images\mysales.png" />
@@ -142,6 +143,9 @@
 	  <MauiXaml Update="Pages\ReportsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\StockInfo.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\SupervisorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -176,6 +180,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ViewStoreRankings.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Pages\ViewStoreStock.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Pages\ViewTeamReport.xaml">

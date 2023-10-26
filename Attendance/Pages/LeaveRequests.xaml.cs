@@ -214,4 +214,8 @@ public partial class LeaveRequests : ContentPage
 
 	}
 
+	private void homebtn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PopToRootAsync();
+	}
 }

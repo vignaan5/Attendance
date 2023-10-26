@@ -252,6 +252,7 @@ Navigation.PushAsync(new ViewRecentSales());
 
 	private void ViewYourSalesClicked(object sender, EventArgs e)
 	{
+		var x = Navigation.NavigationStack;
 		Navigation.PushAsync(new YourSales());
 	}
 
@@ -266,5 +267,12 @@ Navigation.PushAsync(new ViewRecentSales());
 		Navigation.PushAsync(new ApplyLeave());
 
     }
+
+	private  void stock_info_Clicked(object sender, EventArgs e)
+	{
+		
+		 Navigation.PushAsync(new StockInfo());
+
+	}
 }
 
