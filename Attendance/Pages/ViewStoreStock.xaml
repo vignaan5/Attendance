@@ -9,11 +9,11 @@
         </ImageButton>
         <HorizontalStackLayout Spacing="10" >
 
-                
-          
+
+
 
             <Label Text="Select Month and Year" ></Label>
-            
+
             <Picker x:Name="month_picker"
         Title="Select a month">
                 <Picker.ItemsSource>
@@ -36,12 +36,20 @@
 
             <Picker x:Name="year_picker"
 Title="Select a year">
-                
+
             </Picker>
 
 
         </HorizontalStackLayout>
-        <Button Text="Get Stock Report" HorizontalOptions="Center" x:Name="get_stock_report" Clicked="get_stock_report_Clicked"></Button>
+        
+        <VerticalStackLayout x:Name="svs" IsVisible="False" IsEnabled="False">
+
+            <SearchBar x:Name="search_emp" Placeholder="Enter employee Name or ID" TextChanged="search_emp_TextChanged"></SearchBar>
+            <ListView x:Name="emplist" ItemSelected="emplis_ItemSelected" IsVisible="False"></ListView>
+
+        </VerticalStackLayout>
+        
+        <Button Text="Get Stock Report" HorizontalOptions="Center" x:Name="get_stock_report" ></Button>
         <WebView x:Name="wview"></WebView>
     
     </VerticalStackLayout>

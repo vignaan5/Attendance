@@ -686,6 +686,125 @@ namespace Attendance.Data
 		}
 
 
+     public List<List<string>> get_opening_and_closing_stock()
+		{
+			if (!is_conn_open)
+				return null;
+
+			string cmd = String.Format("select Sno,paticulars,HSN_SAC,Mrp,ifnull(opening_stock,0)as opening_stock,ifnull(Opcs,0) as qty,ifnull(Sales,0)as Sales,ifnull(sold_pcs,0) as sold_pcs,ifnull(return_sales,0) as return_sales,ifnull(Dpcs,0) as Defective,ifnull(opening_stock+(-Sales-return_sales),0) as Closing_stock from (select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}' group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{1}' group by Dsno) as d on op.Osno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{2}' group by Ssno) as s on s.Ssno=ds.Osno) as main_table;\r\n", emp_id2,emp_id2,emp_id2);
+
+			MySqlCommand command = new MySqlCommand(cmd,connection);
+
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch(Exception ex) 
+			{ 
+			
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = command.ExecuteReader();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			List<List<string>> rows = new List<List<string>>();
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				List<string> row = new List<string>();
+
+				for(int i=0;i<reader.FieldCount;i++)
+				{
+					try
+					{
+						row.Add(reader[i].ToString());
+					}
+					catch(Exception ex)
+					{
+						row.Add("Failed To get data");
+					}
+
+				}
+
+				rows.Add(row);
+
+				
+			}
+
+			reader.Close();
+
+			return rows;
+
+
+		}
+
+		public List<List<string>> get_opening_and_closing_stock(string employeeID)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string cmd = String.Format("select Sno,paticulars,HSN_SAC,Mrp,ifnull(opening_stock,0)as opening_stock,ifnull(Opcs,0) as qty,ifnull(Sales,0)as Sales,ifnull(sold_pcs,0) as sold_pcs,ifnull(return_sales,0) as return_sales,ifnull(Dpcs,0) as Defective,ifnull(opening_stock+(-Sales-return_sales),0) as Closing_stock from (select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}' group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{1}' group by Dsno) as d on op.Osno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{2}' group by Ssno) as s on s.Ssno=ds.Osno) as main_table;", employeeID, employeeID, employeeID);
+
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = command.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<List<string>> rows = new List<List<string>>();
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				List<string> row = new List<string>();
+
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					try
+					{
+						row.Add(reader[i].ToString());
+					}
+					catch (Exception ex)
+					{
+						row.Add("Failed To get data");
+					}
+
+				}
+
+				rows.Add(row);
+
+
+			}
+
+			reader.Close();
+
+			return rows;
+
+
+		}
 
 
 

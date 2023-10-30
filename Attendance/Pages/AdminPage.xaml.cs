@@ -133,4 +133,9 @@ public partial class AdminPage : ContentPage
 	{
 		Navigation.PushAsync(new ViewProductRankings());
 	}
+
+	private void storestock_btn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new ViewStoreStock(true));
+	}
 }
