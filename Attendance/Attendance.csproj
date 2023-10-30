@@ -116,6 +116,9 @@
 	  <MauiXaml Update="Pages\DataGrid.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\DeviceChanges.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\EmployeeAccountAccess.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

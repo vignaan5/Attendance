@@ -144,23 +144,34 @@ public string state = String.Empty;
 						{
 							if (clock_times[empid].Count > 0)
 							{
-								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+								int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+								string work_time = dt.convert_elapsed_time_to_string(time_arr);
+
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2 + ")\n" + "Work Time : " + work_time;
+							   
 							}
 							else
 							{
-								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count)].Item2;
+								int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+								string work_time = dt.convert_elapsed_time_to_string(time_arr);
+								
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count)].Item2 + ")\n" + "Work Time : " + work_time;
 							}
 
 
 						}
 						catch(Exception ex)
 						{
-							emp["clock_time"]="";
+							int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+							string work_time = dt.convert_elapsed_time_to_string(time_arr);
+							emp["clock_time"] = ") \nWorktime : " + work_time;
 						}
 					}
 					else
 					{
-						emp["clock_time"] = "";
+						int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+						string work_time = dt.convert_elapsed_time_to_string(time_arr);
+						emp["clock_time"] = ") \nWorktime : " + work_time;
 					}
 
 					dates[appdate].Add(emp);
@@ -187,22 +198,31 @@ public string state = String.Empty;
 						{
 							if (clock_times[empid].Count > 0)
 							{
-								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2;
+								int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+								string work_time = dt.convert_elapsed_time_to_string(time_arr);
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count - 1)].Item2+")\n"+"Work Time : "+work_time;
+							
 							}
 							else
 							{
-								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count)].Item2;
+								int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+								string work_time = dt.convert_elapsed_time_to_string(time_arr);
+								emp["clock_time"] = clock_times[empid][0].Item1 + " to " + clock_times[empid][(clock_times[empid].Count)].Item2+")\n"+"Work Time : "+work_time;
 							}
 						
 						}
 						catch (Exception ex)
 						{
-							emp["clock_time"] = "";
+							int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+							string work_time = dt.convert_elapsed_time_to_string(time_arr);
+							emp["clock_time"] = ") \nWorktime : "+work_time;
 						}
 					}
 					else
 					{
-						emp["clock_time"] = "";
+						int[] time_arr = dt.get_todays_elapsed_time(empid, sqldate);
+						string work_time = dt.convert_elapsed_time_to_string(time_arr);
+						emp["clock_time"] = ") \nWorktime : " + work_time;
 					}
 
 

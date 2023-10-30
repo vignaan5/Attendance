@@ -23,6 +23,8 @@
          <Button HorizontalOptions="Center" Text="Store Rankings" x:Name="store_rankings_btn" Clicked="store_rankings_btn_Clicked" WidthRequest="250"></Button>
           <Button HorizontalOptions="Center" Text="Products Rankings" x:Name="products_rankings_btn" Clicked="products_rankings_btn_Clicked"  WidthRequest="250"></Button>
             <Button HorizontalOptions="Center" Text="View Store Stock" x:Name="storestock_btn" Clicked="storestock_btn_Clicked" WidthRequest="250" ></Button>
+            <Button HorizontalOptions="Center" Text="Employee Device Changes" x:Name="devicechanges" Clicked="devicechanges_Clicked" WidthRequest="250" ></Button>
+
             <Image
                 Source="vignaan2.png"
                 SemanticProperties.Description="Have a nice day!"

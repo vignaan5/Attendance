@@ -26,8 +26,10 @@ public partial class UpdateStock : ContentPage
         dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
         dpicker.ItemsSource = dp_items;
         dpicker.SelectedIndex = 0;
+        invoicebox.Text = "";
         invoicebox.IsEnabled = true;
         invoicebox.IsVisible = true;
+
     }
 
     public UpdateStock(string type)
@@ -44,7 +46,8 @@ public partial class UpdateStock : ContentPage
         dpicker.ItemsSource = dp_items;
         dpicker.SelectedIndex = 0;
         this.type= type;
-        invoicebox.IsEnabled = true;
+		invoicebox.Text = "";
+		invoicebox.IsEnabled = true;
         invoicebox.IsVisible = true;
     }
 
@@ -159,6 +162,7 @@ public partial class UpdateStock : ContentPage
         sc.Content = itemhs;
 
 
+        
 
         vs.Remove(uitmbtn);
         vs.Add(sc);
@@ -232,10 +236,7 @@ public partial class UpdateStock : ContentPage
 
     public bool is_safe()
     {
-        if(invoicebox.Text.Trim()=="") 
-        {
-            return false;
-        }
+        
 
     
 
@@ -281,6 +282,14 @@ public partial class UpdateStock : ContentPage
             DisplayAlert("Please Check quantity or Remove item or Invoice No", "Add quantity to the item", "Ok");
             return;
         }
+
+        if(invoicebox.Text.Trim()=="")
+        {
+			DisplayAlert("Please Check  Invoice No", "Invoice No is mandatory", "Ok");
+
+			return;
+        }
+
 #if ANDROID
 		if(!DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
 		{

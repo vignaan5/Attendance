@@ -138,4 +138,9 @@ public partial class AdminPage : ContentPage
 	{
 		Navigation.PushAsync(new ViewStoreStock(true));
 	}
+
+	private void devicechanges_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new DeviceChanges());
+    }
 }

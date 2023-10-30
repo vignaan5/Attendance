@@ -747,6 +747,18 @@ namespace Attendance.Data
 		}
 
 
+		public string convert_elapsed_time_to_string(int[] time_arr )
+		{
+			for(int i=0;i<3;i++)
+			{
+				if (time_arr[i] == -1)
+					return "00 Hr:00 Min:00 sec";
+			}
+
+			return time_arr[0].ToString() + " Hr:" + time_arr[1].ToString() + " Min:" + time_arr[2].ToString()+" Sec";
+		}
+
+
 		public int[] get_todays_elapsed_time(string sqldate)
 		{
 			if (!is_conn_open)
@@ -861,8 +873,14 @@ namespace Attendance.Data
 
 				}
 			}
-			reader.Close();
+			try
+			{
+				reader.Close();
+			}
+			catch(Exception ex)
+			{
 
+			}
 			return time;
 
 
@@ -2903,7 +2921,7 @@ namespace Attendance.Data
 			if (!is_conn_open)
 				return null;
 
-		 string attendance_query = String.Format("select distinct emp_id,date_format(the_date_and_time,'%d-%m-%y')  from employee_location where date(the_date_and_time)='{0}' and time(the_date_and_time) between '00:00:00' and '23:59:59';",sql_date);
+		 string attendance_query = String.Format("select distinct emp_id,date_format(the_date_and_time,'%d-%m-%y')  from employee_location where date(the_date_and_time)='{0}' and time(the_date_and_time) between '00:00:00' and '23:59:59' and emp_id in (select emp_id from employee where is_account_active='yes');", sql_date);
 
 			MySqlCommand cmd = new MySqlCommand(attendance_query, connection);
 
@@ -3468,6 +3486,56 @@ namespace Attendance.Data
 
 		}
 
+		public List<List<string>> get_employee_device_changes()
+		{
+			if (!is_conn_open)
+			{
+				return null;
+			}
+
+			string cmd = String.Format("select distinct l1.emp_id,l1.device_info,date(l1.the_date_and_time) as Date,l2.device_info,date(l2.the_date_and_time)as Date from employee_location_with_device_info l1,employee_location_with_device_info l2 where l1.emp_id=l2.emp_id and l1.device_info!=l2.device_info order by  date(l1.the_date_and_time) desc,date(l2.the_date_and_time) desc;\r\n");
+
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+
+
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = command.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<List<string>> device_changes = new List<List<string>>();
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				List<string> emp_device = new List<string>();
+
+				for(int i=0;i<reader.FieldCount;i++)
+				{
+					emp_device.Add(reader[i].ToString());
+				}
+
+				device_changes.Add(emp_device);	
+			}
+
+			reader.Close();
+			return device_changes;
+		}
+
 
 
 
@@ -3569,14 +3637,14 @@ namespace Attendance.Data
 
 			if (state == "All")
 			{
-				 sql_command = String.Format("select emp_id,time(clock_in) ,ifnull(time(clock_out),'Not Clocked Out') as clocked_out  from clock_in_and_out where date(clock_in)='{0}' order by emp_id, clock_in,clocked_out desc ;", date);
+				 sql_command = String.Format("select emp_id,time(clock_in) ,ifnull(time(clock_out),'Not Clocked Out') as clocked_out  from clock_in_and_out where date(clock_in)='{0}' and emp_id in (select emp_id from employee where is_account_active='yes') order by emp_id, clock_in,clocked_out desc ;", date);
 
 			}
 
 			else
 			{
 
-				 sql_command = String.Format("select emp_id,time(clock_in) ,ifnull(time(clock_out),'Not Clocked Out') as clocked_out  from clock_in_and_out where date(clock_in)='{0}' and emp_id in (select emp_id from employee where state='{1}' order by emp_id, clock_in,clock_out desc );", date,state);
+				 sql_command = String.Format("select emp_id,time(clock_in) ,ifnull(time(clock_out),'Not Clocked Out') as clocked_out  from clock_in_and_out where date(clock_in)='{0}' and emp_id in (select emp_id from employee where state='{1}'  and is_account_active='yes' ) order by emp_id, clock_in,clock_out desc ;", date,state);
 			}
 			MySqlCommand cmd = new MySqlCommand(sql_command, connection);
 
