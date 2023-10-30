@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.ViewRecentStocks"
+             Title="ViewRecentStocks">
+    <ScrollView Orientation="Vertical">
+        <VerticalStackLayout x:Name="vs" VerticalOptions="Center" HorizontalOptions="Center">
+
+
+            <ActivityIndicator IsVisible="True" IsRunning="True" IsEnabled="True" x:Name="actind" ></ActivityIndicator>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

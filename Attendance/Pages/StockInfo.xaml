@@ -15,13 +15,15 @@
              MaximumHeightRequest="300"
              HorizontalOptions="Center" />
 
-            <Button Text="View Store Stock" x:Name="view_store_stock" Clicked="view_store_stock_Clicked" HorizontalOptions="Center"></Button>
+            <Button Text="View Store Stock" x:Name="view_store_stock" Clicked="view_store_stock_Clicked" HorizontalOptions="Center" WidthRequest="180"></Button>
 
-            <Button Text="Update Store Stock" x:Name="update_store_stock" Clicked="update_store_stock_Clicked" HorizontalOptions='Center'></Button>
-            
-            
-            
-            
+            <Button Text="Update Invoice Stock" x:Name="update_store_stock" Clicked="update_store_stock_Clicked" HorizontalOptions='Center' WidthRequest="180"></Button>
+
+            <Button Text="Edit Invoice Stock" x:Name="edit_stock" Clicked="edit_stock_Clicked" HorizontalOptions="Center" WidthRequest="180"></Button>
+
+            <Button Text="Update Return Stock" x:Name="update_defect_stock" WidthRequest="180" Clicked="update_defect_stock_Clicked" ></Button>
+
+            <Button Text="Edit Return Stock" x:Name="edit_defect_stock" Clicked="edit_defect_stock_Clicked"  WidthRequest="180" ></Button>
 
             <Image
         Source="vignaan2.png"

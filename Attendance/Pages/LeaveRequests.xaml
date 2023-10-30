@@ -8,13 +8,13 @@
             Spacing="25"
             Padding="30,0"
             VerticalOptions="Center" x:Name="vs">
+            <ImageButton Source="home.png" x:Name="homebtn" Clicked="homebtn_Clicked" HorizontalOptions="Start" MaximumWidthRequest="30" MaximumHeightRequest="40"></ImageButton>
 
             <Image
                 Source="clayveda.png"
                 SemanticProperties.Description="Have a nice day!"
                 MaximumHeightRequest="300"
                 HorizontalOptions="Center" />
-            <ImageButton Source="home.png" x:Name="homebtn" Clicked="homebtn_Clicked" HorizontalOptions="Start" MaximumWidthRequest="30" MaximumHeightRequest="40"></ImageButton>
 
             <VerticalStackLayout x:Name="innervs" Spacing="25" Padding="30,0" VerticalOptions="Center" >
 
