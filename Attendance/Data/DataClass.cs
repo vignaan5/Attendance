@@ -746,6 +746,172 @@ namespace Attendance.Data
 
 		}
 
+
+		public int[] get_todays_elapsed_time(string sqldate)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string cmd = String.Format("select * from work_duration where emp_id='{0}' and the_date='{1}'; ", emp_id2, sqldate);
+			int[] time = new int[3];
+			Array.Fill(time, -1);
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = command.ExecuteReader();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+			   try
+				{
+					string temp = reader[2].ToString();
+					string[] times = temp.Split(':');
+					for (int i = 0; i < 3; i++)
+					{
+						try
+						{
+							time[i] = Convert.ToInt32(times[i]);
+						}
+						catch(Exception ex)
+						{
+							time[i] = -1;
+						}
+						
+					}
+				}
+				catch(Exception ex)
+				{
+					
+				}
+			}
+			reader.Close();
+
+			return time;
+
+		}
+
+		public int[] get_todays_elapsed_time(string employeeID,string sqldate)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string cmd = String.Format("select * from work_duration where emp_id='{0}' and the_date='{1}'; ", employeeID, sqldate);
+			int[] time = new int[3];
+			Array.Fill(time, -1);
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = command.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				try
+				{
+					string temp = reader[2].ToString();
+					string[] times = temp.Split(':');
+					for (int i = 0; i < 3; i++)
+					{
+						try
+						{
+							time[i] = Convert.ToInt32(times[i]);
+						}
+						catch (Exception ex)
+						{
+							time[i] = -1;
+						}
+
+					}
+				}
+				catch (Exception ex)
+				{
+
+				}
+			}
+			reader.Close();
+
+			return time;
+
+
+		}
+
+
+		public void add_elapsed_time_to_db(string sql_date,string etime)
+		{
+			if (!is_conn_open)
+				return;
+
+			string cmd = String.Format("insert into work_duration values('{0}','{1}','{2}')", emp_id2, sql_date, etime);
+
+			MySqlCommand command = new MySqlCommand(cmd, connection);	
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch(Exception ex)
+			{
+				update_elapsed_time_to_db(sql_date, etime);
+			}
+
+			return;
+
+		}
+
+		public void update_elapsed_time_to_db(string sql_date, string etime)
+		{
+			if (!is_conn_open)
+				return;
+
+			string cmd = String.Format("update work_duration set elapsed_time='{0}' where emp_id='{1}' and the_date='{2}';",etime,emp_id2, sql_date);
+
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			return;
+
+		}
+
+
 		public List<List<string>> get_opening_and_closing_stock(string employeeID)
 		{
 			if (!is_conn_open)

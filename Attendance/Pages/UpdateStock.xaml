@@ -4,6 +4,8 @@
              x:Class="Attendance.Pages.UpdateStock"
              Title="UpdateStock">
     <VerticalStackLayout>
+
+        <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30"> </ImageButton>
         <Picker x:Name="dpicker"></Picker>
         <Entry Placeholder="Enter Invoice no" PlaceholderColor="Black" IsVisible="False" IsEnabled="False" x:Name="invoicebox"></Entry>
         <SearchBar x:Name="products_search_bar" Placeholder="Seach and Add Products"  TextChanged="Products_search_bar_TextChanged"></SearchBar>

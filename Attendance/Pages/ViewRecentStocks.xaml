@@ -4,9 +4,15 @@
              x:Class="Attendance.Pages.ViewRecentStocks"
              Title="ViewRecentStocks">
     <ScrollView Orientation="Vertical">
+        
+     
         <VerticalStackLayout x:Name="vs" VerticalOptions="Center" HorizontalOptions="Center">
 
+            <HorizontalStackLayout x:Name="hs">
 
+                <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30">
+                </ImageButton>
+            </HorizontalStackLayout>
             <ActivityIndicator IsVisible="True" IsRunning="True" IsEnabled="True" x:Name="actind" ></ActivityIndicator>
         </VerticalStackLayout>
     </ScrollView>

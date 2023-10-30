@@ -439,6 +439,12 @@ public partial class UpdateStock : ContentPage
         dt.close_connection();
     }
 
+	private async void goback_btn_Clicked(object sender, EventArgs e)
+	{
 
+
+		await Navigation.PopToRootAsync();
+
+	}
 
 }

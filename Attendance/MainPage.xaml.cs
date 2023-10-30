@@ -3,6 +3,7 @@
 using Attendance.Data;
 using Attendance.Pages;
 using Microsoft.Maui.LifecycleEvents;
+using System.Timers;
 using The_Attendance.Interfaces;
 #if ANDROID
 using The_Attendance.Platforms;
@@ -14,13 +15,19 @@ public partial class MainPage : ContentPage
 {
 	int count = 0;
 	public DateTime start_time { get; set; }
+	public DataClass dt = new DataClass();
 	public static bool is_connected = true;
 	public static string conn_to_internet = "";
+	public System.Timers.Timer timer = new System.Timers.Timer();
+	public static int second=0,minute=0,hour=0;
+    
 
 	public MainPage()
 	{
 		InitializeComponent();
 #if ANDROID
+        timer.Interval=1000;
+        timer.Elapsed+=T_Elapsed;
 		DependencyService.Register<IAndroid,AndroidLocationService>();
 
 		 Task.Run(() => {
@@ -37,12 +44,15 @@ public partial class MainPage : ContentPage
 					   if(is_connected)
 					   {
 
+					   timer.Start();
+
 			 DateTime temp=DateTime.Now;
 
 					   TimeSpan tt = temp.Subtract(start_time);
 
-		clktime.Text=String.Format("Session time => {0} Hr:{1} Min:{2} sec  ",tt.Hours.ToString(),tt.Minutes.ToString(),tt.Seconds.ToString());
-					
+		//clktime.Text=String.Format("Session time => {0} Hr:{1} Min:{2} sec  ",tt.Hours.ToString(),tt.Minutes.ToString(),tt.Seconds.ToString());
+						clktime.Text=String.Format("Session time => {0} Hr:{1} Min:{2} sec  ",hour.ToString(),minute.ToString(),second.ToString());
+	
 		
 		              }
 					 
@@ -68,6 +78,8 @@ public partial class MainPage : ContentPage
 
 		Task.Run(()=>{
 		
+		get_elapsed_time();
+
 		 while(true)
 		 {
 
@@ -83,6 +95,7 @@ public partial class MainPage : ContentPage
 		{
 		   is_connected=false;
 		   start_time = DateTime.Now;
+		   timer.Stop();
 		}
 		
 		}
@@ -170,12 +183,17 @@ public partial class MainPage : ContentPage
 			DependencyService.Resolve<IAndroid>().StartMyService();
 			Clkin.Text = "Clock-Out";
 			start_time=DateTime.Now;
+			timer.Start();
 		}
 		else if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
 		{
 			DependencyService.Resolve<IAndroid>().StopMyService();
 			Clkin.Text = "Clock-In";
-			
+			timer.Stop();
+
+			Task.Run(()=>{ 
+			send_elapsed_time_to_db(); 
+			});
 		}
 
 
@@ -268,11 +286,83 @@ Navigation.PushAsync(new ViewRecentSales());
 
     }
 
+	private static void T_Elapsed(object? sender, ElapsedEventArgs e)
+	{
+		Action action1 = new Action(() => {
+
+			second++;
+			if(second==60)
+			{
+				second = 0;
+
+				minute++;
+				if(minute==60)
+				{
+					minute = 0;
+					hour++;
+
+					if(hour==24)
+					{
+						hour = 0;	
+					}
+				}
+			}
+
+
+
+
+		});
+
+
+		action1.Invoke();
+	}
+
+
+
+
+
 	private  void stock_info_Clicked(object sender, EventArgs e)
 	{
 		
 		 Navigation.PushAsync(new StockInfo());
 
 	}
+
+
+	public async void send_elapsed_time_to_db()
+	{
+		await dt.get_emp_id();
+		string etime = String.Format("{0}:{1}:{2}",hour.ToString(),minute.ToString(),second.ToString());
+
+		dt.start_connection();
+		dt.add_elapsed_time_to_db(DateTime.Now.ToString("yyyy-M-dd"),etime);
+		dt.close_connection();
+	}
+
+
+	public async void get_elapsed_time()
+	{
+		
+		await dt.get_emp_id();
+		dt.start_connection();
+		int[] time = dt.get_todays_elapsed_time(DateTime.Now.ToString("yyyy-M-dd"));
+		dt.close_connection();
+
+		for(int i=0;i<2;i++)
+		{
+			if (time[i] == -1)
+				return;
+		}
+
+		hour = time[0];
+		minute = time[1];
+		second = time[2];
+
+		return;
+
+	}
+
+
+
 }
 
