@@ -7,7 +7,8 @@ using System.Timers;
 using The_Attendance.Interfaces;
 #if ANDROID
 using The_Attendance.Platforms;
-
+using Android.Locations;
+using Android.OS;
 #endif
 namespace Attendance;
 
@@ -17,10 +18,13 @@ public partial class MainPage : ContentPage
 	public DateTime start_time { get; set; }
 	public DataClass dt = new DataClass();
 	public static bool is_connected = true;
+	public static bool is_location_turned_on = true;
 	public static string conn_to_internet = "";
 	public System.Timers.Timer timer = new System.Timers.Timer();
 	public static int second=0,minute=0,hour=0;
-    
+	private CancellationTokenSource _cancelTokenSource;
+	private bool _isCheckingLocation;
+
 
 	public MainPage()
 	{
@@ -41,7 +45,7 @@ public partial class MainPage : ContentPage
 					
 					   Clkin.Text = "Clock-Out";  
 
-					   if(is_connected)
+					   if(is_connected && is_location_turned_on)
 					   {
 
 					   timer.Start();
@@ -97,6 +101,11 @@ public partial class MainPage : ContentPage
 		   start_time = DateTime.Now;
 		   timer.Stop();
 		}
+
+
+
+
+
 		
 		}
 		
@@ -104,7 +113,32 @@ public partial class MainPage : ContentPage
 	
 
 	
-				
+	  Task.Run(async()=>{
+	   
+	  while(true)
+	  {
+	  if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning() && is_connected )
+	  {
+	  var locataion_status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+			if (locataion_status == PermissionStatus.Granted)
+			{
+			  		
+			 await GetCurrentLocation();
+
+
+			}
+			else
+			{
+			  	  is_location_turned_on=false;
+					  timer.Stop();
+			}
+
+			}
+
+		}
+	  
+	  });
 		
 		
 
@@ -183,6 +217,7 @@ public partial class MainPage : ContentPage
 			DependencyService.Resolve<IAndroid>().StartMyService();
 			Clkin.Text = "Clock-Out";
 			start_time=DateTime.Now;
+			Task.Run(()=>{get_elapsed_time();});
 			timer.Start();
 		}
 		else if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning())
@@ -335,8 +370,12 @@ Navigation.PushAsync(new ViewRecentSales());
 		string etime = String.Format("{0}:{1}:{2}",hour.ToString(),minute.ToString(),second.ToString());
 
 		dt.start_connection();
-		dt.add_elapsed_time_to_db(DateTime.Now.ToString("yyyy-M-dd"),etime);
-		dt.close_connection();
+		List<string> present_ids= dt.employee_ids_who_were_present_on_specific_day();
+		if (present_ids.Contains(dt.emp_id2))
+		{
+			dt.add_elapsed_time_to_db(DateTime.Now.ToString("yyyy-M-dd"), etime);
+		}
+			dt.close_connection();
 	}
 
 
@@ -351,7 +390,12 @@ Navigation.PushAsync(new ViewRecentSales());
 		for(int i=0;i<2;i++)
 		{
 			if (time[i] == -1)
+			{
+				hour = 0;
+				minute = 0;
+				second = 0;
 				return;
+			}
 		}
 
 		hour = time[0];
@@ -362,7 +406,57 @@ Navigation.PushAsync(new ViewRecentSales());
 
 	}
 
+	public async Task GetCurrentLocation()
+	{
+		try
+		{
+			_isCheckingLocation = true;
 
+			GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.High, TimeSpan.FromSeconds(10));
+
+
+			_cancelTokenSource = new CancellationTokenSource();
+			Microsoft.Maui.Devices.Sensors.Location location = null;
+
+			await MainThread.InvokeOnMainThreadAsync(async () => {
+
+				try
+				{
+
+					location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+				}
+				catch (System.Exception ex)
+				{
+					is_location_turned_on = false;
+					timer.Stop();
+				}
+
+			});
+
+
+			if (location != null)
+			{
+				is_location_turned_on = true;
+
+				
+			}
+		}
+		// Catch one of the following exceptions:
+		//   FeatureNotSupportedException
+		//   FeatureNotEnabledException
+		//   PermissionException
+		catch (System.Exception ex)
+		{
+			is_location_turned_on=false;
+			timer.Stop();
+		}
+		finally
+		{
+			_isCheckingLocation = false;
+		}
+
+
+	}
 
 }
 

@@ -79,6 +79,13 @@ public partial class ViewStoreStock : ContentPage
 
 	private async void get_stock_report_Clicked(object sender, EventArgs e)
 	{
+		if (st_date.Date > end_date_picker.Date)
+		{
+			DisplayAlert("Invalid Date !", "The date ranges are not valid", "OK!");
+			return;
+		}
+
+
 		if (vs.Contains(xlbtn))
 			vs.Remove(xlbtn);
 
@@ -89,18 +96,36 @@ public partial class ViewStoreStock : ContentPage
 
 
 		await dt.get_emp_id();
+		
 		int daily_sale = 0;
+
+		List<string> invoice_header=new List<string>();
 
 		dt.start_connection();
 	 string state =	dt.get_current_employee_state();
+
+		
+
 		//List<List<string>> stock_info = dt.get_store_stock(start_date.ToString("yyyy-MM-dd"), end_date.ToString("yyyy-MM-dd"), ref daily_sale, state);
-		List<List<string>> stock_info = dt.get_opening_and_closing_stock();
+		List<List<string>> stock_info = dt.get_opening_and_closing_stock(st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"));
+		List<List<string>> invoice_qty_info = dt.get_employee_all_invoice_coloumns(dt.emp_id2,st_date.Date.ToString("yyyy-M-dd"),end_date_picker.Date.ToString("yyyy-M-dd"),ref invoice_header);
 		dt.close_connection();
 
 		List<string> dsalelis = new List<string> {"","","","","","","","","","Total Stock Value",daily_sale.ToString() };
-		stock_info.Add(dsalelis);
+		
+		//stock_info.Add(dsalelis);
 
-		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "opening_stock", "qty", "Sales", "sold_pcs", "return_sales", "Defective", "Closing_stock" };
+		for(int k = 0; k < invoice_qty_info.Count; k++) 
+		{
+			stock_info[k].InsertRange(7, invoice_qty_info[k]);
+		
+		}
+
+
+		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "opening_stock", "Sales",  "Defective Stock" };
+		stock_header.AddRange(invoice_header);
+		stock_header.Add("Closing_stock");
+		stock_header.Add("Closing_stock_value");
 
 		string html_str = dt.create_html_string(stock_header, stock_info);
 
@@ -124,6 +149,12 @@ public partial class ViewStoreStock : ContentPage
 
 	private async void get_stock_report_Clicked2(object sender, EventArgs e)
 	{
+		if(st_date.Date>end_date_picker.Date)
+		{
+			DisplayAlert("Invalid Date !", "The date ranges are not valid", "OK!");
+			return;
+		}
+
 		if (vs.Contains(xlbtn))
 			vs.Remove(xlbtn);
 
@@ -134,18 +165,36 @@ public partial class ViewStoreStock : ContentPage
 
 
 		await dt.get_emp_id();
+
 		int daily_sale = 0;
+
+		List<string> invoice_header = new List<string>();
 
 		dt.start_connection();
 		string state = dt.get_current_employee_state();
+
+
+
 		//List<List<string>> stock_info = dt.get_store_stock(start_date.ToString("yyyy-MM-dd"), end_date.ToString("yyyy-MM-dd"), ref daily_sale, state);
-		List<List<string>> stock_info = dt.get_opening_and_closing_stock(emp_id);
+		List<List<string>> stock_info = dt.get_opening_and_closing_stock(emp_id,st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"));
+		List<List<string>> invoice_qty_info = dt.get_employee_all_invoice_coloumns(emp_id, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"), ref invoice_header);
 		dt.close_connection();
 
 		List<string> dsalelis = new List<string> { "", "", "", "", "", "", "", "", "", "Total Stock Value", daily_sale.ToString() };
-		stock_info.Add(dsalelis);
 
-		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "opening_stock", "qty", "Sales", "sold_pcs", "return_sales", "Defective", "Closing_stock" };
+		//stock_info.Add(dsalelis);
+
+		for (int k = 0; k < invoice_qty_info.Count; k++)
+		{
+			stock_info[k].InsertRange(7, invoice_qty_info[k]);
+
+		}
+
+
+		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "opening_stock", "Sales", "Defective Stock" };
+		stock_header.AddRange(invoice_header);
+		stock_header.Add("Closing_stock");
+		stock_header.Add("Closing_stock_value");
 
 		string html_str = dt.create_html_string(stock_header, stock_info);
 
@@ -162,7 +211,6 @@ public partial class ViewStoreStock : ContentPage
 
 
 		vs.Add(xlbtn);
-
 
 	}
 
