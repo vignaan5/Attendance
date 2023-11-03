@@ -4,9 +4,9 @@
              x:Class="Attendance.Pages.ReportsPage"
              Title="ReportsPage" BackgroundImageSource="whiteback.jpg">
     <VerticalStackLayout Spacing="10">
-        <Button Text="View Attendance Report" x:Name="showempreportbtn" Clicked="showempreportbtn_Clicked" HorizontalOptions="Center"></Button>
-        <Button Text="View Your Team Report" x:Name="showteamreportbtn" Clicked="showteamreportbtn_Clicked" HorizontalOptions="Center"></Button>
-        <Button Text="View Your Team Products Report" x:Name="showproducts" Clicked="showproducts_Clicked" HorizontalOptions="Center"></Button>
-
+        <Button Text="View Attendance Report" x:Name="showempreportbtn" Clicked="showempreportbtn_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button>
+        <Button Text="View Your Team Report" x:Name="showteamreportbtn" Clicked="showteamreportbtn_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button>
+        <Button Text="View Your Team Products Report" x:Name="showproducts" Clicked="showproducts_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button >
+        <Button Text="View Employee's Store Stock" x:Name="empstorestock" Clicked="empstorestock_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button>
     </VerticalStackLayout>
 </ContentPage>

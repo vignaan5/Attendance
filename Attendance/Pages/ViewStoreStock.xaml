@@ -53,7 +53,7 @@ Title="Select a year">
         
         <VerticalStackLayout x:Name="svs" IsVisible="False" IsEnabled="False">
 
-            <SearchBar x:Name="search_emp" Placeholder="Enter employee Name or ID" TextChanged="search_emp_TextChanged"></SearchBar>
+            <SearchBar x:Name="search_emp" Placeholder="Enter employee Name or ID"></SearchBar>
             <ListView x:Name="emplist" ItemSelected="emplis_ItemSelected" IsVisible="False"></ListView>
 
         </VerticalStackLayout>

@@ -4,7 +4,7 @@
              x:Class="Attendance.Pages.SupervisorPage"
              Title="SupervisorPage" BackgroundImageSource="whiteback.jpg">
     <VerticalStackLayout Spacing="10">
-        <Button Text="Manage Employess" HorizontalOptions="Center" x:Name="manageempbtn" Clicked="manageempbtn_Clicked" WidthRequest="180"></Button>
-        <Button Text="Reports" x:Name="reportsbtn" HorizontalOptions="Center" Clicked="reportsbtn_Clicked" WidthRequest="180"></Button>
+        <Button Text="Manage Employess" HorizontalOptions="Center" x:Name="manageempbtn" Clicked="manageempbtn_Clicked" WidthRequest="290"></Button>
+        <Button Text="Reports" x:Name="reportsbtn" HorizontalOptions="Center" Clicked="reportsbtn_Clicked" WidthRequest="290"></Button>
     </VerticalStackLayout>
 </ContentPage>

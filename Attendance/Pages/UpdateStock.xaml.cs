@@ -23,12 +23,14 @@ public partial class UpdateStock : ContentPage
         DateTime dt_temp = tdp.Date;
         dt_temp = dt_temp.AddDays(-1);
         tdp.Date = dt_temp;
-        dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+     //   dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+        
         dpicker.ItemsSource = dp_items;
         dpicker.SelectedIndex = 0;
         invoicebox.Text = "";
         invoicebox.IsEnabled = true;
         invoicebox.IsVisible = true;
+        
 
     }
 
@@ -42,7 +44,7 @@ public partial class UpdateStock : ContentPage
         DateTime dt_temp = tdp.Date;
         dt_temp = dt_temp.AddDays(-1);
         tdp.Date = dt_temp;
-        dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+       // dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
         dpicker.ItemsSource = dp_items;
         dpicker.SelectedIndex = 0;
         this.type= type;
@@ -362,22 +364,23 @@ public partial class UpdateStock : ContentPage
                         }
                         else
                         {
-							if (invoicebox.Text.Trim().Equals("opening stock", StringComparison.InvariantCultureIgnoreCase))
-							{
+							
 								dt.start_connection();
 								List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
-								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, DateTime.Now.ToString("yyyy-M-dd"), DateTime.Now.ToString("yyyy-M-dd"));
 
-								dt.close_connection();
-								if (inv.Contains("opening stock", StringComparer.InvariantCultureIgnoreCase))
+								
+								if (inv.Contains(invoicebox.Text.Trim(), StringComparer.InvariantCultureIgnoreCase))
 								{
-									if (!today)
+								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, DateTime.Now.ToString("yyyy-M-dd"), DateTime.Now.ToString("yyyy-M-dd"),invoicebox.Text.Trim());
+								if (!today)
 									{
-										DisplayAlert("Opening Stock Exists", "opening stock can only be entered once in store's lifetime", "OK");
+									dt.close_connection();
+									DisplayAlert("Stock Exists", "stock can only be entered once in store's lifetime", "OK");
 										continue;
 									}
 								}
-							}
+
+							dt.close_connection();
 
 							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'),'{4}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount,invoicebox.Text.Trim());
 
@@ -393,25 +396,22 @@ public partial class UpdateStock : ContentPage
                         }
                         else
                         {
+							dt.start_connection();
+							List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
 
-							if (invoicebox.Text.Trim().Equals("opening stock", StringComparison.InvariantCultureIgnoreCase))
+							
+							if (inv.Contains(invoicebox.Text.Trim(), StringComparer.InvariantCultureIgnoreCase))
 							{
-								dt.start_connection();
-								List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
-								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, DateTime.Now.ToString("yyyy-M-dd"), DateTime.Now.ToString("yyyy-M-dd"));
-
-								dt.close_connection();
-								if (inv.Contains("opening stock", StringComparer.InvariantCultureIgnoreCase))
+								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, DateTime.Now.ToString("yyyy-M-dd"), DateTime.Now.ToString("yyyy-M-dd"), invoicebox.Text.Trim());
+								if (!today)
 								{
-									if (!today)
-									{
-										DisplayAlert("Opening Stock Exists", "opening stock can only be entered once in store's lifetime", "OK");
-										continue;
-									}
+									dt.close_connection();
+									DisplayAlert("Stock Exists", "stock can only be entered once in store's lifetime", "OK");
+									continue;
 								}
 							}
 
-
+							dt.close_connection();
 
 							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},'{4}','{5}','{6}');", employee_ID, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[0],invoicebox.Text.Trim());
 
@@ -431,23 +431,21 @@ public partial class UpdateStock : ContentPage
                         }
                         else
                         {
-							if (invoicebox.Text.Trim().Equals("opening stock", StringComparison.InvariantCultureIgnoreCase))
-							{
-								dt.start_connection();
-								List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
-								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, dpicker.ItemsSource[1] as string, dpicker.ItemsSource[1] as string);
+							dt.start_connection();
+							List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
 
-								dt.close_connection();
-								if (inv.Contains("opening stock", StringComparer.InvariantCultureIgnoreCase))
+							
+							if (inv.Contains(invoicebox.Text.Trim(), StringComparer.InvariantCultureIgnoreCase))
+							{
+								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, DateTime.Now.ToString("yyyy-M-dd"), DateTime.Now.ToString("yyyy-M-dd"), invoicebox.Text.Trim());
+								if (!today)
 								{
-									if (!today)
-									{
-										DisplayAlert("Opening Stock Exists", "opening stock can only be entered once in store's lifetime", "OK");
-										continue;
-									}
+									dt.close_connection();
+									DisplayAlert("Stock Exists", "stock can only be entered once in store's lifetime", "OK");
+									continue;
 								}
 							}
-
+							dt.close_connection();
 
 
 							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},'{4}','{5}','{6}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[1], invoicebox.Text.Trim());
@@ -465,22 +463,22 @@ public partial class UpdateStock : ContentPage
                         }
                         else
                         {
-							if (invoicebox.Text.Trim().Equals("opening stock", StringComparison.InvariantCultureIgnoreCase))
-							{
-								dt.start_connection();
-								List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
-								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, dpicker.ItemsSource[1] as string, DateTime.Now.ToString("yyyy-M-dd"));
+							dt.start_connection();
+							List<string> inv = dt.get_employee_invoices(dt.emp_id2, "2023-1-1", DateTime.Now.ToString("yyyy-M-dd"));
 
-								dt.close_connection();
-								if (inv.Contains("opening stock", StringComparer.InvariantCultureIgnoreCase))
+							
+							if (inv.Contains(invoicebox.Text.Trim(), StringComparer.InvariantCultureIgnoreCase))
+							{
+								bool today = dt.is_employee_invoice_today_or_yesterday(dt.emp_id2, DateTime.Now.ToString("yyyy-M-dd"), DateTime.Now.ToString("yyyy-M-dd"), invoicebox.Text.Trim());
+								if (!today)
 								{
-									if (!today)
-									{
-										DisplayAlert("Opening Stock Exists", "opening stock can only be entered once in store's lifetime", "OK");
-										continue;
-									}
+									dt.close_connection();
+									DisplayAlert("Stock Exists", "stock can only be entered once in store's lifetime", "OK");
+									continue;
 								}
 							}
+
+							dt.close_connection();
 
 							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},'{4}','{5}','{6}');", employee_ID, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[1], invoicebox.Text.Trim());
 

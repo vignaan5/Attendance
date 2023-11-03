@@ -16,7 +16,7 @@ public partial class DeviceChanges : ContentPage
 			device_changes=dt.get_employee_device_changes();
 			dt.close_connection();
 
-			List<string> header = new List<string> {"employee ID","Device","Date","Device","Date"};
+			List<string> header = new List<string> {"employee ID","Date","Current Device","Changed from Device","Date"};
 		  string htmlstr =	dt.create_html_string(header,device_changes);
 
 			MainThread.InvokeOnMainThreadAsync(() => 

@@ -10,6 +10,7 @@ public partial class ViewStoreStock : ContentPage
 	public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
 	public string emp_id = String.Empty;
 	bool dont_trigger_emp_search_text_event = false;
+	public string state = String.Empty;
 	public ViewStoreStock()
 	{
 		InitializeComponent();
@@ -50,6 +51,8 @@ public partial class ViewStoreStock : ContentPage
 
 		month_picker.SelectedIndex = (date_time_today.Month - 1);
 
+		search_emp.TextChanged += search_emp_TextChanged;
+
 		svs.IsVisible = true;
 		svs.IsEnabled = true;
 
@@ -62,6 +65,40 @@ public partial class ViewStoreStock : ContentPage
 
 	}
 
+	
+
+	public ViewStoreStock(bool search_for_employee,string state)
+	{
+		InitializeComponent();
+		DateTime date_time_today = DateTime.Now;
+		List<string> years = new List<string>();
+
+		this.state=state;
+
+		for (int i = 2023; i <= date_time_today.Year; i++)
+		{
+			years.Add(i.ToString());
+		}
+
+		search_emp.TextChanged += search_emp_TextChanged_with_state;
+
+		year_picker.ItemsSource = years;
+
+		year_picker.SelectedIndex = (year_picker.Items.Count - 1);
+
+		month_picker.SelectedIndex = (date_time_today.Month - 1);
+
+		svs.IsVisible = true;
+		svs.IsEnabled = true;
+
+		get_stock_report.IsEnabled = false;
+
+		get_stock_report.IsVisible = false;
+
+
+		get_stock_report.Clicked += get_stock_report_Clicked2;
+
+	}
 
 	public static DateTime StartOfMonth( DateTime date)
 	{
@@ -117,12 +154,12 @@ public partial class ViewStoreStock : ContentPage
 
 		for(int k = 0; k < invoice_qty_info.Count; k++) 
 		{
-			stock_info[k].InsertRange(7, invoice_qty_info[k]);
+			stock_info[k].InsertRange(6, invoice_qty_info[k]);
 		
 		}
 
 
-		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "opening_stock", "Sales",  "Defective Stock" };
+		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP","Sales",  "Defective Stock" };
 		stock_header.AddRange(invoice_header);
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
@@ -186,12 +223,12 @@ public partial class ViewStoreStock : ContentPage
 
 		for (int k = 0; k < invoice_qty_info.Count; k++)
 		{
-			stock_info[k].InsertRange(7, invoice_qty_info[k]);
+			stock_info[k].InsertRange(6, invoice_qty_info[k]);
 
 		}
 
 
-		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "opening_stock", "Sales", "Defective Stock" };
+		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "Sales", "Defective Stock" };
 		stock_header.AddRange(invoice_header);
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
@@ -290,6 +327,56 @@ public partial class ViewStoreStock : ContentPage
 	}
 
 
+	private void search_emp_TextChanged_with_state(object sender, TextChangedEventArgs e)
+	{
+
+		if (search_emp.Text.Trim() == "")
+		{
+
+			emplist.ItemsSource = nothing_found_temp;
+			return;
+		}
+
+		if (dont_trigger_emp_search_text_event)
+			return;
+
+		Task.Run(async () => {
+
+			while (dt.is_conn_open)
+			{
+
+			}
+
+			dt.start_connection();
+			List<List<string>> result = dt.search_employee_in_db(search_emp.Text.Trim(), search_emp.Text.Trim(), search_emp.Text.Trim(),state);
+			dt.close_connection();
+
+			MainThread.InvokeOnMainThreadAsync(() => {
+				List<string> temp = new List<string>();
+				foreach (List<string> list in result)
+				{
+					temp.Add(list[0] + " " + list[1] + " " + list[2]);
+
+				}
+				if (temp.Count == 0)
+				{
+					emplist.ItemsSource = nothing_found_temp;
+				}
+				else
+				{
+					emplist.ItemsSource = temp;
+				}
+
+				emplist.IsVisible = true;
+			});
+
+
+		});
+
+
+
+
+	}
 
 
 

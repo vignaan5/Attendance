@@ -40,4 +40,13 @@ public partial class ReportsPage : ContentPage
 		Navigation.PushAsync(new DataGrid(state));
 
 	}
+
+	private async void empstorestock_Clicked(object sender, EventArgs e)
+	{
+		string emp_id = await SecureStorage.GetAsync("employee_id");
+		dt.start_connection();
+		string state = dt.get_current_employee_state(emp_id);
+		dt.close_connection();
+		Navigation.PushAsync(new ViewStoreStock(true, state));
+	}
 }
