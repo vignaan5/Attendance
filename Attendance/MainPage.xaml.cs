@@ -385,23 +385,24 @@ Navigation.PushAsync(new ViewRecentSales());
 
 	public async void get_elapsed_time()
 	{
-		string last_working_day = "";
+		//string last_working_day = "";
 		await dt.get_emp_id();
 		dt.start_connection();
 		int[] time = dt.get_todays_elapsed_time(DateTime.Now.ToString("yyyy-M-dd"));
-		int[] time2 = dt.get_last_working_day_elapsed_time(ref last_working_day);
+		//int[] time2 = dt.get_last_working_day_elapsed_time(ref last_working_day);
 		
 		dt.close_connection();
 
-		if (time2[0]!=-1)
-		{
-			if (time2[0]<8)
-			{
-				string wk_time = String.Format("{0}Hrs:{1}Min:{2}sec on {3} ", time2[0].ToString(), time2[1].ToString(), time2[2].ToString(), last_working_day);
-				MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Work Time Less Than 8 Hours", wk_time, "OK"); });
+	//	if (time2[0]!=-1)
+	//	{
+	//		if (time2[0]<8)
+	//		{
+	//			string wk_time = String.Format("{0}Hrs:{1}Min:{2}sec on {3} ", time2[0].ToString(), time2[1].ToString(), time2[2].ToString(), last_working_day);
+	//		MainThread.InvokeOnMainThreadAsync(() => { DisplayAlert("Work Time Less Than 8 Hours", wk_time, "OK"); });
 				
-			}
-		}
+	//		}
+	//	}
+
 
 
 		for (int i=0;i<2;i++)
