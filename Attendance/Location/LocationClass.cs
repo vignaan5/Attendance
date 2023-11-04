@@ -255,7 +255,7 @@ namespace Attendance.Location
 					sql_date_string += mySqlDate.Month.ToString() + '-';
 					sql_date_string += mySqlDate.Day.ToString();
 
-					string sql_address_query = "INSERT INTO employee_location VALUES  ('" + temp_emp_id + "',convert_tz(now(),'+00:00','+05:30')";
+					string sql_address_query = "INSERT INTO employee_location VALUES  ('" + temp_emp_id + "',now()";
 					foreach (string val in str_adr_arr)
 					{
 						sql_address_query += ",'" + val + "'";
@@ -268,7 +268,7 @@ namespace Attendance.Location
 
 					sql_address_query="";
 
-					sql_address_query = "INSERT INTO employee_location_with_device_info VALUES  ('" + temp_emp_id + "',convert_tz(now(),'+00:00','+05:30')";
+					sql_address_query = "INSERT INTO employee_location_with_device_info VALUES  ('" + temp_emp_id + "',now()";
 					foreach (string val in str_adr_arr)
 					{
 						sql_address_query += ",'" + val + "'";

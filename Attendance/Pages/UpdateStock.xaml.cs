@@ -359,7 +359,7 @@ public partial class UpdateStock : ContentPage
                         {
                             
 
-                            stemp = String.Format("INSERT INTO employee_defect_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'),'{4}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount,invoicebox.Text.Trim());
+                            stemp = String.Format("INSERT INTO employee_defect_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},now(),now(),'{4}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount,invoicebox.Text.Trim());
 
                         }
                         else
@@ -382,7 +382,7 @@ public partial class UpdateStock : ContentPage
 
 							dt.close_connection();
 
-							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'),'{4}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount,invoicebox.Text.Trim());
+							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},now(),now(),'{4}');", dt.emp_id2, snostr, qty_in_int.ToString(), amount,invoicebox.Text.Trim());
 
                         }
 

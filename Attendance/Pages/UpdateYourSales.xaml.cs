@@ -359,7 +359,7 @@ public partial class UpdateYourSales : ContentPage
 				{
 					if (employee_ID == String.Empty)
 					{
-						stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},convert_tz(now(),'+00:00','+05:30'),convert_tz(now(),'+00:00','+05:30'));", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
+						stemp = String.Format("INSERT INTO employee_sales2 (emp_id,sno,pcs,amount,The_Time,The_date) values ('{0}',{1},{2},{3},now(),now());", dt.emp_id2, snostr, qty_in_int.ToString(), amount);
 					}
 					else if (employee_ID != String.Empty)
 					{

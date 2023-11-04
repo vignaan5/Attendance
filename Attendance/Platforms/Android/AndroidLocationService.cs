@@ -163,7 +163,7 @@ namespace The_Attendance.Platforms
 		{
 			await dt.get_emp_id();
 			dt.start_connection();
-			string cmd = string.Format("insert into clock_in_and_out values ('{0}',convert_tz(now(),'+00:00','+05:30'),null);",dt.emp_id2);
+			string cmd = string.Format("insert into clock_in_and_out values ('{0}',now(),null);",dt.emp_id2);
 			MySqlCommand mySqlCommand = new MySqlCommand(cmd,dt.connection);
 
 			try
@@ -182,7 +182,7 @@ namespace The_Attendance.Platforms
 		public async void update_clock_out()
 		{
 			await dt.get_emp_id();
-			string sql_cmd = string.Format("update clock_in_and_out set clock_out=convert_tz(now(),'+00:00','+05:30') where date(clock_in)=date(convert_tz(now(),'+00:00','+05:30')) and  clock_out is null and emp_id='{0}';", dt.emp_id2);
+			string sql_cmd = string.Format("update clock_in_and_out set clock_out=now() where date(clock_in)=date(now()) and  clock_out is null and emp_id='{0}';", dt.emp_id2);
 		
 			dt.start_connection();
 			MySqlCommand cmd = new MySqlCommand(sql_cmd,dt.connection);
