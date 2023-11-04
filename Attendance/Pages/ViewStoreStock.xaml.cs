@@ -159,10 +159,43 @@ public partial class ViewStoreStock : ContentPage
 		}
 
 
-		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP","Sales",  "Defective Stock" };
+
+
+        for (int k = 0; k < stock_info.Count; k++)
+        {
+            int sale_val = Convert.ToInt32(stock_info[k][4]);
+            int summed_stock = 0;
+            for (int m = 0; invoice_qty_info.Count > 0 && m < invoice_qty_info[k].Count; m++)
+            {
+                int stock_val = Convert.ToInt32(invoice_qty_info[k][m]);
+                summed_stock += stock_val;
+                if (summed_stock - sale_val > 0)
+                {
+
+                    string[] days = invoice_header[m].Split('(', ')');
+                    stock_info[k].Add(days[1]);
+                    m = invoice_qty_info[k].Count;
+
+                }
+                else if (m == invoice_qty_info[k].Count - 1)
+                {
+                    stock_info[k].Add("No Data");
+
+                }
+
+            }
+
+
+        }
+
+
+        List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP","Sales",  "Defective Stock" };
+		
+
 		stock_header.AddRange(invoice_header);
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
+		stock_header.Add("Stock Age");
 
 		string html_str = dt.create_html_string(stock_header, stock_info);
 
@@ -228,10 +261,39 @@ public partial class ViewStoreStock : ContentPage
 		}
 
 
-		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "Sales", "Defective Stock" };
+        for (int k = 0; k < stock_info.Count; k++)
+        {
+            int sale_val = Convert.ToInt32(stock_info[k][4]);
+			int summed_stock = 0;
+            for (int m = 0; invoice_qty_info.Count > 0 && m < invoice_qty_info[k].Count; m++)
+            {
+                int stock_val = Convert.ToInt32(invoice_qty_info[k][m]);
+				summed_stock += stock_val;
+                if (summed_stock - sale_val > 0)
+                {
+
+                    string[] days = invoice_header[m].Split('(', ')');
+                    stock_info[k].Add(days[1]);
+                    m = invoice_qty_info[k].Count;
+
+                }
+                else if (m == invoice_qty_info[k].Count - 1)
+                {
+                    stock_info[k].Add("No Data");
+
+                }
+				
+            }
+
+
+        }
+
+
+        List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "Sales", "Defective Stock" };
 		stock_header.AddRange(invoice_header);
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
+		stock_header.Add("Stock Age");
 
 		string html_str = dt.create_html_string(stock_header, stock_info);
 
