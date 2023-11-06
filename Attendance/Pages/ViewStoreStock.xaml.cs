@@ -154,7 +154,7 @@ public partial class ViewStoreStock : ContentPage
 
 		for(int k = 0; k < invoice_qty_info.Count; k++) 
 		{
-			stock_info[k].InsertRange(6, invoice_qty_info[k]);
+			stock_info[k].InsertRange(4, invoice_qty_info[k]);
 		
 		}
 
@@ -189,10 +189,10 @@ public partial class ViewStoreStock : ContentPage
         }
 
 
-        List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP","Sales",  "Defective Stock" };
-		
-
+		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP" };
 		stock_header.AddRange(invoice_header);
+		stock_header.Add("Sales");
+		stock_header.Add("Defective Stock");	
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
 		stock_header.Add("Stock Age");
@@ -256,7 +256,7 @@ public partial class ViewStoreStock : ContentPage
 
 		for (int k = 0; k < invoice_qty_info.Count; k++)
 		{
-			stock_info[k].InsertRange(6, invoice_qty_info[k]);
+			stock_info[k].InsertRange(4, invoice_qty_info[k]);
 
 		}
 
@@ -289,8 +289,10 @@ public partial class ViewStoreStock : ContentPage
         }
 
 
-        List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP", "Sales", "Defective Stock" };
+        List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP"};
 		stock_header.AddRange(invoice_header);
+		stock_header.Add("Sales");
+		stock_header.Add("Defective");
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
 		stock_header.Add("Stock Age");
