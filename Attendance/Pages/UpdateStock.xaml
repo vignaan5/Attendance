@@ -7,6 +7,13 @@
 
         <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30"> </ImageButton>
         <Picker x:Name="dpicker"></Picker>
+        <HorizontalStackLayout Spacing="10" x:Name="inv_hs" IsEnabled="False" IsVisible="False">
+
+            <Label Text="Recent Invoices :" VerticalOptions="Center"></Label>
+            <Picker x:Name="Invoice_picker" VerticalOptions="Center" IsEnabled="False" IsVisible="False" SelectedIndexChanged="Invoice_picker_SelectedIndexChanged"></Picker>
+
+
+        </HorizontalStackLayout>
         <Entry Placeholder="Enter Invoice no" PlaceholderColor="Black" IsVisible="False" IsEnabled="False" x:Name="invoicebox"></Entry>
         <SearchBar x:Name="products_search_bar" Placeholder="Seach and Add Products"  TextChanged="Products_search_bar_TextChanged"></SearchBar>
 

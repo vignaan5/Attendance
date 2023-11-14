@@ -13,6 +13,7 @@ public partial class UpdateStock : ContentPage
     public string employee_ID = String.Empty;
     public List<string> dpitems = new List<string>();
     public string type=String.Empty;
+    
     public UpdateStock()
 	{
 		InitializeComponent();
@@ -30,7 +31,33 @@ public partial class UpdateStock : ContentPage
         invoicebox.Text = "";
         invoicebox.IsEnabled = true;
         invoicebox.IsVisible = true;
-        
+
+        Task.Run(async() => 
+        {
+            await dt.get_emp_id();
+            dt.start_connection();
+            
+         List<string> invoices=  dt.get_employee_Stock_invoices(dt.emp_id2, DateTime.Now.Date.ToString("yyyy-MM-dd"),DateTime.Now.Date.ToString("yyyy-MM-dd"));
+            dt.close_connection();
+
+            if(invoices!=null && invoices.Count>0)
+            {
+                MainThread.InvokeOnMainThreadAsync(async() => 
+                { 
+
+                    Invoice_picker.ItemsSource=invoices;
+                    inv_hs.IsEnabled = true;
+                    inv_hs.IsVisible = true;
+                    Invoice_picker.IsVisible = true;
+                    Invoice_picker.IsEnabled = true;
+
+                
+                });
+            }
+
+        });
+
+
 
     }
 
@@ -51,7 +78,33 @@ public partial class UpdateStock : ContentPage
 		invoicebox.Text = "";
 		invoicebox.IsEnabled = true;
         invoicebox.IsVisible = true;
-    }
+
+		Task.Run(async () =>
+		{
+			await dt.get_emp_id();
+			dt.start_connection();
+
+			List<string> invoices = dt.get_employee_Return_invoices(dt.emp_id2, DateTime.Now.Date.ToString("yyyy-MM-dd"), DateTime.Now.Date.ToString("yyyy-MM-dd"));
+			dt.close_connection();
+
+			if (invoices != null && invoices.Count > 0)
+			{
+				MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+
+					Invoice_picker.ItemsSource = invoices;
+					inv_hs.IsEnabled = true;
+					inv_hs.IsVisible = true;
+					Invoice_picker.IsVisible = true;
+					Invoice_picker.IsEnabled = true;
+
+
+				});
+			}
+
+		});
+
+	}
 
 
     private void Products_search_bar_TextChanged(object sender, TextChangedEventArgs e)
@@ -531,4 +584,11 @@ public partial class UpdateStock : ContentPage
 
 	}
 
+	private void Invoice_picker_SelectedIndexChanged(object sender, EventArgs e)
+	{
+        invoicebox.Text=Invoice_picker.SelectedItem as string;
+        invoicebox.Text.Trim();
+	}
+
+	
 }

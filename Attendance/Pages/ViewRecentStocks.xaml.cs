@@ -70,6 +70,7 @@ public partial class ViewRecentStocks : ContentPage
             string sno = "";
             string amount = "";
             string order_id = "";
+            string invoice_no = "";
 
             foreach (var product_details in product)
             {
@@ -91,7 +92,13 @@ public partial class ViewRecentStocks : ContentPage
 
                     pcs = product_details.Value;
                 }
-                if (product_details.Key == "your_sale")
+
+                if(product_details.Key=="invoice_no")
+                {
+                    invoice_no=product_details.Value;
+                }
+
+                if (product_details.Key == "stock_value")
                 {
 
                     amount = product_details.Value;
@@ -244,6 +251,7 @@ public partial class ViewRecentStocks : ContentPage
             string sno = "";
             string amount = "";
             string order_id = "";
+            string invoice_no = "";
 
             foreach (var product_details in product)
             {
@@ -265,7 +273,7 @@ public partial class ViewRecentStocks : ContentPage
 
                     pcs = product_details.Value;
                 }
-                if (product_details.Key == "your_sale")
+                if (product_details.Key == "stock_value")
                 {
 
                     amount = product_details.Value;
@@ -280,6 +288,11 @@ public partial class ViewRecentStocks : ContentPage
                 {
 
                     sold_time = product_details.Value;
+                }
+
+                if(product_details.Key=="invoice_no")
+                {
+                    invoice_no= product_details.Value;
                 }
 
                 if (product_details.Key == "sold_date")

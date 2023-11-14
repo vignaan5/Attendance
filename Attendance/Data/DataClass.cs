@@ -2880,10 +2880,11 @@ namespace Attendance.Data
                 item["product_price"] = reader[3].ToString();
                 item["emp_id"] = reader[4].ToString();
                 item["pcs"] = reader[6].ToString();
-                item["your_sale"] = reader[7].ToString();
+                item["stock_value"] = reader[7].ToString();
                 item["sold_time"] = reader[8].ToString();
                 item["sold_date"] = reader[9].ToString();
                 item["order_id"] = reader[10].ToString();
+				item["invoice_no"] = reader[11].ToString();
 
                 Dictionary<string, Dictionary<string, string>> item_with_name = new Dictionary<string, Dictionary<string, string>>();
 
@@ -2951,6 +2952,7 @@ namespace Attendance.Data
                 item["sold_time"] = reader[8].ToString();
                 item["sold_date"] = reader[9].ToString();
                 item["order_id"] = reader[10].ToString();
+				item["invoice_no"] = reader[11].ToString();
 
                 Dictionary<string, Dictionary<string, string>> item_with_name = new Dictionary<string, Dictionary<string, string>>();
 
@@ -3841,6 +3843,139 @@ namespace Attendance.Data
 
 			reader2.Close();
 
+
+
+
+			return invoices;
+		}
+
+		public List<string> get_employee_Return_invoices(string employeeID, string sql_start_date, string sql_end_date)
+		{
+			if (!is_conn_open)
+			{
+				return null;
+			}
+
+			string cmd2 = String.Format("select distinct invoice_no  from employee_defect_stocks es where emp_id='{0}' and The_date between '{1}' and '{2}' and invoice_no not in (select invoice_no from employee_stocks where emp_id='{3}' ) ;", employeeID, sql_start_date, sql_end_date, employeeID);
+		
+
+			MySqlCommand command2 = new MySqlCommand(cmd2, connection);
+
+		
+			try
+			{
+				command2.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+		
+
+			MySqlDataReader reader2 = null;
+
+		
+
+
+
+			List<string> invoices = new List<string>();
+
+		
+
+
+
+			try
+			{
+				reader2 = command2.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			while (reader2 != null && !reader2.IsClosed && reader2.Read())
+			{
+
+
+				try
+				{
+					invoices.Add(reader2[0].ToString());
+				}
+				catch (Exception ex)
+				{
+
+				}
+
+
+			}
+
+			reader2.Close();
+
+
+
+
+			return invoices;
+		}
+
+
+		public List<string> get_employee_Stock_invoices(string employeeID, string sql_start_date, string sql_end_date)
+		{
+			if (!is_conn_open)
+			{
+				return null;
+			}
+
+			string cmd = String.Format("select distinct invoice_no  from employee_stocks es where emp_id='{0}' and The_date between '{1}' and '{2}' ;", employeeID, sql_start_date, sql_end_date);
+			
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+
+		
+
+			try
+			{
+				command.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+		
+
+			MySqlDataReader reader = null;
+
+			
+
+			try
+			{
+				reader = command.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+
+
+			List<string> invoices = new List<string>();
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+
+
+				try
+				{
+					invoices.Add(reader[0].ToString());
+				}
+				catch (Exception ex)
+				{
+
+				}
+
+
+			}
+
+			reader.Close();
 
 
 
