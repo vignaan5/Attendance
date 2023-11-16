@@ -56,7 +56,6 @@ public partial class MainPage : ContentPage
 
 		//clktime.Text=String.Format("Session time => {0} Hr:{1} Min:{2} sec  ",tt.Hours.ToString(),tt.Minutes.ToString(),tt.Seconds.ToString());
 						clktime.Text=String.Format("Session time => {0} Hr:{1} Min:{2} sec  ",hour.ToString(),minute.ToString(),second.ToString());
-	
 		
 		              }
 					 

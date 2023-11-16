@@ -11,9 +11,11 @@ public partial class ViewStoreStock : ContentPage
 	public string emp_id = String.Empty;
 	bool dont_trigger_emp_search_text_event = false;
 	public string state = String.Empty;
+	public static string stores_first_entry_date = "";
 	public ViewStoreStock()
 	{
 		InitializeComponent();
+
 		DateTime date_time_today = DateTime.Now;
 		List<string> years = new List<string>();
 
@@ -29,6 +31,25 @@ public partial class ViewStoreStock : ContentPage
 		month_picker.SelectedIndex = (date_time_today.Month - 1);
 
 		get_stock_report.Clicked += get_stock_report_Clicked;
+
+		Task.Run(async () => 
+		{
+			await dt.get_emp_id();
+			dt.start_connection();
+			DateTime min_date = dt.get_employee_first_stock_entry_date(dt.emp_id2);
+			dt.close_connection();
+
+			MainThread.InvokeOnMainThreadAsync(async () => 
+			  { 
+			         st_date.MinimumDate = min_date;
+
+				  stockhs.IsVisible = true;
+				  stockhs.IsEnabled = true;
+			   
+			 });
+
+		
+		});
 
 	}
 
@@ -136,21 +157,53 @@ public partial class ViewStoreStock : ContentPage
 		
 		int daily_sale = 0;
 
-		List<string> invoice_header=new List<string>();
+		string sale_range_sum="0";
 
+		List<string> invoice_header=new List<string>();
+		List<string> fake_invoice_header = new List<string>();
+		List<string> invoice_column_sums = new List<string>();
+		List<string> fake_invoice_column_sums = new List<string>();
+		List<string> closing_stock_sums = new List<string>();
 		dt.start_connection();
 	 string state =	dt.get_current_employee_state();
 
-		
+
 
 		//List<List<string>> stock_info = dt.get_store_stock(start_date.ToString("yyyy-MM-dd"), end_date.ToString("yyyy-MM-dd"), ref daily_sale, state);
-		List<List<string>> stock_info = dt.get_opening_and_closing_stock(st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"));
-		List<List<string>> invoice_qty_info = dt.get_employee_all_invoice_coloumns(dt.emp_id2,st_date.Date.ToString("yyyy-M-dd"),end_date_picker.Date.ToString("yyyy-M-dd"),ref invoice_header);
+		
+		List<List<string>> stock_info = dt.get_opening_and_closing_stock(st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"),ref closing_stock_sums);
+		
+		List<List<string>> invoice_qty_info = dt.get_employee_all_invoice_coloumns(dt.emp_id2,st_date.Date.ToString("yyyy-M-dd"),end_date_picker.Date.ToString("yyyy-M-dd"),ref invoice_header,ref invoice_column_sums);
+		
+		List<List<string>> fake_invoice_qty_info = dt.get_employee_all_invoice_coloumns(dt.emp_id2, dt.get_employee_first_stock_entry_date(dt.emp_id2).ToString("yyyy-M-d"), end_date_picker.Date.ToString("yyyy-M-d"),ref fake_invoice_header,ref fake_invoice_column_sums);
+		
+		List<string> date_range_sale = dt.get_sold_pcs_between_dates(dt.emp_id2, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"),ref sale_range_sum);
+		
 		dt.close_connection();
 
 		List<string> dsalelis = new List<string> {"","","","","","","","","","Total Stock Value",daily_sale.ToString() };
+
+		List<List<string>> fake_stock_info = new List<List<string>>();
+			
 		
+		   foreach(List<string> lis in stock_info)
+		{
+			List<string> temp = new List<string>();
+			 
+			foreach(string strings in lis)
+			{
+				temp.Add(strings);
+			}
+
+			fake_stock_info.Add(temp);
+
+		}
+		
+
+
 		//stock_info.Add(dsalelis);
+
+
 
 		for(int k = 0; k < invoice_qty_info.Count; k++) 
 		{
@@ -160,26 +213,45 @@ public partial class ViewStoreStock : ContentPage
 
 
 
+		for (int k = 0; k < fake_invoice_qty_info.Count; k++)
+		{
+			fake_stock_info[k].InsertRange(4, fake_invoice_qty_info[k]);
 
-        for (int k = 0; k < stock_info.Count; k++)
+		}
+
+
+		int col = 4 + fake_invoice_header.Count;
+
+		for (int i = 0; i < fake_stock_info.Count; i++)
+		{
+			fake_stock_info[i][col] = date_range_sale[i];
+
+		}
+
+
+		for (int k = 0; k < fake_stock_info.Count; k++)
         {
-            int sale_val = Convert.ToInt32(stock_info[k][4]);
+            int sale_val = Convert.ToInt32(fake_stock_info[k][fake_stock_info[k].Count-4]);
             int summed_stock = 0;
-            for (int m = 0; invoice_qty_info.Count > 0 && m < invoice_qty_info[k].Count; m++)
+            for (int m = 0; fake_invoice_qty_info.Count > 0 && m < fake_invoice_qty_info[k].Count; m++)
             {
-                int stock_val = Convert.ToInt32(invoice_qty_info[k][m]);
+                int stock_val = Convert.ToInt32(fake_invoice_qty_info[k][m]);
                 summed_stock += stock_val;
                 if (summed_stock - sale_val > 0)
                 {
+					
+					
 
-                    string[] days = invoice_header[m].Split('(', ')');
+                    string[] days = fake_invoice_header[m].Split('(', ')');
                     stock_info[k].Add(days[1]);
-                    m = invoice_qty_info[k].Count;
+                    m = fake_invoice_qty_info[k].Count;
 
                 }
-                else if (m == invoice_qty_info[k].Count - 1)
+                else if (m == fake_invoice_qty_info[k].Count - 1)
                 {
-                    stock_info[k].Add("No Data");
+		
+						stock_info[k].Add("No Data");
+					
 
                 }
 
@@ -188,6 +260,24 @@ public partial class ViewStoreStock : ContentPage
 
         }
 
+
+		 col = 4 + invoice_header.Count;
+
+
+		for (int i = 0; i < stock_info.Count; i++)
+		{
+			stock_info[i][col] = date_range_sale[i];
+
+		}
+
+
+		closing_stock_sums[0] = sale_range_sum;
+		List<string> sum_row = new List<string> {"","Total","",""};
+		sum_row.AddRange(invoice_column_sums);
+		sum_row.AddRange(closing_stock_sums);
+		sum_row.Add("");
+
+		stock_info.Add(sum_row);
 
 		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP" };
 		stock_header.AddRange(invoice_header);
@@ -219,11 +309,12 @@ public partial class ViewStoreStock : ContentPage
 
 	private async void get_stock_report_Clicked2(object sender, EventArgs e)
 	{
-		if(st_date.Date>end_date_picker.Date)
+		if (st_date.Date > end_date_picker.Date)
 		{
 			DisplayAlert("Invalid Date !", "The date ranges are not valid", "OK!");
 			return;
 		}
+
 
 		if (vs.Contains(xlbtn))
 			vs.Remove(xlbtn);
@@ -238,21 +329,53 @@ public partial class ViewStoreStock : ContentPage
 
 		int daily_sale = 0;
 
-		List<string> invoice_header = new List<string>();
+		string sale_range_sum = "0";
 
+		List<string> invoice_header = new List<string>();
+		List<string> fake_invoice_header = new List<string>();
+		List<string> invoice_column_sums = new List<string>();
+		List<string> fake_invoice_column_sums = new List<string>();
+		List<string> closing_stock_sums = new List<string>();
 		dt.start_connection();
 		string state = dt.get_current_employee_state();
 
 
 
 		//List<List<string>> stock_info = dt.get_store_stock(start_date.ToString("yyyy-MM-dd"), end_date.ToString("yyyy-MM-dd"), ref daily_sale, state);
-		List<List<string>> stock_info = dt.get_opening_and_closing_stock(emp_id,st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"));
-		List<List<string>> invoice_qty_info = dt.get_employee_all_invoice_coloumns(emp_id, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"), ref invoice_header);
+
+		List<List<string>> stock_info = dt.get_opening_and_closing_stock(emp_id,st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"), ref closing_stock_sums);
+
+		List<List<string>> invoice_qty_info = dt.get_employee_all_invoice_coloumns(emp_id, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"), ref invoice_header, ref invoice_column_sums);
+
+		List<List<string>> fake_invoice_qty_info = dt.get_employee_all_invoice_coloumns(emp_id, dt.get_employee_first_stock_entry_date(emp_id).ToString("yyyy-M-d"), end_date_picker.Date.ToString("yyyy-M-d"), ref fake_invoice_header, ref fake_invoice_column_sums);
+
+		List<string> date_range_sale = dt.get_sold_pcs_between_dates(emp_id, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"), ref sale_range_sum);
+
 		dt.close_connection();
 
 		List<string> dsalelis = new List<string> { "", "", "", "", "", "", "", "", "", "Total Stock Value", daily_sale.ToString() };
 
+		List<List<string>> fake_stock_info = new List<List<string>>();
+
+
+		foreach (List<string> lis in stock_info)
+		{
+			List<string> temp = new List<string>();
+
+			foreach (string strings in lis)
+			{
+				temp.Add(strings);
+			}
+
+			fake_stock_info.Add(temp);
+
+		}
+
+
+
 		//stock_info.Add(dsalelis);
+
+
 
 		for (int k = 0; k < invoice_qty_info.Count; k++)
 		{
@@ -261,38 +384,77 @@ public partial class ViewStoreStock : ContentPage
 		}
 
 
-        for (int k = 0; k < stock_info.Count; k++)
-        {
-            int sale_val = Convert.ToInt32(stock_info[k][4]);
+
+		for (int k = 0; k < fake_invoice_qty_info.Count; k++)
+		{
+			fake_stock_info[k].InsertRange(4, fake_invoice_qty_info[k]);
+
+		}
+
+
+		int col = 4 + fake_invoice_header.Count;
+
+		for (int i = 0; i < fake_stock_info.Count; i++)
+		{
+			fake_stock_info[i][col] = date_range_sale[i];
+
+		}
+
+
+		for (int k = 0; k < fake_stock_info.Count; k++)
+		{
+			int sale_val = Convert.ToInt32(fake_stock_info[k][fake_stock_info[k].Count - 4]);
 			int summed_stock = 0;
-            for (int m = 0; invoice_qty_info.Count > 0 && m < invoice_qty_info[k].Count; m++)
-            {
-                int stock_val = Convert.ToInt32(invoice_qty_info[k][m]);
+			for (int m = 0; fake_invoice_qty_info.Count > 0 && m < fake_invoice_qty_info[k].Count; m++)
+			{
+				int stock_val = Convert.ToInt32(fake_invoice_qty_info[k][m]);
 				summed_stock += stock_val;
-                if (summed_stock - sale_val > 0)
-                {
-
-                    string[] days = invoice_header[m].Split('(', ')');
-                    stock_info[k].Add(days[1]);
-                    m = invoice_qty_info[k].Count;
-
-                }
-                else if (m == invoice_qty_info[k].Count - 1)
-                {
-                    stock_info[k].Add("No Data");
-
-                }
-				
-            }
+				if (summed_stock - sale_val > 0)
+				{
 
 
-        }
+
+					string[] days = fake_invoice_header[m].Split('(', ')');
+					stock_info[k].Add(days[1]);
+					m = fake_invoice_qty_info[k].Count;
+
+				}
+				else if (m == fake_invoice_qty_info[k].Count - 1)
+				{
+
+					stock_info[k].Add("No Data");
 
 
-        List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP"};
+				}
+
+			}
+
+
+		}
+
+
+		col = 4 + invoice_header.Count;
+
+
+		for (int i = 0; i < stock_info.Count; i++)
+		{
+			stock_info[i][col] = date_range_sale[i];
+
+		}
+
+
+		closing_stock_sums[0] = sale_range_sum;
+		List<string> sum_row = new List<string> { "", "Total", "", "" };
+		sum_row.AddRange(invoice_column_sums);
+		sum_row.AddRange(closing_stock_sums);
+		sum_row.Add("");
+
+		stock_info.Add(sum_row);
+
+		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP" };
 		stock_header.AddRange(invoice_header);
 		stock_header.Add("Sales");
-		stock_header.Add("Defective");
+		stock_header.Add("Defective Stock");
 		stock_header.Add("Closing_stock");
 		stock_header.Add("Closing_stock_value");
 		stock_header.Add("Stock Age");
@@ -312,6 +474,7 @@ public partial class ViewStoreStock : ContentPage
 
 
 		vs.Add(xlbtn);
+
 
 	}
 
@@ -336,7 +499,26 @@ public partial class ViewStoreStock : ContentPage
 
 		dont_trigger_emp_search_text_event = false;
 
-	
+		Task.Run(async () =>
+		{
+			await dt.get_emp_id();
+			dt.start_connection();
+			DateTime min_date = dt.get_employee_first_stock_entry_date(this.emp_id);
+			dt.close_connection();
+
+			MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+				st_date.MinimumDate = min_date;
+
+				stockhs.IsVisible = true;
+				stockhs.IsEnabled = true;
+
+			});
+
+
+		});
+
+
 	}
 
 	private void search_emp_TextChanged(object sender, TextChangedEventArgs e)

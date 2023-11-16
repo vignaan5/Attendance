@@ -83,9 +83,10 @@ public partial class UpdateStock : ContentPage
 		{
 			await dt.get_emp_id();
 			dt.start_connection();
-
-			List<string> invoices = dt.get_employee_Return_invoices(dt.emp_id2, DateTime.Now.Date.ToString("yyyy-MM-dd"), DateTime.Now.Date.ToString("yyyy-MM-dd"));
+            List<string> invoices = dt.get_employee_Return_invoices(dt.emp_id2, DateTime.Now.Date.ToString("yyyy-MM-dd"), DateTime.Now.Date.ToString("yyyy-MM-dd"));
 			dt.close_connection();
+
+            
 
 			if (invoices != null && invoices.Count > 0)
 			{
