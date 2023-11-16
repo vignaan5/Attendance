@@ -75,6 +75,11 @@ namespace Attendance.Data
 		}
 
 
+	  
+
+
+
+
 		public List<List<string>> get_employee_sales_between_two_dates(string start_date,string end_date)
 		{
 			if (!is_conn_open)
@@ -122,7 +127,7 @@ namespace Attendance.Data
 				result.Add(emp_sales_between_dates);
 			
 			}
-
+			reader.Close();
 			return result;
 
 		}

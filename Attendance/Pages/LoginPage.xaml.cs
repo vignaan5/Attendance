@@ -9,7 +9,7 @@ public partial class LoginPage : ContentPage
 	public string emp_id { get; set; }
 	public bool is_admin=false;
 	public bool nothing_found=false;
-	public string version = "0.4";
+	public string version = "0.5";
 	public string store_name=String.Empty;
 #if ANDROID26_0_OR_GREATER
 	public Location.LocationClass l = new Location.LocationClass();

@@ -7,6 +7,7 @@ namespace Attendance.Pages;
 public partial class YourSales : ContentPage
 {
 	public int total_sale = 0;
+	public static int this_month_cumilative_sale_of_employee=0;
 	DataClass dt = new DataClass();
 	public YourSales()
 	{
@@ -32,7 +33,7 @@ public partial class YourSales : ContentPage
 		  
 		}
 
-		htmlstring +=String.Format("</tbody></table>{0}<h1>All Sales = {1} </h1></body></html>",dt.get_js2excel_script(),total_sale);
+		htmlstring +=String.Format("</tbody></table>{0}<h3>All Sales = {1} </h3><h3> Cumilative Sales = {2} </h3></body></html>",dt.get_js2excel_script(),total_sale,this_month_cumilative_sale_of_employee);
 
 		return htmlstring;
 
@@ -49,8 +50,9 @@ public partial class YourSales : ContentPage
 			string str_date = dt.date_picker_to_sql_date(dtstart);
 			string end_date = dt.date_picker_to_sql_date(dtend);
 			await dt.get_emp_id();
-			dt.start_connection();
+			dt.start_connection();			            
 			List<List<string>> strings = dt.get_employee_sales_between_two_dates(str_date, end_date);
+			this_month_cumilative_sale_of_employee = dt.get_cumiliatvie_sales_of_an_employee_in_the_current_month();
 			dt.close_connection();
 
 			

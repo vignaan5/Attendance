@@ -5,5 +5,6 @@ public partial class UpdateAvailable : ContentPage
 	public UpdateAvailable()
 	{
 		InitializeComponent();
-	}
+   
+}
 }
