@@ -7,7 +7,7 @@
 
         <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30">
         </ImageButton>
-        <HorizontalStackLayout Spacing="10" x:Name="stockhs" IsVisible="False" IsEnabled="False">
+        <HorizontalStackLayout Spacing="10" x:Name="stockhs" IsVisible="False" IsEnabled="False" >
 
             <Label Text="Date Range :"></Label>
             <DatePicker x:Name="st_date"></DatePicker>

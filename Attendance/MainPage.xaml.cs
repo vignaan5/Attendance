@@ -19,6 +19,7 @@ public partial class MainPage : ContentPage
 	public DataClass dt = new DataClass();
 	public static bool is_connected = true;
 	public static bool is_location_turned_on = true;
+	public static bool Always_location_on = true;
 	public static string conn_to_internet = "";
 	public System.Timers.Timer timer = new System.Timers.Timer();
 	public static int second=0,minute=0,hour=0;
@@ -35,6 +36,8 @@ public partial class MainPage : ContentPage
 		DependencyService.Register<IAndroid,AndroidLocationService>();
 
 		 Task.Run(() => {
+
+
 			
 			while (true)
 			{
@@ -113,8 +116,36 @@ public partial class MainPage : ContentPage
 
 	
 	  Task.Run(async()=>{
-	   
-	  while(true)
+		  Thread.Sleep(15000);
+		  await dt.get_emp_id();
+		  dt.start_connection();
+		  string storeName = dt.get_current_employee_storename(dt.emp_id2);
+		  List<int> settings = dt.get_setting_values();
+		  dt.close_connection();
+
+		  if (storeName.Contains("ADMIN") && settings[0]==0)
+		  {
+			  Always_location_on = false;
+			  return;
+		  }
+		  else if (storeName.Contains("ZONALMANAGER") && settings[1]==0)
+		  {
+			  Always_location_on = false;
+		  }
+		  else if (storeName.Contains("AREASALESMANAGER") && settings[2]==0)
+		  {
+			  Always_location_on = false;
+		  }
+		  else if (storeName.Contains("SUPERVISOR") && settings[3]==0)
+		  {
+			  Always_location_on = false;
+		  }
+		  else if (settings[4]==0) 
+		  {
+			  Always_location_on = false;
+		  }
+
+	  while(Always_location_on)
 	  {
 	  if (DependencyService.Resolve<IAndroid>().IsForeGroundServiceRunning() && is_connected )
 	  {

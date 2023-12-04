@@ -11,7 +11,8 @@ public partial class Test : ContentPage
 
 	public async void check()
 	{
-
+		Image img = new Image();
+		
     }
 
 }

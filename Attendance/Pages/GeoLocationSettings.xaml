@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.GeoLocationSettings"
+             Title="GeoLocationSettings">
+    <ScrollView>
+        <VerticalStackLayout
+         Spacing="25"
+         Padding="30,0"
+         VerticalOptions="Center">
+
+            <Image
+             Source="clayveda.png"
+             SemanticProperties.Description="Have a nice day!"
+             MaximumHeightRequest="300"
+             HorizontalOptions="Center" />
+
+            <Label
+             Text="Always on location for Who?"
+             SemanticProperties.HeadingLevel="Level1"
+             FontSize="18"
+             HorizontalOptions="Center"
+             x:Name="target_remaning"
+             />
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+
+                <Label Text="Admins" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"></Label>
+                <Switch x:Name="adminswitch" Toggled="adminswitch_Toggled" ></Switch>
+                
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+
+                <Label Text="Zonal Managers" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"></Label>
+                <Switch x:Name="zonalswitch" Toggled="zonalswitch_Toggled" ></Switch>
+
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+
+                <Label Text="Area Sales Managers" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"></Label>
+                <Switch x:Name="areasaleswitch" Toggled="areasaleswitch_Toggled" ></Switch>
+
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+
+                <Label Text="Supervisors" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"></Label>
+                <Switch x:Name="supervisorswitch" Toggled="supervisorswitch_Toggled" ></Switch>
+
+            </HorizontalStackLayout>
+
+
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+
+                <Label Text="Beauty Advisors" HorizontalOptions="Center" VerticalOptions="Center" FontSize="Medium"></Label>
+                <Switch x:Name="beautyswitch" Toggled="beautyswitch_Toggled" ></Switch>
+
+            </HorizontalStackLayout>
+
+
+
+
+            <Image
+            Source="vignaan2.png"
+            SemanticProperties.Description="Have a nice day!"
+            MaximumHeightRequest="300"
+            HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+
+</ContentPage>

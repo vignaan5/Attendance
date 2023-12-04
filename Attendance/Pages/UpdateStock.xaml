@@ -6,7 +6,8 @@
     <VerticalStackLayout>
 
         <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30"> </ImageButton>
-        <Picker x:Name="dpicker"></Picker>
+        <DatePicker x:Name="date_picker" DateSelected="date_picker_DateSelected" ></DatePicker>
+        <Picker x:Name="dpicker" IsEnabled="False" IsVisible="False"></Picker>
         <HorizontalStackLayout Spacing="10" x:Name="inv_hs" IsEnabled="False" IsVisible="False">
 
             <Label Text="Recent Invoices :" VerticalOptions="Center"></Label>

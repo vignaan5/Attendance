@@ -8,6 +8,7 @@ public partial class DataGrid : ContentPage
 {
 	List<List<string>> rows = new List<List<string>>();
 	DataClass dt = new DataClass();
+
 	public string state = String.Empty;
 	public DataGrid()
 	{
@@ -33,6 +34,16 @@ public partial class DataGrid : ContentPage
 		statepicker.ItemsSource = new List<string> {state};
 		statepicker.SelectedIndex = 0;
 	}
+
+	public DataGrid(List<string> states)
+	{
+		InitializeComponent();
+		
+		statepicker.ItemsSource = states;
+		statepicker.SelectedIndex = 0;
+	}
+
+
 
 
 

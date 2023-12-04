@@ -65,7 +65,29 @@ public string state = String.Empty;
 
 	}
 
+	public Attendance2(List<string> states)
+	{
+		InitializeComponent();
+		actind.IsVisible = true;
 
+
+
+		List<string> list = states;
+
+
+
+
+		xlbtn.IsEnabled = false;
+		xlbtn.IsVisible = false;
+		statepicker.ItemsSource = list;
+		statepicker.SelectedIndex = 0;
+		actind.IsVisible = false;
+
+
+
+
+
+	}
 	public async  void get_attendance()
 	{
 		if(datepicker_start.Date>datepicker_end.Date)

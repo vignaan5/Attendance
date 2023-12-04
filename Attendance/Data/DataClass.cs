@@ -4,6 +4,7 @@
 using Microsoft.Maui.Platform;
 using MySqlConnector;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
@@ -691,6 +692,128 @@ namespace Attendance.Data
 			return;
 		}
 
+
+		public void update_setting_values(List<int> settings)
+		{
+			if (!is_conn_open)
+				return ;
+
+			List<int> list = new List<int>();
+			string command = String.Format("update geo_settings set admins={0},zonal_managers={1},area_state_manager={2},supervisor={3},beauty_advisor={4}", settings[0], settings[1], settings[2], settings[3], settings[4]);
+
+			MySqlCommand cmd = new MySqlCommand(command, connection);
+
+			cmd.ExecuteScalar();
+
+
+
+			return;
+
+		}
+
+		public List<int> get_setting_values()
+		{
+			if (!is_conn_open)
+				return null;
+
+			List<int> list = new List<int>();
+			string command = "select * from geo_settings;";
+
+			MySqlCommand cmd = new MySqlCommand(command, connection);
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+			catch(Exception ex) 
+			{ 
+			    
+			
+			}
+
+			if(reader.Read())
+			{
+				for(int i=0;i<reader.FieldCount;i++)
+				{
+					list.Add(Convert.ToInt32((bool)reader[i]));
+				}
+			}
+
+
+			reader.Close();
+
+			return list;
+
+		}
+
+
+		public bool upload_payment(byte[] img,string date)
+		{
+			if (!is_conn_open)
+				return false;
+
+			string cmd = String.Format("update  payments set invoice =@img,status='pending' where date='{0}' and status!='pending' and invoice is  null ;",date);
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+			command.Parameters.AddWithValue("@img", img);
+
+			int row_affected= command.ExecuteNonQuery();
+			
+			return row_affected > 0;
+		
+
+		}
+
+
+		public List<Image> get_blob_image( ref List<List<string>> payment_details)
+		{
+
+			if (!is_conn_open)
+				return null;
+
+			string cmd = String.Format("select * from payments;");
+			MySqlCommand command = new MySqlCommand(cmd, connection);
+
+			MySqlDataReader reader = command.ExecuteReader();
+
+			List<Image> img = new List<Image>();
+
+			while(reader.Read())
+			{
+
+				if (reader["status"].ToString() == "paid" || reader["status"].ToString()=="pending")
+				{
+					var temp_img = (byte[])reader["invoice"];
+					MemoryStream ms = new MemoryStream(temp_img);
+					Image image = new Image { Source = ImageSource.FromStream(() => ms), Aspect = Aspect.Center };
+					image.Aspect = Aspect.AspectFit;
+					img.Add(image);
+				}
+				else
+				{
+					img.Add(null);
+				}
+
+				List<string> temp = new List<string> { reader["date"].ToString(), reader["amount"].ToString(), reader["status"].ToString() };
+
+				payment_details.Add(temp);
+			}
+
+			reader.Close();
+		
+
+			return img;
+		}
+
+
+
+
+
+
+
+
+
+
      public List<string> get_sold_pcs_between_dates(string employeeID,string start_date,string end_date,ref string date_range_sum)
 		{
 			if(!is_conn_open)
@@ -1104,9 +1227,10 @@ namespace Attendance.Data
 			if (!is_conn_open)
 				return null;
 
-			  DateTime invoice_first_entry_date = get_employee_first_stock_entry_date(employeeID);
+			DateTime invoice_first_entry_date = get_employee_first_stock_entry_date(emp_id2);
 			string inv_1st_date = invoice_first_entry_date.ToString("yyyy-M-d");
-			string cmd = String.Format("select Sno,paticulars,HSN_SAC,Mrp,ifnull(sold_pcs,0) as sales,ifnull(Dpcs,0) as return_stocks,ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0) as Closing_Stock,ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0) as Closing_stock_value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.Osno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.Osno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date);
+
+			string cmd = String.Format("select Sno,paticulars,HSN_SAC,Mrp,ifnull(sold_pcs,0) as sales,ifnull(Dpcs,0) as return_stocks,ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0) as Closing_Stock,ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0) as Closing_stock_value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date);
 
 			string sale_sum_cmd = String.Format("select sum(ifnull(sold_pcs,0)) as sales from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.Osno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.Osno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date);
 
@@ -1116,7 +1240,7 @@ namespace Attendance.Data
 
 			string closing_stock_value_cmd = String.Format("select sum(ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0)) as Closing_stock_value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.Osno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.Osno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date);
 
-			List<string> commands = new List<string> { sale_sum_cmd,defect_stock_sum_cmd,closing_stock_sum_cmd,closing_stock_value_cmd };
+			List<string> commands = new List<string> { sale_sum_cmd, defect_stock_sum_cmd, closing_stock_sum_cmd, closing_stock_value_cmd };
 
 
 			MySqlCommand command = new MySqlCommand(cmd, connection);
@@ -2461,6 +2585,52 @@ namespace Attendance.Data
 
 		}
 
+		public List<List<string>> search_employee_in_db(string emp_id, string first_name, string last_name, string state,string zone)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string sql_command = String.Format("select * from employee where zone='{3}' and  (emp_id like '%{0}%' or firstname like '%{1}%' or lastname like '%{2}%' );", emp_id, first_name, last_name, zone);
+			MySqlCommand mySqlCommand = new MySqlCommand(sql_command, connection);
+
+			try
+			{
+				mySqlCommand.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			List<List<string>> list = new List<List<string>>();
+
+			MySqlDataReader reader = mySqlCommand.ExecuteReader();
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				List<string> lis = new List<string>();
+
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					try
+					{
+						lis.Add(reader[i].ToString());
+					}
+					catch (Exception ex)
+					{
+						lis.Add("");
+					}
+				}
+
+				list.Add(lis);
+			}
+
+			reader.Close();
+			return list;
+
+		}
+
+
 
 
 		public List<List<string>> search_employee_in_db(string emp_id, string first_name, string last_name,MySqlConnection conn)
@@ -2592,6 +2762,7 @@ namespace Attendance.Data
 			while(reader!=null && !reader.IsClosed && reader.Read())
 			{
 				List<string> employee = new List<string>();
+				
 			   for(int i=0;i<reader.FieldCount;i++) 
 				{ 
 				        try
@@ -2778,12 +2949,76 @@ namespace Attendance.Data
 		
 		}
 
+		public string get_current_employee_zone()
+		{
+			if (!is_conn_open)
+				return "";
+
+			string emp_state_command = String.Format("select zone from employee where emp_id='{0}'", emp_id2);
+
+			MySqlCommand cmd = new MySqlCommand(emp_state_command, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception e) { }
+
+			string emp_st = "";
+
+			MySqlDataReader dr = cmd.ExecuteReader();
+
+			while (dr != null && !dr.IsClosed && dr.Read())
+			{
+				emp_st += dr[0].ToString();
+			}
+
+			dr.Close();
+			return emp_st;
+
+
+
+
+		}
+
 		public string get_current_employee_state(string emp_id)
 		{
 			if (!is_conn_open)
 				return "";
 
 			string emp_state_command = String.Format("select state from employee where emp_id='{0}'", emp_id);
+
+			MySqlCommand cmd = new MySqlCommand(emp_state_command, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception e) { }
+
+			string emp_st = "";
+
+			MySqlDataReader dr = cmd.ExecuteReader();
+
+			while (dr != null && !dr.IsClosed && dr.Read())
+			{
+				emp_st += dr[0].ToString();
+			}
+
+			dr.Close();
+			return emp_st;
+
+
+
+
+		}
+
+		public string get_current_employee_storename(string emp_id)
+		{
+			if (!is_conn_open)
+				return "";
+
+			string emp_state_command = String.Format("select store_name from employee where emp_id='{0}'", emp_id);
 
 			MySqlCommand cmd = new MySqlCommand(emp_state_command, connection);
 
@@ -3155,9 +3390,86 @@ namespace Attendance.Data
 			return states;
 		}
 
+		public bool is_zonal_manager()
+		{
+			if (!is_conn_open)
+				return false;
+
+			string zmanager_query = String.Format("select store_name from employee where emp_id='{0}';", emp_id2);
+
+			MySqlCommand command = new MySqlCommand(zmanager_query, connection);
+
+			string store_name = "";
+			try
+			{
+				store_name= command.ExecuteScalar().ToString();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			if(store_name!="" && store_name.Contains("ZONALMANAGER"))
+			{
+				return true;
+			}
+
+			return false;
+
+		}
+
+		public List<string> get_all_states_from_zone_with_employee_id()
+		{
+			if (!is_conn_open)
+				return null;
+
+			
+
+			string states_query = String.Format("select distinct state from employee where zone in (select zone from employee where emp_id='{0}');",emp_id2);
+
+			MySqlCommand cmd = new MySqlCommand(states_query, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+
+			catch (Exception ex)
+			{
 
 
+			}
 
+			List<string> states = new List<string>();
+
+			while (!reader.IsClosed && reader.Read())
+			{
+				try
+				{
+					states.Add(reader[0].ToString());
+				}
+				catch (Exception ex)
+				{
+
+				}
+			}
+
+			reader.Close();
+
+			return states;
+		}
 
 
 		public string date_picker_to_sql_date(DatePicker dp)
@@ -3903,6 +4215,7 @@ namespace Attendance.Data
 			{
 
 			}
+
 			try
 			{
 				command2.ExecuteNonQuery();
@@ -3948,7 +4261,8 @@ namespace Attendance.Data
 			reader.Close();
 
 			
-
+			/* THIS BRINGS INVOICES FROM DEFECTIVE STOCK
+			 
 			try
 			{
 				reader2 = command2.ExecuteReader();
@@ -3976,7 +4290,7 @@ namespace Attendance.Data
 
 			reader2.Close();
 
-
+			*/
 
 
 			return invoices;

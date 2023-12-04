@@ -5,25 +5,55 @@
              Title="AddEmployee" BackgroundImageSource="whiteback.jpg">
     <ScrollView Orientation="Vertical">
     <VerticalStackLayout x:Name="vs">
-        <Label 
-            Text="Enter Employee Details"
+
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="Select Account Type : " VerticalOptions="Center"></Label>
+                <RadioButton Content="Admin" x:Name="adminrb" CheckedChanged="adminrb_CheckedChanged"></RadioButton>
+                <RadioButton Content="Zonal Manager" x:Name="zonal_rb" CheckedChanged="zonal_rb_CheckedChanged"></RadioButton>
+                <RadioButton Content="Super Visor" x:Name="Supervisorrb" CheckedChanged="Supervisorrb_CheckedChanged"> </RadioButton>
+                <RadioButton Content="Area Sales Manager" x:Name="asm_rb" CheckedChanged="asm_rb_CheckedChanged"></RadioButton>
+                <RadioButton Content="Beauty Advisor (BA)" IsChecked="True" ></RadioButton>
+              
+
+
+            </HorizontalStackLayout>
+
+            <VerticalStackLayout IsEnabled="False" IsVisible="False" x:Name="zstatevs">
+
+                <HorizontalStackLayout x:Name="zstateshs" >
+                    <Label Text="Select Zone : " VerticalOptions="Center"></Label>
+                    <RadioButton x:Name="northtzone" Content="NORTH" IsChecked="True" CheckedChanged="zonal_rb_CheckedChanged"></RadioButton>
+                    <RadioButton x:Name="southzone" Content="SOUTH" CheckedChanged="zonal_rb_CheckedChanged"></RadioButton>
+                    <RadioButton x:Name="eastzone" Content="EAST" CheckedChanged="zonal_rb_CheckedChanged"></RadioButton>
+                    <RadioButton x:Name="westzone" Content="WEST" CheckedChanged="zonal_rb_CheckedChanged"></RadioButton>
+                    <RadioButton x:Name="centralzone" Content="CENTRAL" CheckedChanged="zonal_rb_CheckedChanged"></RadioButton>
+                    
+                </HorizontalStackLayout>
+
+            </VerticalStackLayout>
+
+
+
+            <Label 
+            Text="Enter Employee Details Below"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-            <Entry x:Name="fname" HorizontalOptions="FillAndExpand" Placeholder="Enter First Name"></Entry>
-            <Entry x:Name="lstname" HorizontalOptions="FillAndExpand" Placeholder="Enter Last Name"></Entry>
-            <Entry x:Name="eid" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee ID"></Entry>
-            <Entry x:Name="username" HorizontalOptions="FillAndExpand" Placeholder="Create Login UserName for your employee"></Entry>
-            <Entry x:Name="passcode" HorizontalOptions="FillAndExpand" Placeholder="Create Login Password  for your employee"></Entry>
-        
-        <Entry x:Name="store_name" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Store Name"></Entry>
-            <Entry x:Name="area" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Current Working area"></Entry>
-            <Entry x:Name="city" HorizontalOptions="FillAndExpand" Placeholder="Enter  Employee's Current Working City"></Entry>
-            <Entry x:Name="state" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Current Working State"></Entry>
-            <Entry x:Name="ebnk_acc" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Bank account no"></Entry>
-            <Entry x:Name="ifsc" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's IFSC code"></Entry>
-            <Entry x:Name="bnk_name" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's name as per Bank Account"></Entry>
-            <Entry x:Name="etarget" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's monthly target"></Entry>
-            <Entry x:Name="econtact" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee's Phone No "></Entry>
+            <Entry x:Name="fname" HorizontalOptions="FillAndExpand" Placeholder="Enter First Name" PlaceholderColor="Black"></Entry>
+            <Entry x:Name="lstname" HorizontalOptions="FillAndExpand" Placeholder="Enter Last Name" PlaceholderColor="Black"></Entry>
+            <Entry x:Name="eid" HorizontalOptions="FillAndExpand" Placeholder="Enter Employee ID" PlaceholderColor="Black"></Entry>
+            <Entry x:Name="username" HorizontalOptions="FillAndExpand" Placeholder="Create Login UserName for your employee" PlaceholderColor="Black"></Entry>
+            <Entry x:Name="passcode" HorizontalOptions="FillAndExpand" Placeholder="Create Login Password  for your employee" PlaceholderColor="Black"></Entry>
+
+            <Entry x:Name="store_name" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Store Name"></Entry>
+            <Entry x:Name="area" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Current Working area"></Entry>
+            <Entry x:Name="city" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter  Employee's Current Working City"></Entry>
+            <Entry x:Name="state" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Current Working State"></Entry>
+            <Entry x:Name="ebnk_acc" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Bank account no"></Entry>
+            <Entry x:Name="ifsc" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's IFSC code"></Entry>
+            <Entry x:Name="bnk_name" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's name as per Bank Account"></Entry>
+            <Entry x:Name="etarget" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's monthly target"></Entry>
+            <Entry x:Name="econtact" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Phone No "></Entry>
+
             <HorizontalStackLayout x:Name="dobhs">
                 <Label Text="Select Employee DOB : "></Label>
                 <DatePicker  x:Name="DOBpicker"  ></DatePicker>
@@ -45,6 +75,21 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
+
+            <Picker Title="Select Employee's State's Zone" x:Name="estatezone">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>North</x:String>
+                        <x:String>South</x:String>
+                        <x:String>East</x:String>
+                        <x:String>West</x:String>
+                        <x:String>Central</x:String>
+                        
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+
 
             <Button  Clicked="sumbitBtn" Text="Submit"  HorizontalOptions="Center"></Button>
         <ActivityIndicator x:Name="actind" IsVisible="False" IsRunning="True" IsEnabled="True"></ActivityIndicator>

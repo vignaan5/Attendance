@@ -1,11 +1,15 @@
+using Attendance.Data;
 using MySqlConnector;
 namespace Attendance.Pages;
 
 public partial class AddEmployee : ContentPage
 {
+	public DataClass dt = new DataClass();
+	public List<string> states = new List<string>();
 	public AddEmployee()
 	{
 		InitializeComponent();
+
 		
 	}
 
@@ -168,10 +172,15 @@ public partial class AddEmployee : ContentPage
 		string s14 = eweekofdaypicker.ItemsSource[eweekofdaypicker.SelectedIndex].ToString().Trim();
 		string s15 = bnk_name.Text.ToString().Trim();
 		string s16 = area.Text.ToString().Trim();
+		string s17 = area.Text.ToString().Trim();
+		string is_admin = "no";
 
+		if(store_name.IsEnabled == false && store_name.Text.Trim()=="ADMIN")
+		{
+			is_admin = "yes";
+		}
 
-
-		new_sql_cmd_string = String.Format("insert into employee values ( '{0}','{1}','{2}',{3},'{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}');",s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,username.Text.ToString().Trim(),passcode.Text.ToString().Trim(),"no","yes");
+		new_sql_cmd_string = String.Format("insert into employee values ( '{0}','{1}','{2}',{3},'{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}');",s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,username.Text.ToString().Trim(),passcode.Text.ToString().Trim(),is_admin,"yes",estatezone.SelectedItem as string);
 
 
 
@@ -210,7 +219,7 @@ public partial class AddEmployee : ContentPage
 			{
 				if (((Picker)feild).SelectedIndex == -1)
 				{
-					DisplayAlert("Weekoffday not selected !", "Please select employee weekoff day", "ok");
+					DisplayAlert("Weekoffday Or Zone not selected !", "Please select employee weekoff day and State Zone", "ok");
 					return true;
 				}
 			}
@@ -249,5 +258,91 @@ public partial class AddEmployee : ContentPage
 		}
 
 
+	}
+
+	private void zonal_rb_CheckedChanged(object sender, CheckedChangedEventArgs e)
+	{
+		if(zonal_rb.IsChecked)
+		{
+			zstatevs.IsVisible = true;
+			zstatevs.IsEnabled=true;
+
+			if(northtzone.IsChecked)
+			{
+				store_name.Text = northtzone.Content as string + "ZONALMANAGER";
+			}
+			else if(southzone.IsChecked)
+			{
+				store_name.Text = southzone.Content as string + "ZONALMANAGER";
+			}
+			else if(westzone.IsChecked)
+			{
+				store_name.Text = westzone.Content as string + "ZONALMANAGER";
+			}
+			else if(eastzone.IsChecked)
+			{
+				store_name.Text = eastzone.Content as string + "ZONALMANAGER";
+			}
+			else if(centralzone.IsChecked)
+			{
+				store_name.Text = centralzone.Content as string + "ZONALMANAGER";
+			}
+
+			store_name.IsEnabled = false;
+			
+			return;
+		}
+
+
+		zstatevs.IsVisible = false;
+		zstatevs.IsEnabled = false;
+		store_name.Text = "";
+		store_name.IsEnabled = true;
+		return;
+
+	}
+
+	
+
+		private void Supervisorrb_CheckedChanged(object sender, CheckedChangedEventArgs e)
+	{
+		if(Supervisorrb.IsChecked)
+		{
+			store_name.Text = "SUPERVISOR";
+			store_name.IsEnabled = false;
+			return;
+		}
+
+		store_name.Text = "";
+		store_name.IsEnabled = true;
+		return;
+	}
+
+	private void adminrb_CheckedChanged(object sender, CheckedChangedEventArgs e)
+	{
+		if (adminrb.IsChecked)
+		{
+			store_name.Text = "ADMIN";
+			store_name.IsEnabled = false;
+			return;
+		}
+
+		store_name.Text = "";
+		store_name.IsEnabled = true;
+		return;
+	}
+
+	private void asm_rb_CheckedChanged(object sender, CheckedChangedEventArgs e)
+	{
+		if (asm_rb.IsChecked)
+		{
+			store_name.Text = "AREASALESMANAGER";
+			store_name.IsEnabled = false;
+			return;
+		}
+
+		store_name.Text = "";
+		store_name.IsEnabled = true;
+		return;
 	}
 }

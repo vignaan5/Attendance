@@ -143,4 +143,16 @@ public partial class AdminPage : ContentPage
 	{
 		Navigation.PushAsync(new DeviceChanges());
     }
+
+	private void bills_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new Payments());
+
+	}
+
+	private void geosettingsbtn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new GeoLocationSettings());
+
+	}
 }

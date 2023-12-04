@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.SupervisorPage"
-             Title="SupervisorPage" BackgroundImageSource="whiteback.jpg">
+             Title="SupervisorPage" BackgroundImageSource="whiteback.jpg" x:Name="pname">
     <VerticalStackLayout Spacing="10">
         <Button Text="Manage Employess" HorizontalOptions="Center" x:Name="manageempbtn" Clicked="manageempbtn_Clicked" WidthRequest="290"></Button>
         <Button Text="Reports" x:Name="reportsbtn" HorizontalOptions="Center" Clicked="reportsbtn_Clicked" WidthRequest="290"></Button>
