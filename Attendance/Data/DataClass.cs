@@ -808,12 +808,74 @@ namespace Attendance.Data
 
 
 
+     public List<List<string>> get_dynamic_opening_stock_to_a_date(string employeeID,string start_date,ref List<string> dynamic_opening_stock_header,ref string opening_stock_sum,ref string openig_stock_value )
+		{
+			if(!is_conn_open)
+			{
+				return null;
+			}
+
+			string string_of_dynmic_stock_command = String.Format("select ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0) as Opening_Stock,ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0) as Opening_Stock_Value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '2023-1-1' and '{1}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{2}' and The_date between '2023-1-1' and '{3}' group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{4}' and The_date between '2023-1-1' and '{5}' group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{6}' and  invoice_no='opening stock'  and The_date between '2023-1-1' and '{7}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;",employeeID,start_date,employeeID,start_date,employeeID,start_date,employeeID,start_date);
+
+			MySqlCommand dynamic_stock_command = new MySqlCommand(string_of_dynmic_stock_command,connection);
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = dynamic_stock_command.ExecuteReader();
+			}
+			catch(Exception ex)
+			{
+
+			}
+
+			List<List<string>> dynamic_ostock_list = new List<List<string>>();
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				List<string> ostock_list = new List<string> { reader["Opening_Stock"].ToString(), reader["Opening_Stock_Value"].ToString()  };
+				dynamic_ostock_list.Add(ostock_list);
+			
+			}
+			reader.Close();
+
+			dynamic_opening_stock_header.Add("Opening Stock");
+			dynamic_opening_stock_header.Add("Opening Stock Value");
 
 
+			string sum_cmd_string = String.Format("select sum(ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0)) as Opening_Stock from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '2023-1-1' and '{1}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{2}' and The_date between '2023-1-1' and '{3}' group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{4}' and The_date between '2023-1-1' and '{5}' group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{6}' and  invoice_no='opening stock'  and The_date between '2023-1-1' and '{7}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;",employeeID,start_date,employeeID,start_date,employeeID,start_date,employeeID,start_date);
+
+			string value_command_string = String.Format("select  sum(ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0))as Opening_Stock_Value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '2023-1-1' and '{1}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{2}' and The_date between '2023-1-1' and '{3}' group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{4}' and The_date between '2023-1-1' and '{5}' group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{6}' and  invoice_no='opening stock'  and The_date between '2023-1-1' and '{7}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", employeeID, start_date, employeeID, start_date, employeeID, start_date, employeeID, start_date);
 
 
+			MySqlCommand sum_cmd = new MySqlCommand(sum_cmd_string, connection);
+
+			MySqlCommand value_cmd = new MySqlCommand(value_command_string, connection);
+
+			try
+			{
+				opening_stock_sum = sum_cmd.ExecuteScalar().ToString();
+			}
+			catch(Exception ex)
+			{
+				opening_stock_sum = "0";
+			}
+			try
+			{
+				openig_stock_value = value_cmd.ExecuteScalar().ToString();
+			}
+			catch(Exception ex)
+			{
+				openig_stock_value = "0";
+			}
 
 
+			return dynamic_ostock_list;
+
+		}
+
+
+		
      public List<string> get_sold_pcs_between_dates(string employeeID,string start_date,string end_date,ref string date_range_sum)
 		{
 			if(!is_conn_open)
@@ -889,6 +951,7 @@ namespace Attendance.Data
 			string inv_1st_date = invoice_first_entry_date.ToString("yyyy-M-d");
 
 			string cmd = String.Format("select Sno,paticulars,HSN_SAC,Mrp,ifnull(sold_pcs,0) as sales,ifnull(Dpcs,0) as return_stocks,ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0) as Closing_Stock,ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0) as Closing_stock_value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", emp_id2,inv_1st_date,end_date,emp_id2, inv_1st_date, end_date,emp_id2, inv_1st_date, end_date,emp_id2,inv_1st_date,end_date);
+
 
 			string sale_sum_cmd = String.Format("select sum(ifnull(sold_pcs,0)) as sales from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.Osno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.Osno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", emp_id2, inv_1st_date, end_date, emp_id2, inv_1st_date, end_date, emp_id2, inv_1st_date, end_date, emp_id2, inv_1st_date, end_date);
 
@@ -1227,7 +1290,7 @@ namespace Attendance.Data
 			if (!is_conn_open)
 				return null;
 
-			DateTime invoice_first_entry_date = get_employee_first_stock_entry_date(emp_id2);
+			DateTime invoice_first_entry_date = get_employee_first_stock_entry_date(employeeID);
 			string inv_1st_date = invoice_first_entry_date.ToString("yyyy-M-d");
 
 			string cmd = String.Format("select Sno,paticulars,HSN_SAC,Mrp,ifnull(sold_pcs,0) as sales,ifnull(Dpcs,0) as return_stocks,ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0) as Closing_Stock,ifnull(ifnull(opening_stock,0)-(ifnull(Sales,0)+ifnull(return_sales,0)),0) as Closing_stock_value from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{0}'  and The_date between '{1}' and '{2}'  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='{3}' and The_date between '{4}' and '{5}' group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='{6}' and The_date between '{7}' and '{8}' group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='{9}' and  invoice_no='opening stock'  and The_date between '{10}' and '{11}'  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date, employeeID, inv_1st_date, end_date);
@@ -3053,6 +3116,64 @@ namespace Attendance.Data
 			List<List<string>> employee_details = new List<List<string>>();
 
 			string cmd_string = String.Format("SELECT * FROM employee where state='{0}';",state);
+
+			MySqlCommand cmd = new MySqlCommand(cmd_string, connection);
+
+			try
+			{
+				cmd.ExecuteNonQuery();
+			}
+			catch (Exception e)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = cmd.ExecuteReader();
+			}
+
+			catch (Exception ex)
+			{
+
+			}
+
+			while (reader != null && !reader.IsClosed && reader.Read())
+			{
+				List<string> employee = new List<string>();
+				for (int i = 0; i < reader.FieldCount; i++)
+				{
+					try
+					{
+						employee.Add(reader[i].ToString());
+					}
+					catch (Exception ex)
+					{
+						employee.Add("NULL");
+					}
+
+
+
+				}
+				employee_details.Add(employee);
+			}
+
+			reader.Close();
+
+			return employee_details;
+
+		}
+
+		public List<List<string>> get_employee_details_from_a_state_with_zone(string zone)
+		{
+			if (!is_conn_open)
+				return null;
+
+			List<List<string>> employee_details = new List<List<string>>();
+
+			string cmd_string = String.Format("SELECT * FROM employee where zone='{0}';", zone);
 
 			MySqlCommand cmd = new MySqlCommand(cmd_string, connection);
 

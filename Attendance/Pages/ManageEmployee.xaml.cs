@@ -19,6 +19,20 @@ public partial class ManageEmployee : ContentPage
 	private async void showempbtn_Clicked(object sender, EventArgs e)
 	{
 		string emp_id = await SecureStorage.GetAsync("employee_id");
+		await dt.get_emp_id();
+		dt.start_connection();
+		string storeName = dt.get_current_employee_storename(emp_id);
+		string zone = dt.get_current_employee_zone();
+		dt.close_connection();
+
+		if(storeName.Contains("ZONAL")) 
+		{
+			Navigation.PushAsync(new ViewEmployees(emp_id,zone));
+			return;
+
+		}
+
+
 		Navigation.PushAsync(new ViewEmployees(emp_id));
 	}
 

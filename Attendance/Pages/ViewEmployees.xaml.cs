@@ -23,6 +23,12 @@ public partial class ViewEmployees : ContentPage
 		Task.Run(() => { get_employee_details(emp_id); });
 	}
 
+	public ViewEmployees(string emp_id,string zone)
+	{
+		InitializeComponent();
+		Task.Run(() => { get_employee_details(emp_id,zone); });
+	}
+
 	public async void get_employee_details()
 	{
 		 dt.start_connection();
@@ -245,6 +251,112 @@ public partial class ViewEmployees : ContentPage
 	}
 
 
+	public async void get_employee_details(string emp_id,string zone)
+	{
+		dt.start_connection();
+		emp_details = dt.get_employee_details_from_a_state_with_zone(zone);
+
+		if (emp_details != null)
+		{
+			for (int i = 0; i < emp_details.Count; i++)
+			{
+				int target = 0;
+				int rem_sales = dt.get_remaining_sales_needed_to_reach_target(ref target, emp_details[i][0]);
+
+				if (rem_sales > 0)
+				{
+					emp_details[i].Insert(20, rem_sales.ToString());
+				}
+				else
+				{
+					emp_details[i].Insert(20, rem_sales.ToString());
+				}
+
+				int this_month_sale = Convert.ToInt32(emp_details[i][12]);
+
+				this_month_sale -= rem_sales;
+
+
+
+
+				emp_details[i].Insert(21, this_month_sale.ToString());
+
+			}
+
+			dt.close_connection();
+			string html = create_html_string(emp_details);
+			MainThread.InvokeOnMainThreadAsync(async () =>
+			{
+
+				vs.Clear();
+
+				VerticalStackLayout innervs_stack = new VerticalStackLayout();
+
+				innervs_stack.Add(new WebView { Source = new HtmlWebViewSource { Html = html } });
+
+
+
+				Button xlbutton = new Button { Text = "Generate Excel" };
+
+				xlbutton.Clicked += (async (object sender, EventArgs e) =>
+				{
+
+					string path = AppDomain.CurrentDomain.BaseDirectory;
+
+
+
+					var destination = System.IO.Path.Combine(path, "report.html");
+
+
+#if WINDOWS
+        
+   destination= @"C:\Users\Public\Documents\report.html";
+            
+#endif
+
+
+
+					try
+					{
+
+
+						File.WriteAllText(destination, html);
+					}
+					catch (Exception ex)
+					{
+						DisplayAlert("Error", ex.Message.ToString(), "Ok");
+					}
+#if WINDOWS
+              try
+			  {
+             System.Diagnostics.Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",destination);
+                 }
+				 catch(Exception ex)
+				 {
+				 DisplayAlert("Error", ex.Message.ToString(),"Ok");
+				 }
+			 return;
+
+#endif
+
+					await Launcher.Default.OpenAsync(new OpenFileRequest("Download Excel from Web Browser", new ReadOnlyFile(destination)));
+
+
+				});
+
+				innervs_stack.Add(xlbutton);
+
+				vs.Add(new ScrollView { Content = innervs_stack });
+
+
+			});
+		}
+		else
+		{
+			dt.close_connection();
+			Navigation.PopAsync();
+		}
+	}
 
 	public string create_html_string(List<List<string>> rows)
 	{
