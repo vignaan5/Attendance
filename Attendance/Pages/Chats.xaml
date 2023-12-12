@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.Chats"
+             Title="Chats" x:Name="chatspagevar">
+    <ScrollView Orientation="Vertical">
+        <VerticalStackLayout>
+
+            <VerticalStackLayout x:Name="vs">
+                
+            </VerticalStackLayout>
+
+
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+
+                <Editor x:Name="entertxt" Placeholder="Enter Message" HorizontalOptions="CenterAndExpand"  ></Editor>
+                <Button Text="Send" x:Name="Submit" HorizontalOptions="End" Clicked="Submit_Clicked"> </Button>
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        
+      
+        
+        
+        
+    </ScrollView>
+    
+</ContentPage>

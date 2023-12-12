@@ -6,6 +6,8 @@ public partial class ViewEmployeeLocations : ContentPage
 {
 	public string emp_id { get; set; }
 
+	public bool search_for_chat { get; set; }
+
 	DataClass dt = new DataClass();
 	public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
 	
@@ -15,10 +17,39 @@ public partial class ViewEmployeeLocations : ContentPage
 		InitializeComponent();
 		emplist.ItemsSource = nothing_found_temp;
 		emplist.IsVisible = true;
+		search_for_chat = false;
 	}
+
+	public ViewEmployeeLocations(bool search_for_chat)
+	{
+		InitializeComponent();
+		emplist.ItemsSource = nothing_found_temp;
+		emplist.IsVisible = true;
+		search_for_chat = true;
+		dtpicker.IsEnabled = false;
+		dtpicker.IsVisible = false;
+		locpage.Title = "Search People";
+	}
+
 
 	private async void Button_Clicked(object sender, EventArgs e)
 	{
+
+		if (dtpicker.IsVisible == false && dtpicker.IsEnabled == false && getlcnbtn.Text=="Search Employee")
+		{
+			Models.CollectionItem temp = new Models.CollectionItem();
+			
+			await dt.get_emp_id();
+			temp.SenderID = emp_id;
+			temp.ReceiverID = dt.emp_id2;
+			//Navigation.PopToRootAsync();
+
+			Navigation.PushAsync(new Chats(temp));
+			
+			return;
+
+		}
+
 		actind.IsVisible = true;
 	  await	Task.Run(() => {
 
@@ -188,7 +219,7 @@ public partial class ViewEmployeeLocations : ContentPage
 
 	}
 
-	private void emplis_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+	private  void emplis_ItemSelected(object sender, SelectedItemChangedEventArgs e)
 	{
 		if ((string)emplist.SelectedItem == "Nothing Found")
 			return;
@@ -196,7 +227,12 @@ public partial class ViewEmployeeLocations : ContentPage
 		this.emp_id = (string)emplist.SelectedItem;
 		this.emp_id= this.emp_id.Split(' ')[0];
 		searchvs.Clear();
-		
+
+		if (dtpicker.IsVisible == false && dtpicker.IsEnabled == false)
+		{
+			getlcnbtn.Text = "Search Employee";
+		}
+
 		getlcnbtn.IsVisible=true;
 		getlcnbtn.IsEnabled = true;
 	}

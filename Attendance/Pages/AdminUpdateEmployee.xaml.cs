@@ -99,6 +99,16 @@ public partial class AdminUpdateEmployee : ContentPage
 		}
 		
 		dt.start_connection();
+		
+		//bool zsmID = dt.employee_id_exists(placeholder_list[13]);
+		//bool ASMID = dt.employee_id_exists(asmid.Text.Trim());
+		//bool svisorID = dt.employee_id_exists(visorid.Text.Trim());
+		//if(!zsmID || !ASMID || !svisorID)
+		//{
+		//	dt.close_connection();
+		//	DisplayAlert("ID not Found", "ZSM ID or ASM ID or SuperVisor ID Does not Exist, Please Check!", "OK!");
+		//	return;
+		//}
 		int rows_affected = dt.update_employee_details(placeholder_list,this.emp_id,true);
 		dt.close_connection();
 
@@ -144,7 +154,7 @@ public partial class AdminUpdateEmployee : ContentPage
 			{
 				try
 				{
-					placeholder_list = new List<string> { employee_details["firstname"], employee_details["lastname"], employee_details["age"], employee_details["bank_account_name"], employee_details["bank_account_number"], employee_details["ifsc_code"], employee_details["store_name"], employee_details["area"], employee_details["city"], employee_details["state"], employee_details["monthly_target"] };
+					placeholder_list = new List<string> { employee_details["firstname"], employee_details["lastname"], employee_details["age"], employee_details["bank_account_name"], employee_details["bank_account_number"], employee_details["ifsc_code"], employee_details["store_name"], employee_details["area"], employee_details["city"], employee_details["state"], employee_details["monthly_target"], employee_details["emp_zonal_mgr_id"], employee_details["emp_asm_id"],employee_details["emp_supervisor_id"] };
 				}
 				catch(Exception ex) 
 				{ 

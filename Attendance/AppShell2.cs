@@ -63,6 +63,13 @@ namespace Attendance
 							Route = nameof(Pages.AccountSettings),
 							ContentTemplate = new DataTemplate(typeof(AccountSettings))
 						},
+								new ShellContent
+						{
+							Title = "Notifications",
+							Route = nameof(Pages.ChatPage),
+							ContentTemplate = new DataTemplate(typeof(ChatPage))
+						},
+
 						new ShellContent
 						{
 							Title = "Logout",
@@ -177,6 +184,12 @@ namespace Attendance
 							ContentTemplate = new DataTemplate(typeof(AccountSettings))
 						},
 
+									new ShellContent
+						{
+							Title = "Notifications",
+							Route = nameof(Pages.ChatPage),
+							ContentTemplate = new DataTemplate(typeof(ChatPage))
+						},
 
 
 						new ShellContent
@@ -238,6 +251,13 @@ namespace Attendance
 							ContentTemplate = new DataTemplate(typeof(AccountSettings))
 						},
 
+									new ShellContent
+						{
+							Title = "Notifications",
+							Route = nameof(Pages.ChatPage),
+							ContentTemplate = new DataTemplate(typeof(ChatPage))
+						},
+
 
 
 						new ShellContent
@@ -288,7 +308,15 @@ namespace Attendance
 							ContentTemplate = new DataTemplate(typeof(AccountSettings))
 						},
 
-						
+								new ShellContent
+						{
+							Title = "Chat Page",
+							Route = nameof(Pages.ChatPage),
+							ContentTemplate = new DataTemplate(typeof(ChatPage))
+						},
+
+
+
 
 						new ShellContent
 						{

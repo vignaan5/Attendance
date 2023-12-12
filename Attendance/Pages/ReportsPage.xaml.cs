@@ -22,12 +22,15 @@ public partial class ReportsPage : ContentPage
 		bool is_zonal_manager = dt.is_zonal_manager();
 		if (is_zonal_manager)
 		{
+			string zone = dt.get_current_employee_zone();
 			states = dt.get_all_states_from_zone_with_employee_id();
+			states.Add(zone);
 		}
 		string state = dt.get_current_employee_state(emp_id);
 		dt.close_connection();
 		if (states.Count > 0)
 		{
+
 			Navigation.PushAsync(new Attendance2(states));
 			return;
 
@@ -47,7 +50,9 @@ public partial class ReportsPage : ContentPage
 		bool is_zonal_manager = dt.is_zonal_manager();
 		if (is_zonal_manager)
 		{
+			string zone = dt.get_current_employee_zone();
 			states = dt.get_all_states_from_zone_with_employee_id();
+			states.Add(zone);
 		}
 		string state = dt.get_current_employee_state(emp_id);
 		dt.close_connection();
@@ -72,7 +77,9 @@ public partial class ReportsPage : ContentPage
 		bool is_zonal_manager = dt.is_zonal_manager();
 		if(is_zonal_manager)
 		{
+			string zone = dt.get_current_employee_zone();
 			states = dt.get_all_states_from_zone_with_employee_id();
+			states.Add(zone);
 		}
 	     string state = dt.get_current_employee_state(emp_id);
 		dt.close_connection();

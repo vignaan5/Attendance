@@ -360,7 +360,7 @@ public partial class ViewEmployees : ContentPage
 
 	public string create_html_string(List<List<string>> rows)
 	{
-		string htmlstring = "<html> <body> <table border='1' id='table'> <thead>   <tr bgcolor=#D3D3D3>  <th> Employee ID </th> <th> First Name </th> <th>  Last Name </th> <th> Age </th> <th> Join Date </th> <th> City </th> <th> State </th> <th> Store Name </th> <th> DOB </th> <th> Contact </th>  <th> Bank Account No </th>  <th> IFSC Code </th> <th> Monthly Target </th> <th> WeekOff Day </th> <th> Name As Per Bank Account </th> <th> Area </th> <th> UserName </th> <th> IsAccount Active </th> <th> Remaining Sales to reach monthly target </th> <th>This Month Sales</th> <th>Zone</th>  </tr> </thead> <tbody> ";
+		string htmlstring = "<html> <body> <table border='1' id='table'> <thead>   <tr bgcolor=#D3D3D3>  <th> Employee ID </th> <th> First Name </th> <th>  Last Name </th> <th> Age </th> <th> Join Date </th> <th> City </th> <th> State </th> <th> Store Name </th> <th> DOB </th> <th> Contact </th>  <th> Bank Account No </th>  <th> IFSC Code </th> <th> Monthly Target </th> <th> WeekOff Day </th> <th> Name As Per Bank Account </th> <th> Area </th> <th> UserName </th> <th> IsAccount Active </th> <th> Remaining Sales to reach monthly target </th> <th>This Month Sales</th> <th>Zone</th> <th> Employee's SupervisorID </th> <th>Employee's ASM ID</th> <th>Employee's Zonal Mgr ID </th> </tr> </thead> <tbody> ";
 
 		int sum = 0;
 
@@ -371,7 +371,7 @@ public partial class ViewEmployees : ContentPage
 			
 			for(int j = 0; j < rows[i].Count;j++)
 			{
-				if (j == rows[i].Count-5 || j == rows[i].Count-6)
+				if (j == rows[i].Count-8 || j == rows[i].Count-9)
 				{
 					continue;
 				}

@@ -8,5 +8,6 @@
             Text="This app is no longer supported , Please contact your admin and install newer version of the app,This App is only Supported on Android 8 to Android 13 and Windows 10,Windows 11"
             VerticalOptions="End" 
             HorizontalOptions="Center" FontSize="Large" />
+        <Button Text="Download Update from Browser" x:Name="dupdatebtn" HorizontalOptions="Center" Clicked="dupdatebtn_Clicked"></Button>
     </VerticalStackLayout>
 </ContentPage>

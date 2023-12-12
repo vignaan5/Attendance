@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.ChatPage"
+             Title="ChatPage" x:Name="chatpagevar">
+    <VerticalStackLayout Spacing="20">
+        <Button x:Name="sbar" Text="Go For Search People" HorizontalOptions="Center"  Clicked="sbar_Clicked" TextColor="RosyBrown" BackgroundColor="LightGoldenrodYellow"></Button>
+        <ListView x:Name="lview" >
+            <ListView.ItemTemplate >
+                <DataTemplate  >
+                    <ViewCell >
+                        <StackLayout BackgroundColor="FloralWhite">
+                            <Label Text="{Binding SenderID}" TextColor="Black" FontAttributes="Bold" FontSize="Medium"></Label>
+
+                            <HorizontalStackLayout Spacing="20">
+                                <Label Text="{Binding Message}" TextColor="DarkGray" FontAttributes="Bold" FontSize="Micro" HorizontalOptions="Start" ></Label>
+
+                                <Label Text="{Binding Time}" TextColor="DarkGray" FontAttributes="Bold" FontSize="Micro" HorizontalOptions="End"  ></Label>
+
+
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+    </VerticalStackLayout>
+</ContentPage>

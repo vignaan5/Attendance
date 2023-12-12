@@ -43,7 +43,7 @@ public partial class ViewStoreStock : ContentPage
 			MainThread.InvokeOnMainThreadAsync(async () => 
 			  { 
 			         st_date.MinimumDate = min_date;
-
+				  end_date_picker.MinimumDate = min_date;
 				  stockhs.IsVisible = true;
 				  stockhs.IsEnabled = true;
 			   
@@ -218,8 +218,14 @@ public partial class ViewStoreStock : ContentPage
 		List<List<string>> fake_invoice_qty_info = dt.get_employee_all_invoice_coloumns(dt.emp_id2, dt.get_employee_first_stock_entry_date(dt.emp_id2).ToString("yyyy-M-d"), end_date_picker.Date.ToString("yyyy-M-d"),ref fake_invoice_header,ref fake_invoice_column_sums);
 
 		List<List<string>> dynamic_opening_stock = dt.get_dynamic_opening_stock_to_a_date(dt.emp_id2, st_date.Date.AddDays(-1).ToString("yyyy-M-dd"), ref dynamic_opening_stock_header, ref opening_stock_sum, ref opeing_stock_value_sum);
+		                                                        
+		                                         if(dt.get_employee_first_stock_entry_date(dt.emp_id2).Date==st_date.Date)
+		                                         {
+			                                                 for(int i=0;i<dynamic_opening_stock.Count;i++)
+			                                                       for(int j = 0; j < dynamic_opening_stock[i].Count;j++)
+					                                                        dynamic_opening_stock[i][j] ="Dosen't Exist";
 
-
+		                                         }
 		List<string> date_range_sale = dt.get_sold_pcs_between_dates(dt.emp_id2, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"),ref sale_range_sum);
 		
 		dt.close_connection();
@@ -246,7 +252,7 @@ public partial class ViewStoreStock : ContentPage
 
 		//stock_info.Add(dsalelis);
 
-		for (int k = 0; k < dynamic_opening_stock.Count; k++)
+		for (int k = 0;dynamic_opening_stock!=null && k < dynamic_opening_stock.Count; k++)
 		{
 			stock_info[k].InsertRange(4, dynamic_opening_stock[k]);
 		}
@@ -260,7 +266,7 @@ public partial class ViewStoreStock : ContentPage
 		}
 
 
-		for (int k = 0; k < dynamic_opening_stock.Count; k++)
+		for (int k = 0;dynamic_opening_stock!=null && k < dynamic_opening_stock.Count; k++)
 		{
 			fake_stock_info[k].InsertRange(4, dynamic_opening_stock[k]);
 		}
@@ -336,7 +342,10 @@ public partial class ViewStoreStock : ContentPage
 		stock_info.Add(sum_row);
 
 		List<string> stock_header = new List<string> { "Sno", "paticulars", "HSN_SAC", "MRP" };
-		stock_header.AddRange(dynamic_opening_stock_header);
+		if (dynamic_opening_stock_header != null)
+		{
+			stock_header.AddRange(dynamic_opening_stock_header);
+		}
 		stock_header.AddRange(invoice_header);
 		stock_header.Add("Sales");
 		stock_header.Add("Return Stock");
@@ -414,7 +423,13 @@ public partial class ViewStoreStock : ContentPage
 		List<string> date_range_sale = dt.get_sold_pcs_between_dates(emp_id, st_date.Date.ToString("yyyy-M-dd"), end_date_picker.Date.ToString("yyyy-M-dd"), ref sale_range_sum);
 
 		List<List<string>> dynamic_opening_stock = dt.get_dynamic_opening_stock_to_a_date(emp_id,st_date.Date.AddDays(-1).ToString("yyyy-M-dd"),ref dynamic_opening_stock_header,ref  opening_stock_sum,ref  opeing_stock_value_sum);
+		if (dt.get_employee_first_stock_entry_date(emp_id).Date == st_date.Date)
+		{
+			for (int i = 0; i < dynamic_opening_stock.Count; i++)
+				for (int j = 0; j < dynamic_opening_stock[i].Count; j++)
+					dynamic_opening_stock[i][j] = "Dosen't Exist";
 
+		}
 		dt.close_connection();
 
 		List<string> dsalelis = new List<string> { "", "", "", "", "", "", "", "", "", "Total Stock Value", daily_sale.ToString() };
@@ -478,7 +493,16 @@ public partial class ViewStoreStock : ContentPage
 
 		for (int k = 0; k < fake_stock_info.Count; k++)
 		{
-			int sale_val = Convert.ToInt32(fake_stock_info[k][fake_stock_info[k].Count - 6]);
+			int sale_val = 0;
+			try
+			{
+				 sale_val = Convert.ToInt32(fake_stock_info[k][fake_stock_info[k].Count - 6]);
+			}
+			catch(Exception ex)
+			{
+				 sale_val = 0;
+			}
+
 			int summed_stock = 0;
 			for (int m = 0; fake_invoice_qty_info.Count > 0 && m < fake_invoice_qty_info[k].Count; m++)
 			{
@@ -587,7 +611,7 @@ public partial class ViewStoreStock : ContentPage
 			MainThread.InvokeOnMainThreadAsync(async () =>
 			{
 				st_date.MinimumDate = min_date;
-
+				end_date_picker.MinimumDate = min_date;
 				stockhs.IsVisible = true;
 				stockhs.IsEnabled = true;
 

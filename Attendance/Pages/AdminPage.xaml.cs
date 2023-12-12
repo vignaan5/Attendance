@@ -146,7 +146,7 @@ public partial class AdminPage : ContentPage
 
 	private void bills_Clicked(object sender, EventArgs e)
 	{
-		Navigation.PushAsync(new Payments());
+		Navigation.PushAsync(new UploadClayvedaNewVersion());
 
 	}
 

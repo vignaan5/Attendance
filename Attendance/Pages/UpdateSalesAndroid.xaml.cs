@@ -265,9 +265,13 @@ public partial class UpdateSalesAndroid : ContentPage
 
 	private async void uitmbtn_Clicked(object sender, EventArgs e)
 	{
+		uitmbtn.IsEnabled = false;
+		uitmbtn.IsVisible = false;
 		if (!is_safe())
 		{
 			DisplayAlert("Please Check quantity or Remove item", "Add quantity to the item", "Ok");
+			uitmbtn.IsVisible = true;
+			uitmbtn.IsEnabled = true;
 			return;
 		}
 #if ANDROID

@@ -66,7 +66,7 @@ public partial class Payments : ContentPage
 				Button btn = new Button { Text = "Upload Payment Details", HorizontalOptions = LayoutOptions.Center };
 				btn.Clicked += (async(object sender,EventArgs e)=>
 				{
-					var result= await PickAndShow(PickOptions.Images);
+					var result= await PickAndShow(PickOptions.Default);
 
 					if (result != null)
 					{

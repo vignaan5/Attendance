@@ -83,17 +83,29 @@ public partial class DataGrid : ContentPage
 		string first_day = dtpicker2.Date.Year.ToString()+"-"+dtpicker2.Date.Month.ToString()+"-"+"1";
 
 		dt.start_connection();
-		if (state != String.Empty && state!="All")
+		
+		 if(state != String.Empty && (state.ToUpper()=="NORTH"||state.ToUpper()=="SOUTH"||state.ToUpper()=="EAST"||state.ToUpper()=="WEST"||state.ToUpper()=="CENTRAL"))
 		{
-			rows = dt.get_rows(sql_str, ref sum,state);
+			rows = dt.get_rows(sql_str, ref sum, state,state);
 		}
+		else if (state != String.Empty && state != "All")
+		{
+			rows = dt.get_rows(sql_str, ref sum, state);
+		}
+
 		else
 		{
 			rows = dt.get_rows(sql_str, ref sum);
 		}
 
 
-		if(state != String.Empty  && state!="All") { cumilative_sales_from_first_day = dt.get_cumiliatvie_sales(first_day, sql_str,state); }
+		 if (state != String.Empty && (state.ToUpper() == "NORTH" || state.ToUpper() == "SOUTH" || state.ToUpper() == "EAST" || state.ToUpper() == "WEST" || state.ToUpper() == "CENTRAL"))
+		{
+			cumilative_sales_from_first_day=dt.get_cumiliatvie_sales(first_day,sql_str,state,state);
+		}
+	  else	if (state != String.Empty && state != "All") { cumilative_sales_from_first_day = dt.get_cumiliatvie_sales(first_day, sql_str, state); }
+
+
 		else
 		{ cumilative_sales_from_first_day = dt.get_cumiliatvie_sales(first_day, sql_str); }
 		
@@ -187,9 +199,15 @@ public partial class DataGrid : ContentPage
 		{
 			int Csales = 0;
 			dt.start_connection();
-			if (state != String.Empty && (string)statepicker.SelectedItem!="All") 
+			
+			 if (state != String.Empty && (state.ToUpper() == "NORTH" || state.ToUpper() == "SOUTH" || state.ToUpper() == "EAST" || state.ToUpper() == "WEST" || state.ToUpper() == "CENTRAL"))
 			{
-				Csales = dt.get_cumiliatvie_sales(get_date_from_picker(start_date), get_date_from_picker(to_date),state);
+				Csales = dt.get_cumiliatvie_sales(get_date_from_picker(start_date), get_date_from_picker(to_date), state,state);
+
+			}
+		    else	if (state != String.Empty && (string)statepicker.SelectedItem != "All")
+			{
+				Csales = dt.get_cumiliatvie_sales(get_date_from_picker(start_date), get_date_from_picker(to_date), state);
 
 			}
 			else

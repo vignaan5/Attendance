@@ -57,6 +57,18 @@
                 <Entry Placeholder="Monthly Target is " IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
             </HorizontalStackLayout>
 
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="Zonal Manager ID is " x:Name="zsmid" IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="Area Sales Mgr ID is " x:Name="asmid" IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Entry Placeholder="Supervisor ID is " x:Name="visorid" IsEnabled="False" IsVisible="False" HorizontalOptions="Center" PlaceholderColor="Blue"></Entry>
+            </HorizontalStackLayout>
+
 
             <Button x:Name="update_details2_btn" Text="Save and Update Details" HorizontalOptions="Center" IsEnabled="False" IsVisible="False" Clicked="update_details2_btn_Clicked"></Button>
 

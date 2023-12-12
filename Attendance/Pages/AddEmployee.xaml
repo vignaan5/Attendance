@@ -53,6 +53,10 @@
             <Entry x:Name="bnk_name" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's name as per Bank Account"></Entry>
             <Entry x:Name="etarget" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's monthly target"></Entry>
             <Entry x:Name="econtact" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Phone No "></Entry>
+            <Entry x:Name="emp_zonal_mgr_id" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Zonal Mgr ID "></Entry>
+            <Entry x:Name="emp_sales_mgr_id" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Area Sales Mgr ID "></Entry>
+            <Entry x:Name="emp_supervisor_id" HorizontalOptions="FillAndExpand" PlaceholderColor="Black" Placeholder="Enter Employee's Supervisor ID "></Entry>
+
 
             <HorizontalStackLayout x:Name="dobhs">
                 <Label Text="Select Employee DOB : "></Label>

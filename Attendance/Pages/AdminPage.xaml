@@ -25,7 +25,7 @@
             <Button HorizontalOptions="Center" Text="View Store Stock" x:Name="storestock_btn" Clicked="storestock_btn_Clicked" WidthRequest="250" ></Button>
             <Button HorizontalOptions="Center" Text="Geo Tag Settings" x:Name="geosettingsbtn" Clicked="geosettingsbtn_Clicked"  WidthRequest="250" ></Button>
             <Button HorizontalOptions="Center" Text="Employee Device Changes" x:Name="devicechanges" Clicked="devicechanges_Clicked" WidthRequest="250" ></Button>
-            <Button HorizontalOptions="Center" Text="Pay/View Bills" x:Name="bills" Clicked="bills_Clicked"  WidthRequest="250" ></Button>
+           
                
             <Image
                 Source="vignaan2.png"

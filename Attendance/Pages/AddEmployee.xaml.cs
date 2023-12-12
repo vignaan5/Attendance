@@ -173,6 +173,9 @@ public partial class AddEmployee : ContentPage
 		string s15 = bnk_name.Text.ToString().Trim();
 		string s16 = area.Text.ToString().Trim();
 		string s17 = area.Text.ToString().Trim();
+		string s18= emp_zonal_mgr_id.Text.ToString().Trim();
+		string s19=emp_supervisor_id.Text.ToString().Trim();
+		string s20 = emp_sales_mgr_id.Text.ToString().Trim();
 		string is_admin = "no";
 
 		if(store_name.IsEnabled == false && store_name.Text.Trim()=="ADMIN")
@@ -180,7 +183,7 @@ public partial class AddEmployee : ContentPage
 			is_admin = "yes";
 		}
 
-		new_sql_cmd_string = String.Format("insert into employee values ( '{0}','{1}','{2}',{3},'{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}');",s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,username.Text.ToString().Trim(),passcode.Text.ToString().Trim(),is_admin,"yes",estatezone.SelectedItem as string);
+		new_sql_cmd_string = String.Format("insert into employee values ( '{0}','{1}','{2}',{3},'{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}');", s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13,s14,s15,s16,username.Text.ToString().Trim(),passcode.Text.ToString().Trim(),is_admin,"yes",estatezone.SelectedItem as string,s18,s19,s20);
 
 
 
