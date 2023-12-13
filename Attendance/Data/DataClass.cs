@@ -1514,6 +1514,54 @@ namespace Attendance.Data
 
 		}
 
+		public Dictionary<int,int> get_current_store_stock_in_dic(string emp_id)
+		{
+			if(!is_conn_open)
+			{
+				return null;
+			}
+
+			DateTime invoice_first_entry_date = get_employee_first_stock_entry_date(emp_id2);
+			string inv_1st_date = invoice_first_entry_date.ToString("yyyy-M-d");
+			string sql_query = "";
+			try
+			{
+				 sql_query = String.Format("select Sno,ifnull(ifnull(Opcs,0)-(ifnull(sold_pcs,0)+ifnull(dpcs,0)),0) as Closing_Stock from  (select * from ( select * from (select * from  (select * from products2 p left join (  select sno as Osno,sum(pcs) as Opcs,sum(amount) as opening_stock from employee_stocks where emp_id ='{3}'  and The_date between '{0}' and date(now())  group by Osno) as stocks on stocks.Osno=p.sno ) as op left join (select sno as Dsno,sum(pcs) as Dpcs,sum(amount) as return_sales from employee_defect_stocks where emp_id ='TSCL100' and The_date between '{1}' and date(now()) group by Dsno) as d on op.sno=d.Dsno) as ds left join (select sno as Ssno,sum(pcs) as sold_pcs ,sum(amount)as Sales from employee_sales2 where emp_id='TSCL100' and The_date between '{2}' and date(now()) group by Ssno) as s on s.Ssno=ds.sno) as main_table2 left join (select sno as Opsno,sum(pcs) as Oppcs,sum(amount) as opening_stock_inv from employee_stocks where emp_id ='TSCL100' and  invoice_no='opening stock'  and The_date between '{3}' and date(now())  group by Opsno) as op_stock on op_stock.Opsno=main_table2.Sno ) as op_table;", inv_1st_date, inv_1st_date, inv_1st_date, emp_id2);
+			}
+			catch(Exception ex)
+			{
+
+			}
+			MySqlCommand cmd = new MySqlCommand(sql_query, connection);
+			MySqlDataReader reader = null;
+
+			try
+			{
+			 reader=cmd.ExecuteReader();	
+			}
+			catch(Exception ex)
+			{
+
+			}
+			Dictionary<int, int> dic = new Dictionary<int, int>();
+
+			while(reader!=null && !reader.IsClosed && reader.Read())
+			{
+				try
+				{
+					dic.Add(Convert.ToInt32(reader["Sno"].ToString()), Convert.ToInt32(reader["Closing_Stock"].ToString()));
+				}
+				catch(Exception ex)
+				{
+
+				}
+			}
+
+			reader.Close();
+			return dic;
+		}
+
+
 
 		public void add_elapsed_time_to_db(string sql_date,string etime)
 		{

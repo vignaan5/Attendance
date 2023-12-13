@@ -11,9 +11,18 @@ public partial class UpdateSalesAndroid : ContentPage
 	public List<string> selected_items=new List<string>();
 	public string employee_ID = String.Empty;
 	public List<string> dpitems = new List<string>();
+	public Dictionary<int,int> current_stock=new Dictionary<int,int>();
 	public UpdateSalesAndroid()
 	{
 		InitializeComponent();
+		Task.Run(async () => 
+		{
+			await dt.get_emp_id();
+			dt.start_connection();
+			current_stock = dt.get_current_store_stock_in_dic(dt.emp_id2);
+			dt.close_connection();
+		
+		});
 		DatePicker tdp = new DatePicker();
 		List<string> dp_items = new List<string>();
 
@@ -229,6 +238,11 @@ public partial class UpdateSalesAndroid : ContentPage
 
 	public bool is_safe()
 	{
+		
+
+		if (vs.Count == 1)
+			return false;
+
 		foreach (var item in vs)
 		{
 			if (item.GetType() == typeof(ScrollView))
@@ -266,7 +280,7 @@ public partial class UpdateSalesAndroid : ContentPage
 	private async void uitmbtn_Clicked(object sender, EventArgs e)
 	{
 		uitmbtn.IsEnabled = false;
-		uitmbtn.IsVisible = false;
+		
 		if (!is_safe())
 		{
 			DisplayAlert("Please Check quantity or Remove item", "Add quantity to the item", "Ok");
@@ -287,25 +301,37 @@ public partial class UpdateSalesAndroid : ContentPage
 		Task.Run(async () =>
 		{
 			await dt.get_emp_id();
-			await make_query();
+		bool item_not_in_stock=	await make_query();
 
-			MainThread.InvokeOnMainThreadAsync(() => {
 
-				DisplayAlert("Updated!", "Your Sales has been updated", "Ok");
-				Navigation.PopAsync();
+			if (!item_not_in_stock)
+			{
+				MainThread.InvokeOnMainThreadAsync(() =>
+				{
 
-			});
+					DisplayAlert("Updated!", "Your Sales has been updated", "Ok");
+					Navigation.PopAsync();
+
+				});
+			}
 
 		});
 
 
 	}
 
-	public async Task make_query()
+	public async Task<bool> make_query()
 	{
 
 
 		List<string> commandsstrs = new List<string>();
+
+		Dictionary<int,int> temp_current_stock= new Dictionary<int,int>();	
+
+		foreach(var x in current_stock)
+		{
+			temp_current_stock.Add(x.Key, x.Value);
+		}
 
 		foreach (var sc in vs)
 		{
@@ -328,9 +354,27 @@ public partial class UpdateSalesAndroid : ContentPage
 				int price = Convert.ToInt32((pname.Text.Split(':')[2].Trim()));
 				string amount = (price * qty_in_int).ToString();
 
+				int snoint = Convert.ToInt32(snostr);
+
+				temp_current_stock[snoint] -= qty_in_int;
+
+				if (temp_current_stock[snoint]<0)
+				{
+					temp_current_stock.Clear();
+					MainThread.InvokeOnMainThreadAsync(() => {
+						DisplayAlert("Item with Sno :" + snoint + " is Out of Stock", "The item stock is not found in the store", "Ok"); uitmbtn.IsEnabled = true;
+					});
+					return true;
+				}
+
+
 				// string stemp = "INSERT INTO employee_sales2 values ('" + dt.emp_id2 + "','" + snostr + "','"+qty_in_int.ToString()+"','"+amount+ "',convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
 				//string stemp = "INSERT INTO employee_sales2 values (emp_id,sno,pcs,amount,The_Time,The_date) ('" + dt.emp_id2 + "'," + snostr + "," + qty_in_int.ToString() + "," + amount + ",convert_tz(now(),'-7:00','+5:30'),convert_tz(now(),'-7:00','+5:30'));";
 				string stemp = "";
+
+
+
+
 				if (dpicker.SelectedIndex == 0)
 				{
 					if (employee_ID == String.Empty)
@@ -364,7 +408,7 @@ public partial class UpdateSalesAndroid : ContentPage
 
 
 		process_mysql_cmd_list(commandsstrs);
-
+		return false;
 	}
 
 
