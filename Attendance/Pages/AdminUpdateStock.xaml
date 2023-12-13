@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Attendance.Pages.AdminUpdateStock"
+             Title="AdminUpdateStock">
+    <VerticalStackLayout>
+        <VerticalStackLayout x:Name="svs" IsVisible="False" IsEnabled="False">
+
+            <SearchBar x:Name="search_emp" Placeholder="Enter employee Name or ID"></SearchBar>
+            
+            <ListView x:Name="emplist" ItemSelected="emplis_ItemSelected" IsVisible="False"></ListView>
+            
+        </VerticalStackLayout>
+        <Button x:Name="get_stock_report" Text="Update Store Stock" HorizontalOptions="Center" IsEnabled="False" IsVisible="False" Clicked="get_stock_report_Clicked" ></Button>
+        <Button x:Name="get_stock_report2" Text="Remove Store Stock" HorizontalOptions="Center" IsEnabled="False" IsVisible="False" Clicked="get_stock_report2_Clicked" ></Button>
+
+    </VerticalStackLayout>
+</ContentPage>

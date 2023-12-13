@@ -104,6 +104,9 @@
 	  <MauiXaml Update="Pages\AdminUpdateEmployee.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Pages\AdminUpdateStock.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Pages\ApplyLeave.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

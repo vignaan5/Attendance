@@ -3790,10 +3790,80 @@ namespace Attendance.Data
             return items;
         }
 
-	   
 
 
-        public List<Dictionary<string, string>> get_employee_recent_defect_stock_on_the_day(string today)
+		public List<Dictionary<string, string>> get_employee_recent_stock_on_the_day(string emp_id, string today)
+		{
+			if (!is_conn_open)
+				return null;
+
+			string get_recent_sales_query = String.Format("select * from products2,employee_stocks where products2.sno=employee_stocks.sno and employee_stocks.emp_id = '{0}' and employee_stocks.The_date= '{1}' order by The_time desc;", emp_id, today);
+
+			MySqlCommand get_recent_sales_cmd = null;
+			try
+			{
+				get_recent_sales_cmd = new MySqlCommand(get_recent_sales_query, connection);
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			try
+			{
+				get_recent_sales_cmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+
+			}
+
+			MySqlDataReader reader = null;
+
+			try
+			{
+				reader = get_recent_sales_cmd.ExecuteReader();
+			}
+			catch (Exception ex)
+			{
+				return null;
+			}
+
+			List<Dictionary<string, string>> items = new List<Dictionary<string, string>>();
+
+			while (!reader.IsClosed && reader.Read())
+			{
+
+				Dictionary<string, string> item = new Dictionary<string, string>();
+
+				item["sno"] = reader[0].ToString();
+				item["product"] = reader[1].ToString();
+				item["product_price"] = reader[3].ToString();
+				item["emp_id"] = reader[4].ToString();
+				item["pcs"] = reader[6].ToString();
+				item["stock_value"] = reader[7].ToString();
+				item["sold_time"] = reader[8].ToString();
+				item["sold_date"] = reader[9].ToString();
+				item["order_id"] = reader[10].ToString();
+				item["invoice_no"] = reader[11].ToString();
+
+				Dictionary<string, Dictionary<string, string>> item_with_name = new Dictionary<string, Dictionary<string, string>>();
+
+
+
+				items.Add(item);
+
+			}
+
+
+			reader.Close();
+			return items;
+		}
+
+
+
+
+		public List<Dictionary<string, string>> get_employee_recent_defect_stock_on_the_day(string today)
         {
             if (!is_conn_open)
                 return null;

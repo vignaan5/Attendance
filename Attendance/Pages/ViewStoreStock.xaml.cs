@@ -291,8 +291,16 @@ public partial class ViewStoreStock : ContentPage
 
 		for (int k = 0; k < fake_stock_info.Count; k++)
 		{
-			int sale_val = Convert.ToInt32(fake_stock_info[k][fake_stock_info[k].Count - 6]);
-			int summed_stock = 0;
+			int sale_val = 0;
+			try
+			{
+				 sale_val = Convert.ToInt32(fake_stock_info[k][fake_stock_info[k].Count - 6]);
+			}
+			catch(Exception ex)
+			{
+
+			}
+				int summed_stock = 0;
 			for (int m = 0; fake_invoice_qty_info.Count > 0 && m < fake_invoice_qty_info[k].Count; m++)
 			{
 				int stock_val = Convert.ToInt32(fake_invoice_qty_info[k][m]);

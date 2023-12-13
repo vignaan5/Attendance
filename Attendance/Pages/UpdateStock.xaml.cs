@@ -63,6 +63,63 @@ public partial class UpdateStock : ContentPage
 
     }
 
+
+    public UpdateStock(string emp_id,bool yes_or_no)
+    {
+        this.employee_ID = emp_id;  
+		InitializeComponent();
+		DatePicker tdp = new DatePicker();
+		List<string> dp_items = new List<string>();
+
+		dp_items.Add(date_picker.Date.ToString("yyyy-MM-dd"));
+		DateTime dt_temp = tdp.Date;
+		dt_temp = dt_temp.AddDays(-1);
+		tdp.Date = dt_temp;
+		//   dp_items.Add(tdp.Date.ToString("yyyy-MM-dd"));
+		dp_items.Add(date_picker.Date.ToString("yyyy-MM-dd"));
+
+
+		dpicker.ItemsSource = dp_items;
+		dpicker.SelectedIndex = 1;
+		invoicebox.Text = "";
+		invoicebox.IsEnabled = true;
+		invoicebox.IsVisible = true;
+
+		Task.Run(async () =>
+		{
+			
+			dt.start_connection();
+
+			List<string> invoices = dt.get_employee_Stock_invoices(employee_ID, date_picker.Date.ToString("yyyy-MM-dd"), date_picker.Date.ToString("yyyy-MM-dd"));
+			dt.close_connection();
+
+			if (invoices != null && invoices.Count > 0)
+			{
+				MainThread.InvokeOnMainThreadAsync(async () =>
+				{
+
+					Invoice_picker.ItemsSource = invoices;
+					inv_hs.IsEnabled = true;
+					inv_hs.IsVisible = true;
+					Invoice_picker.IsVisible = true;
+					Invoice_picker.IsEnabled = true;
+
+
+				});
+			}
+
+		});
+
+	}
+
+	public UpdateStock(string type,string emp_id)
+    {
+
+    }
+
+   
+
+
     public UpdateStock(string type)
     {
         InitializeComponent();

@@ -6,6 +6,7 @@
     <VerticalStackLayout>
 
         <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30"> </ImageButton>
+        
         <DatePicker x:Name="date_picker" DateSelected="date_picker_DateSelected" ></DatePicker>
         <Picker x:Name="dpicker" IsEnabled="False" IsVisible="False"></Picker>
         <HorizontalStackLayout Spacing="10" x:Name="inv_hs" IsEnabled="False" IsVisible="False">
@@ -16,6 +17,9 @@
 
         </HorizontalStackLayout>
         <Entry Placeholder="Enter Invoice no" PlaceholderColor="Black" IsVisible="False" IsEnabled="False" x:Name="invoicebox"></Entry>
+
+        
+
         <SearchBar x:Name="products_search_bar" Placeholder="Seach and Add Products"  TextChanged="Products_search_bar_TextChanged"></SearchBar>
 
         <ListView x:Name="products_list" ItemSelected="products_list_ItemSelected"></ListView>

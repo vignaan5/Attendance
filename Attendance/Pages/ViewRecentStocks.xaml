@@ -8,6 +8,8 @@
      
         <VerticalStackLayout x:Name="vs" VerticalOptions="Center" HorizontalOptions="Center">
 
+            <DatePicker x:Name="dtpicker" IsEnabled="False" IsVisible="False" DateSelected="dtpicker_DateSelected"></DatePicker>
+            
             <HorizontalStackLayout x:Name="hs">
 
                 <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30">

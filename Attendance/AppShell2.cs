@@ -65,7 +65,7 @@ namespace Attendance
 						},
 								new ShellContent
 						{
-							Title = "Notifications",
+							Title = "Notifications Page",
 							Route = nameof(Pages.ChatPage),
 							ContentTemplate = new DataTemplate(typeof(ChatPage))
 						},
@@ -186,7 +186,7 @@ namespace Attendance
 
 									new ShellContent
 						{
-							Title = "Notifications",
+							Title = "Notifications Page",
 							Route = nameof(Pages.ChatPage),
 							ContentTemplate = new DataTemplate(typeof(ChatPage))
 						},
@@ -310,7 +310,7 @@ namespace Attendance
 
 								new ShellContent
 						{
-							Title = "Chat Page",
+							Title = "Notification Page",
 							Route = nameof(Pages.ChatPage),
 							ContentTemplate = new DataTemplate(typeof(ChatPage))
 						},

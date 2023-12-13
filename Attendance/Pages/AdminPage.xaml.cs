@@ -155,4 +155,14 @@ public partial class AdminPage : ContentPage
 		Navigation.PushAsync(new GeoLocationSettings());
 
 	}
+
+	private void devicechanges_Clicked_1(object sender, EventArgs e)
+	{
+
+    }
+
+	private void adminupdatestorestockbtn_Clicked(object sender, EventArgs e)
+	{
+		Navigation.PushAsync(new AdminUpdateStock());
+    }
 }
