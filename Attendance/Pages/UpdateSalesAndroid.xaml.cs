@@ -9,9 +9,14 @@ public partial class UpdateSalesAndroid : ContentPage
 	DataClass dt = new DataClass();
 	public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
 	public List<string> selected_items=new List<string>();
+	public List<string> empty_list = new List<string>();
 	public string employee_ID = String.Empty;
 	public List<string> dpitems = new List<string>();
 	public Dictionary<int,int> current_stock=new Dictionary<int,int>();
+
+	
+
+
 	public UpdateSalesAndroid()
 	{
 		InitializeComponent();
@@ -62,7 +67,7 @@ public partial class UpdateSalesAndroid : ContentPage
 
 		if (products_search_bar.Text.Trim() == "")
 		{
-			products_list.ItemsSource = nothing_found_temp;
+			products_list.ItemsSource = empty_list;
 			return;
 		}
 
@@ -176,6 +181,12 @@ public partial class UpdateSalesAndroid : ContentPage
 		products_search_bar.Text = "";
 
 
+
+#if ANDROID
+                 
+Attendance.Platforms.Android.KeyboardHelper.HideKeyboard();
+
+#endif
 	}
 
 	private void Quantity_picker_SelectedIndexChanged(object sender, EventArgs e)

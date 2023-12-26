@@ -21,6 +21,7 @@ using Org;
 using System.Security.Policy;
 using Attendance.Data;
 using MySqlConnector;
+using Android.Views.InputMethods;
 
 namespace The_Attendance.Platforms
 {
@@ -177,6 +178,12 @@ namespace The_Attendance.Platforms
 			dt.close_connection();
 			return;
 		}
+
+
+		
+
+
+
 
 
 		public async void update_clock_out()

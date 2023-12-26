@@ -9,6 +9,7 @@ public partial class UpdateStock : ContentPage
 {
    public  DataClass dt = new DataClass();
     public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
+    public List<string> empty_list = new List<string>();
     public List<string> selected_items = new List<string>();
     public string employee_ID = String.Empty;
     public List<string> dpitems = new List<string>();
@@ -175,7 +176,7 @@ public partial class UpdateStock : ContentPage
 
         if (products_search_bar.Text.Trim() == "")
         {
-            products_list.ItemsSource = nothing_found_temp;
+            products_list.ItemsSource = empty_list;
             return;
         }
 
@@ -289,10 +290,16 @@ public partial class UpdateStock : ContentPage
 
         products_search_bar.Text = "";
 
+#if ANDROID
+                 
+Attendance.Platforms.Android.KeyboardHelper.HideKeyboard();
 
-    }
+#endif
 
-    private void Quantity_picker_SelectedIndexChanged(object sender, EventArgs e)
+
+	}
+
+	private void Quantity_picker_SelectedIndexChanged(object sender, EventArgs e)
     {
         throw new NotImplementedException();
     }
@@ -529,6 +536,7 @@ public partial class UpdateStock : ContentPage
 
 							stemp = String.Format("INSERT INTO employee_stocks (emp_id,sno,pcs,amount,The_Time,The_date,invoice_no) values ('{0}',{1},{2},{3},'{4}','{5}','{6}');", employee_ID, snostr, qty_in_int.ToString(), amount, "23:59:59", dpicker.ItemsSource[0],invoicebox.Text.Trim());
 
+                            
                         }
 
 

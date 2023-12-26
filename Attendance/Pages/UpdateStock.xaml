@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Attendance.Pages.UpdateStock"
              Title="UpdateStock">
-    <VerticalStackLayout>
+    <ScrollView>
+    <StackLayout>
 
         <ImageButton  x:Name="goback_btn" Clicked="goback_btn_Clicked" HorizontalOptions="Start"  Source="home.png" MaximumHeightRequest="40" MaximumWidthRequest="30"> </ImageButton>
         
@@ -28,5 +29,6 @@
             <Button Text="Check And Tally Items" x:Name="uitmbtn" Clicked="uitmbtn_Clicked"></Button>
         </VerticalStackLayout>
 
-    </VerticalStackLayout>
+    </StackLayout>
+    </ScrollView>
 </ContentPage>
