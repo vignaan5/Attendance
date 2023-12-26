@@ -144,7 +144,7 @@ namespace Attendance.Data
 			List<List<string>> result = new List<List<string>>();
 
 
-			string sql_string = String.Format("select * from employee_sales2 left join products on employee_sales2.sno = products.sno where The_date between '{0}' and '{1}'  and emp_id = '{2}';", start_date, end_date, emp_id);
+			string sql_string = String.Format("select * from employee_sales2 left join products2 on employee_sales2.sno = products2.sno where The_date between '{0}' and '{1}'  and emp_id = '{2}';", start_date, end_date, emp_id);
 			MySqlCommand cmd = new MySqlCommand(sql_string, connection);
 
 			try

@@ -9,13 +9,15 @@
                 <SearchBar x:Name="products_search_bar" Placeholder="Seach and Add Products"  TextChanged="Products_search_bar_TextChanged"></SearchBar>
 
                   <ListView x:Name="products_list" ItemSelected="products_list_ItemSelected"> </ListView>
-        <VerticalStackLayout x:Name="vs">
+       
+                <VerticalStackLayout x:Name="vs" >
 
             <Button Text="Check And Tally Items" x:Name="uitmbtn" Clicked="uitmbtn_Clicked"></Button>
         </VerticalStackLayout>
-                   
-                
-            </VerticalStackLayout>
+       
+
+
+    </VerticalStackLayout>
 
    
   

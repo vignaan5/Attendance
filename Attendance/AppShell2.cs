@@ -125,7 +125,11 @@ namespace Attendance
 							ContentTemplate = new DataTemplate(typeof(AccountSettings))
 						},
 
-
+						new ShellContent    {
+							Title = "Notifications Page",
+							Route = nameof(Pages.ChatPage),
+							ContentTemplate = new DataTemplate(typeof(ChatPage))
+						},
 
 						new ShellContent
 						{
