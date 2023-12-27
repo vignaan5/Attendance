@@ -72,6 +72,7 @@
 	  <None Remove="Resources\Images\editsales.png" />
 	  <None Remove="Resources\Images\employeereports.png" />
 	  <None Remove="Resources\Images\home.png" />
+	  <None Remove="Resources\Images\home2.png" />
 	  <None Remove="Resources\Images\insertsales.png" />
 	  <None Remove="Resources\Images\managemployee.png" />
 	  <None Remove="Resources\Images\mysales.png" />
