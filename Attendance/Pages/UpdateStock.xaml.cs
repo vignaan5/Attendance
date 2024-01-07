@@ -7,7 +7,7 @@ namespace Attendance.Pages;
 
 public partial class UpdateStock : ContentPage
 {
-   public  DataClass dt = new DataClass();
+    public  DataClass dt = new DataClass();
     public List<string> nothing_found_temp = new List<string> { "Nothing Found" };
     public List<string> empty_list = new List<string>();
     public List<string> selected_items = new List<string>();

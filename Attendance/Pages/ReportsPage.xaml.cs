@@ -8,6 +8,24 @@ public partial class ReportsPage : ContentPage
 	public ReportsPage()
 	{
 		InitializeComponent();
+		Task.Run(async() => 
+		{
+			await dt.get_emp_id();
+			dt.start_connection();
+			string STORE_NAME = dt.get_current_employee_storename(dt.emp_id2);
+			dt.close_connection();
+			if (STORE_NAME.Contains("ZONALMANAGER"))
+			{
+				MainThread.InvokeOnMainThreadAsync(() => 
+				{
+					emploc.IsVisible = true;
+					emploc.IsEnabled = true;
+				});
+				
+			}
+
+
+		});
 	}
 
 
@@ -113,5 +131,15 @@ public partial class ReportsPage : ContentPage
 		
 		dt.close_connection();
 		Navigation.PushAsync(new ViewStoreStock(true, state));
+	}
+
+	private async void emploc_Clicked(object sender, EventArgs e)
+	{
+		dt.start_connection();
+		string Zone = dt.get_current_employee_zone();
+		dt.close_connection();
+
+		Navigation.PushAsync(new ViewEmployeeLocations(Zone));
+
 	}
 }

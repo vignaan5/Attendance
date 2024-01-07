@@ -4,6 +4,7 @@ namespace Attendance.Pages;
 
 public partial class ViewEmployeeLocations : ContentPage
 {
+	public string Zone { get; set; }
 	public string emp_id { get; set; }
 
 	public bool search_for_chat { get; set; }
@@ -16,6 +17,16 @@ public partial class ViewEmployeeLocations : ContentPage
 	{
 		InitializeComponent();
 		emplist.ItemsSource = nothing_found_temp;
+		emplist.IsVisible = true;
+		search_for_chat = false;
+	}
+
+	public ViewEmployeeLocations(string zone)
+	{
+		InitializeComponent();
+		this.Zone = zone;
+		emplist.ItemsSource = nothing_found_temp;
+		search_emp.TextChanged += search_emp_TextChanged2;
 		emplist.IsVisible = true;
 		search_for_chat = false;
 	}
@@ -284,5 +295,55 @@ public partial class ViewEmployeeLocations : ContentPage
 
 
 	}
+
+
+	private void search_emp_TextChanged2(object sender, TextChangedEventArgs e)
+	{
+
+		if (search_emp.Text.Trim() == "")
+		{
+
+			emplist.ItemsSource = nothing_found_temp;
+			return;
+		}
+
+		Task.Run(async () => {
+
+			while (dt.is_conn_open)
+			{
+
+			}
+
+			dt.start_connection();
+			List<List<string>> result = dt.search_employee_in_db(search_emp.Text.Trim(), search_emp.Text.Trim(), search_emp.Text.Trim(),Zone,Zone);
+			dt.close_connection();
+
+			MainThread.InvokeOnMainThreadAsync(() => {
+				List<string> temp = new List<string>();
+				foreach (List<string> list in result)
+				{
+					temp.Add(list[0] + " " + list[1] + " " + list[2]);
+
+				}
+				if (temp.Count == 0)
+				{
+					emplist.ItemsSource = nothing_found_temp;
+				}
+				else
+				{
+					emplist.ItemsSource = temp;
+				}
+
+				emplist.IsVisible = true;
+			});
+
+
+		});
+
+
+
+
+	}
+
 
 }

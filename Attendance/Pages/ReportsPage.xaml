@@ -8,5 +8,7 @@
         <Button Text="View Your Team Report" x:Name="showteamreportbtn" Clicked="showteamreportbtn_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button>
         <Button Text="View Your Team Products Report" x:Name="showproducts" Clicked="showproducts_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button >
         <Button Text="View Employee's Store Stock" x:Name="empstorestock" Clicked="empstorestock_Clicked" HorizontalOptions="Center" WidthRequest="290"></Button>
+        <Button Text="View Employee's Location" x:Name="emploc" Clicked="emploc_Clicked" HorizontalOptions="Center" WidthRequest="290" IsEnabled="False" IsVisible="False"></Button>
+
     </VerticalStackLayout>
 </ContentPage>

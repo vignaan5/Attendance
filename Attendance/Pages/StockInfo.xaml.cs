@@ -1,9 +1,13 @@
+using Attendance.Data;
+
 namespace Attendance.Pages;
 
 public partial class StockInfo : ContentPage
 {
+	public DataClass dt = new DataClass();
 	public StockInfo()
 	{
+
 		InitializeComponent();
 	}
 
@@ -18,9 +22,10 @@ public partial class StockInfo : ContentPage
 		Navigation.PushAsync(new UpdateStock());
 	}
 
-    private void edit_stock_Clicked(object sender, EventArgs e)
+    private async void edit_stock_Clicked(object sender, EventArgs e)
     {
-		 Navigation.PushAsync(new ViewRecentStocks());	
+		await dt.get_emp_id();
+		 Navigation.PushAsync(new ViewRecentStocks(dt.emp_id2,true));	
     }
 
     private void update_defect_stock_Clicked(object sender, EventArgs e)
