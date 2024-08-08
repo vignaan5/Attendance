@@ -27,6 +27,8 @@ namespace Attendance.Data
 		public bool is_admin { get; set; }	
 
 		 public MySqlConnection connection;
+
+        /*
 		public DataClass()
 		{
 
@@ -49,6 +51,28 @@ namespace Attendance.Data
 			this.is_conn_open = false;
 		}
 
+		*/
+
+
+        public DataClass()
+        {
+            var builder = new MySqlConnectionStringBuilder
+            {
+                Server = "127.0.0.1",    // Localhost IP address
+                UserID = "root",         // Local MySQL username
+                Password = "gyanu@18",   // Your provided password
+                Database = "clayveda",   // Database name as shown in the screenshot
+                Port = 3306,             // Default MySQL port
+                TlsVersion = "TLS 1.2",
+                SslMode = MySqlSslMode.None, // SSL mode set to None for localhost
+            };
+
+            this.connstring = builder.ToString();
+            this.is_conn_open = false;
+        }
+
+
+        /*
 		public DataClass(string emp_id)
 		{
 			string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
@@ -75,14 +99,41 @@ namespace Attendance.Data
 			}
               		
 		}
+		*/
+
+        public DataClass(string emp_id)
+        {
+            var builder = new MySqlConnectionStringBuilder
+            {
+                Server = "127.0.0.1",    // Localhost IP address
+                UserID = "root",         // Local MySQL username
+                Password = "gyanu@18",   // Your provided password
+                Database = "clayveda",   // Database name as shown in the screenshot
+                Port = 3306,             // Default MySQL port
+                TlsVersion = "TLS 1.2",
+                SslMode = MySqlSslMode.None, // SSL mode set to None for localhost
+            };
+
+            this.connstring = builder.ToString();
+            this.is_conn_open = false;
+            get_emp_id();
+
+            if (this.emp_id2 != null)
+            {
+                start_connection();
+                check_admin(emp_id2);
+                close_connection();
+            }
+        }
 
 
-	  
 
 
 
 
-		public List<List<string>> get_employee_sales_between_two_dates(string start_date,string end_date)
+
+
+        public List<List<string>> get_employee_sales_between_two_dates(string start_date,string end_date)
 		{
 			if (!is_conn_open)
 				return null;

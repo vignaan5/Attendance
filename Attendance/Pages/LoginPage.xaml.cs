@@ -9,7 +9,7 @@ public partial class LoginPage : ContentPage
 	public string emp_id { get; set; }
 	public bool is_admin=false;
 	public bool nothing_found=false;
-	public string version = "0.6";
+	public string version = "0.7";
 	public string store_name=String.Empty;
 #if ANDROID26_0_OR_GREATER
 	public Location.LocationClass l = new Location.LocationClass();
@@ -141,20 +141,20 @@ public partial class LoginPage : ContentPage
 	{
 
 		string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
-		var builder = new MySqlConnectionStringBuilder
-		{
-			Server = "clayveda.mysql.database.azure.com",
-			UserID = "vignaan",
-			Password = "gyanu@18",
-			Database = "clayveda",
-			TlsVersion = "TLS 1.2",
-			SslMode = MySqlSslMode.VerifyCA,
-			SslCa = sslcertificate_path,
-		};
+        var builder = new MySqlConnectionStringBuilder
+        {
+            Server = "127.0.0.1",       // Localhost IP address
+            UserID = "root",            // Local MySQL username
+            Password = "gyanu@18",      // Your provided password
+            Database = "clayveda",      // Your database name
+            Port = 3306,                // Default MySQL port for localhost
+            TlsVersion = "TLS 1.2",
+            SslMode = MySqlSslMode.None // SSL mode set to None for localhost
+        };
 
-		string sql_conn_string = builder.ToString();
+        string sql_conn_string = builder.ToString();
 
-		MySqlConnection conn = new MySqlConnection(sql_conn_string);
+        MySqlConnection conn = new MySqlConnection(sql_conn_string);
 
 		try
 		{
@@ -223,21 +223,21 @@ public partial class LoginPage : ContentPage
 	{
 
 		string sslcertificate_path = System.IO.Path.Combine(FileSystem.Current.AppDataDirectory, "DigiCertGlobalRootG2.crt.pem");
-		var builder = new MySqlConnectionStringBuilder
-		{
-			Server = "clayveda.mysql.database.azure.com",
-			UserID = "vignaan",
-			Password = "gyanu@18",
-			Database = "clayveda",
-			TlsVersion = "TLS 1.2",
-			SslMode = MySqlSslMode.VerifyCA,
-			SslCa = sslcertificate_path,
-		};
+        var builder = new MySqlConnectionStringBuilder
+        {
+            Server = "127.0.0.1",       // Localhost IP address
+            UserID = "root",            // Local MySQL username
+            Password = "gyanu@18",      // Your provided password
+            Database = "clayveda",      // Your database name
+            Port = 3306,                // Default MySQL port for localhost
+            TlsVersion = "TLS 1.2",
+            SslMode = MySqlSslMode.None // SSL mode set to None for localhost
+        };
 
-		string sql_conn_string = builder.ToString();
+        string sql_conn_string = builder.ToString();
 
 
-		MySqlConnection conn = new MySqlConnection(sql_conn_string);
+        MySqlConnection conn = new MySqlConnection(sql_conn_string);
 
 		try
 		{
